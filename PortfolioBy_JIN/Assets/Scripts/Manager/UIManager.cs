@@ -23,34 +23,32 @@ public class UIManager : Singleton<UIManager>
     //-------------------------------------------- public
 
     //-------------------------------------------- private
-    #region ///InCastleScene///
-    Button _inCastleToDefenceButton;
-    Button _inCastleToOutCastleButton;
+    #region ///AllScene///
+
     #endregion
 
-    #region ///AllScene///
-    GameObject _quitFrame;
+    #region ///InCastle, OutCastleScene///
+    Text[] _resourcesText;
 
-    Button _quitButton;
+    int[] _resourcesValue;
     #endregion
 
     GameManager gameManager;
+
+    ObjectManager objectManager;
     #endregion
 
     #region //property//
+    #region ///AllScene///
+
+    #endregion
+
+    #region ///InCastle///
+
+    #endregion
+
     #region ///OutCastle///
 
-    #endregion
-
-    #region ///InCastleScene///
-    public Button inCastleToDefenceButton { get { return _inCastleToDefenceButton; } }
-    public Button inCastleToOutCastleButton { get { return _inCastleToOutCastleButton; } }
-    #endregion
-
-    #region ///AllScene///
-    public GameObject quitFrame { get { return _quitFrame; } }
-
-    public Button quitButton { get { return _quitButton; } }
     #endregion
     #endregion
 
@@ -59,6 +57,14 @@ public class UIManager : Singleton<UIManager>
     {
         DataInit();
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            QuitFrameSet();
+        }
+    }
     #endregion
 
     #region //function//
@@ -66,57 +72,77 @@ public class UIManager : Singleton<UIManager>
     public void DataInit()
     {
         gameManager = GameManager.instance;
+        objectManager = ObjectManager.instance;
+
+        _resourcesText = new Text[(int)GameManager._EResourceType_.ertMax];
+        _resourcesValue = new int[(int)GameManager._EResourceType_.ertMax];
     }
 
-    public void SceneLoadedObjects() // 각각의 씬이 로드될 때마다 필요한 오브젝트들을 참조한다
+    public void QuitFrameSet()
     {
-        AllSceneObjectsRef(); // 모든 씬에서 사용하는 오브젝트들은 매 씬마다 참조 => 공통적인 오브젝트들의 이름은 각각의 씬 이름이 담겨있도록
-
-        switch (gameManager.currentSceneState) // 특정한 씬에서만 사용하는 오브젝트들은 해당 씬을 참조 했을 때만 참조
+        if (objectManager.quitFrame.activeSelf)
         {
-            case GameManager._ESceneState_.esInCastle:
-                if (gameManager.isAlreadyInCastle)
-                    return;
-                InCastleObjectsRef();
-                break;
-            case GameManager._ESceneState_.esOutCastle:
-                if (gameManager.isAlreadyOutCastle)
-                    return;
-                OutCastleObjectsRef();
-                break;
-            case GameManager._ESceneState_.esDefence:
-                if (gameManager.isAlreadyDefence)
-                    return;
-                DefenceObjectsRef();
-                break;
-
-                // 각각의 씬들을 이미 전환했었다면 isAlready를 통해서 다시 참조하지 않도록 설정
-
-                // 이후 참조된 오브젝트들은 캐싱해서 DataManager에서 저장하도록 하는데, 우선 PlayerFrabs로
+            Time.timeScale = 1f;
+            objectManager.quitFrame.gameObject.SetActive(false);
+        }
+        else
+        {
+            Time.timeScale = 0f;
+            objectManager.quitFrame.gameObject.SetActive(true);
         }
     }
 
-    public void AllSceneObjectsRef()
+    public void SceneLoadedUI()
     {
-        _quitFrame = GameObject.Find("Canvas").transform.Find("Quit_Frame").gameObject;
-
-        _quitButton = _quitFrame.transform.Find("Quit_Button").gameObject.GetComponent<Button>();
+        switch (gameManager.currentSceneState)
+        {
+            case GameManager._ESceneState_.esInCastle:
+                InCastleUIsRef();
+                if (gameManager.isAlreadyInCastle)
+                    return;
+                gameManager.isAlreadyInCastle = true;
+                break;
+            case GameManager._ESceneState_.esOutCastle:
+                OutCastleUIsRef();
+                if (gameManager.isAlreadyOutCastle)
+                    return;
+                gameManager.isAlreadyOutCastle = true;
+                break;
+            case GameManager._ESceneState_.esDefence:
+                DefenceUIsRef();
+                if (gameManager.isAlreadyDefence)
+                    return;
+                gameManager.isAlreadyDefence = true;
+                break;
+            default:
+                break;
+        }
+        SetResourceUI();
     }
 
-    public void InCastleObjectsRef()
+    public void InCastleUIsRef()
     {
-        _inCastleToDefenceButton = GameObject.Find("InCastleToDefence_Button").gameObject.GetComponent<Button>();
-        _inCastleToOutCastleButton = GameObject.Find("InCastleToOutCastle_Button").gameObject.GetComponent<Button>();
+        _resourcesText[(int)GameManager._EResourceType_.ertMoney] = objectManager.moneyText.GetComponent<Text>();
+        _resourcesText[(int)GameManager._EResourceType_.ertWood] = objectManager.woodText.GetComponent<Text>();
+        _resourcesText[(int)GameManager._EResourceType_.ertStone] = objectManager.stoneText.GetComponent<Text>();
+        _resourcesText[(int)GameManager._EResourceType_.ertIron] = objectManager.ironText.GetComponent<Text>();
+        _resourcesText[(int)GameManager._EResourceType_.ertGold] = objectManager.goldText.GetComponent<Text>();
+        _resourcesText[(int)GameManager._EResourceType_.ertDiamond] = objectManager.diamondText.GetComponent<Text>();
     }
 
-    public void OutCastleObjectsRef()
+    public void OutCastleUIsRef()
     {
 
     }
 
-    public void DefenceObjectsRef()
+    public void DefenceUIsRef()
     {
 
+    }
+
+    public void SetResourceUI()
+    {
+        // moneyText.text = dataManager.money;
     }
     //-------------------------------------------- private
 

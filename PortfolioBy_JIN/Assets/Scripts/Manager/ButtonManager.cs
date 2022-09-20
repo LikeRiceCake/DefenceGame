@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ButtonManager : Singleton<ButtonManager>
 {
@@ -24,6 +25,24 @@ public class ButtonManager : Singleton<ButtonManager>
     //-------------------------------------------- public
 
     //-------------------------------------------- private
+    #region ///AllScene///
+    Button quitButton;
+    #endregion
+
+    #region ///Main///
+    Button mainToInCastleButton;
+    #endregion
+
+    #region ///InCastle///
+    Button inCastleToDefenceButton;
+    Button inCastleToOutCastleButton;
+    #endregion
+
+    #region ///OutCastle///
+    #endregion
+
+    ObjectManager objectManager;
+
     GameManager gameManager;
     #endregion
 
@@ -36,14 +55,6 @@ public class ButtonManager : Singleton<ButtonManager>
     {
         DataInit();
     }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            QuitFrameSet();
-        }
-    }
     #endregion
 
     #region //function//
@@ -51,40 +62,27 @@ public class ButtonManager : Singleton<ButtonManager>
     public void DataInit()
     {
         gameManager = GameManager.instance;
+        objectManager = ObjectManager.instance;
     }
-
-    #region ///MainScene///
-    public void MainToStart_Button()
-    {
-        SceneManager.LoadScene("InCastle");
-    }
-    #endregion
 
     #region ///AllScene///
-    public void QuitFrameSet()
-    {
-        if (gameManager.uiManager.quitFrame.activeSelf)
-        {
-            Time.timeScale = 1f;
-            gameManager.uiManager.quitFrame.gameObject.SetActive(false);
-        }
-        else
-        {
-            Time.timeScale = 0f;
-            gameManager.uiManager.quitFrame.gameObject.SetActive(true);
-        }
-    }
-
     public void Aplication_Quit()
     {
         Application.Quit();
     }
     #endregion
 
-    #region ///InCastleScene///
+    #region ///Main///
+    public void MainToStart_Button()
+    {
+        SceneManager.LoadScene("InCastle");
+    }
+    #endregion
+
+    #region ///InCastle///
     public void InCastleToDeffence()
     {
-        SceneManager.LoadScene("DeffenceScene");
+        SceneManager.LoadScene("DefenceScene");
     }
 
     public void InCastleToOutCastle()
@@ -99,36 +97,60 @@ public class ButtonManager : Singleton<ButtonManager>
 
         switch (gameManager.currentSceneState)
         {
+            case GameManager._ESceneState_.esMain:
+                if (gameManager.isAlreadyInMain)
+                    return;
+                MainButtonRef();
+                MainButtonsEvent();
+                gameManager.isAlreadyInMain = true;
+                break;
             case GameManager._ESceneState_.esInCastle:
+                InCastleButtonsRef();
                 if (gameManager.isAlreadyInCastle)
                     return;
-                InCastleButtonsRef();
+                InCastleButtonsEvent();
                 gameManager.isAlreadyInCastle = true;
                 break;
             case GameManager._ESceneState_.esOutCastle:
+                OutCastleButtonsRef();
                 if (gameManager.isAlreadyOutCastle)
                     return;
-                OutCastleButtonsRef();
+                OutCastleButtonsEvent();
                 gameManager.isAlreadyOutCastle = true;
                 break;
             case GameManager._ESceneState_.esDefence:
+                DefenceButtonsRef();
                 if (gameManager.isAlreadyDefence)
                     return;
-                DefenceButtonsRef();
+                DefenceButtonsEvent();
                 gameManager.isAlreadyDefence = true;
+                break;
+            default:
                 break;
         }
     }
 
     public void AllSceneButtonsRef()
     {
-        gameManager.uiManager.quitButton.onClick.AddListener(Aplication_Quit);
+        quitButton = objectManager.quitButton.GetComponent<Button>();
+
+        quitButton.onClick.AddListener(Aplication_Quit);
+    }
+
+    public void MainButtonRef()
+    {
+        mainToInCastleButton = objectManager.mainToInCastleButton.GetComponent<Button>();
+
+        mainToInCastleButton.onClick.AddListener(MainToStart_Button);
     }
 
     public void InCastleButtonsRef()
     {
-        gameManager.uiManager.inCastleToDefenceButton.onClick.AddListener(InCastleToDeffence);
-        gameManager.uiManager.inCastleToOutCastleButton.onClick.AddListener(InCastleToOutCastle);
+        inCastleToOutCastleButton = objectManager.inCastleToOutCastleButton.GetComponent<Button>();
+        inCastleToDefenceButton = objectManager.inCastleToDefenceButton.GetComponent<Button>();
+
+        inCastleToDefenceButton.onClick.AddListener(InCastleToDeffence);
+        inCastleToOutCastleButton.onClick.AddListener(InCastleToOutCastle);
     }
 
     public void OutCastleButtonsRef()
@@ -140,6 +162,26 @@ public class ButtonManager : Singleton<ButtonManager>
     {
         throw new NotImplementedException();
     }
+
+    public void MainButtonsEvent()
+    {
+
+    }
+
+    public void InCastleButtonsEvent()
+    {
+
+    }
+    public void OutCastleButtonsEvent()
+    {
+
+    }
+
+    public void DefenceButtonsEvent()
+    {
+
+    }
+
     // -------------------------------------------- private
 
     #endregion

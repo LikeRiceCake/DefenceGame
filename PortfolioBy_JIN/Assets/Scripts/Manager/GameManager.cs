@@ -9,7 +9,8 @@ public class GameManager : Singleton<GameManager>
     public enum _EGameState_
     {
         egInGame,
-        egInMenu
+        egInMenu,
+        eqMax
     } _EGameState_ _currentGameState;
 
     public enum _ESceneState_
@@ -17,9 +18,21 @@ public class GameManager : Singleton<GameManager>
         esInCastle,
         esOutCastle,
         esDefence,
-        egMain
+        esMain,
+        esMax
     } _ESceneState_ _currentSceneState;
     #endregion
+
+    public enum _EResourceType_
+    {
+        ertMoney,
+        ertWood,
+        ertStone,
+        ertIron,
+        ertGold,
+        ertDiamond,
+        ertMax
+    }
 
     #region delegate
     delegate void MyDelegate();
@@ -31,6 +44,7 @@ public class GameManager : Singleton<GameManager>
     //-------------------------------------------- public
 
     //-------------------------------------------- private
+    bool _isAlreadyInMain;
     bool _isAlreadyInCastle;
     bool _isAlreadyOutCastle;
     bool _isAlreadyDefence;
@@ -47,16 +61,12 @@ public class GameManager : Singleton<GameManager>
     //-------------------------------------------- public
 
     //-------------------------------------------- private
-    UIManager _uiManager;
+    ObjectManager _objectManager;
 
     ButtonManager _buttonManager;
     #endregion
 
     #region //property//
-    public UIManager uiManager { get { return _uiManager; } }
-
-    public ButtonManager buttonManager { get { return _buttonManager; } }
-
     public _EGameState_ currentGameState { get { return _currentGameState; } }
 
     public _ESceneState_ currentSceneState { get { return _currentSceneState; } }
@@ -64,6 +74,7 @@ public class GameManager : Singleton<GameManager>
     public bool isAlreadyInCastle { get { return _isAlreadyInCastle; } set { _isAlreadyInCastle = value; } }
     public bool isAlreadyOutCastle { get { return _isAlreadyOutCastle; } set { _isAlreadyOutCastle = value; } }
     public bool isAlreadyDefence { get { return _isAlreadyDefence; } set { _isAlreadyDefence = value; } }
+    public bool isAlreadyInMain { get { return _isAlreadyInMain; } set { _isAlreadyInMain = value; } }
     #endregion
 
     #region //unityLifeCycle//
@@ -80,12 +91,12 @@ public class GameManager : Singleton<GameManager>
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         SetGameState(_EGameState_.egInGame);
-        SetSceneState(_ESceneState_.egMain);
+        SetSceneState(_ESceneState_.esMain);
 
-        _uiManager = UIManager.instance;
+        _objectManager = ObjectManager.instance;
         _buttonManager = ButtonManager.instance;
 
-        managerSceneLoadedObjects += _uiManager.SceneLoadedObjects;
+        managerSceneLoadedObjects += _objectManager.SceneLoadedObjects;
         managerSceneLoadedObjects += _buttonManager.SceneLoadedButtons;
 
         _isAlreadyInCastle = _isAlreadyOutCastle = _isAlreadyDefence = false;
@@ -105,6 +116,9 @@ public class GameManager : Singleton<GameManager>
     {
         switch(scene.name) // 씬의 이름을 비교
         {
+            case "Main":
+                SetSceneState(_ESceneState_.esMain);
+                break;
             case "InCastle":
                 SetSceneState(_ESceneState_.esInCastle);
                 break;
@@ -117,8 +131,8 @@ public class GameManager : Singleton<GameManager>
             default:
                 break;
         }
-        if(!isAlreadyDefence || !isAlreadyInCastle || !isAlreadyOutCastle) // 씬 전부 한 번씩은 전환했었다면 더이상 오브젝트들을 참조할 필요가 없음
-            managerSceneLoadedObjects();
+
+        managerSceneLoadedObjects();
     }
     //-------------------------------------------- private
 
