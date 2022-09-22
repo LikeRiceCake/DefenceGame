@@ -37,7 +37,7 @@ public class GameManager : Singleton<GameManager>
     #region delegate
     delegate void MyDelegate();
 
-    MyDelegate managerSceneLoadedObjects;
+    MyDelegate sceneLoadedManager;
     #endregion
 
     #region //variable//
@@ -86,9 +86,9 @@ public class GameManager : Singleton<GameManager>
 
     #region //function//
     //-------------------------------------------- public
-    public void DataInit()
+    public void DataInit() // 최초 초기화
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded; // Scene이 로드될 때마다 호출될 이벤트를 추가
 
         SetGameState(_EGameState_.egInGame);
         SetSceneState(_ESceneState_.esMain);
@@ -96,18 +96,18 @@ public class GameManager : Singleton<GameManager>
         _objectManager = ObjectManager.instance;
         _buttonManager = ButtonManager.instance;
 
-        managerSceneLoadedObjects += _objectManager.SceneLoadedObjects;
-        managerSceneLoadedObjects += _buttonManager.SceneLoadedButtons;
+        sceneLoadedManager += _objectManager.SceneLoadedObjects;
+        sceneLoadedManager += _buttonManager.SceneLoadedButtons;
 
-        _isAlreadyInCastle = _isAlreadyOutCastle = _isAlreadyDefence = false;
+        _isAlreadyInMain = _isAlreadyInCastle = _isAlreadyOutCastle = _isAlreadyDefence = false;
     }
 
-    public void SetGameState(_EGameState_ newGameState)
+    public void SetGameState(_EGameState_ newGameState) // 현재 게임 상태 변경
     {
         _currentGameState = newGameState;
     }
     
-    public void SetSceneState(_ESceneState_ newSceneState)
+    public void SetSceneState(_ESceneState_ newSceneState) // 현재 장면 변경
     {
         _currentSceneState = newSceneState;
     }
@@ -132,7 +132,7 @@ public class GameManager : Singleton<GameManager>
                 break;
         }
 
-        managerSceneLoadedObjects();
+        sceneLoadedManager(); // 씬 변경 시 호출되어야 할 함수들을 전부 호출
     }
     //-------------------------------------------- private
 

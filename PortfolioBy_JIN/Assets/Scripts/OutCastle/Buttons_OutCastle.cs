@@ -27,35 +27,7 @@ public class Buttons_OutCastle : MonoBehaviour
     {
         Max_Hire = 5;
         mineral = Mineral.Stone;
-    }
-
-
-    public void goInCastle()
-    {
-        SceneManager.LoadScene("InCastle");
-    }
-
-    public void OpenForest()
-    {
-        forest.gameObject.SetActive(true);
-
-    }
-
-    public void CloseForest()
-    {
-        forest.gameObject.SetActive(false);
-        treeTouch.gameObject.SetActive(false);
-    }
-
-    public void TouchTree()
-    {
-        treeTouch.gameObject.SetActive(true);
-    }
-
-    public void OpenMine()
-    {
-        mine.gameObject.SetActive(true);
-    }
+    } 
 
     public void CloseMine()
     {

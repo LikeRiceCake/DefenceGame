@@ -26,19 +26,19 @@ public class ButtonManager : Singleton<ButtonManager>
 
     //-------------------------------------------- private
     #region ///AllScene///
-    Button quitButton;
+
     #endregion
 
-    #region ///Main///
-    Button mainToInCastleButton;
+    #region ///MainScene///
+
     #endregion
 
-    #region ///InCastle///
-    Button inCastleToDefenceButton;
-    Button inCastleToOutCastleButton;
+    #region ///InCastleScene///
+
     #endregion
 
-    #region ///OutCastle///
+    #region ///OutCastleScene///
+
     #endregion
 
     ObjectManager objectManager;
@@ -66,60 +66,84 @@ public class ButtonManager : Singleton<ButtonManager>
     }
 
     #region ///AllScene///
-    public void Aplication_Quit()
+    public void Aplication_Quit() // 게임 종료 버튼
     {
         Application.Quit();
     }
     #endregion
 
-    #region ///Main///
-    public void MainToStart_Button()
+    #region ///MainScene///
+    public void MainToStart_Button() // 게임 스타트(Main)
     {
         SceneManager.LoadScene("InCastle");
     }
     #endregion
 
-    #region ///InCastle///
-    public void InCastleToDeffence()
+    #region ///InCastleScene///
+    public void InCastleToDeffence() // Defence씬으로(InCastle)
     {
         SceneManager.LoadScene("DefenceScene");
     }
 
-    public void InCastleToOutCastle()
+    public void InCastleToOutCastle() // Defence씬으로(InCastle)
     {
         SceneManager.LoadScene("OutCastle");
     }
     #endregion
 
-    public void SceneLoadedButtons()
+    #region ///OutCastleScene///
+    public void OutCastleToInCastle() // InCastle씬으로(OutCastle)
     {
-        AllSceneButtonsRef();
+        SceneManager.LoadScene("InCastle");
+    }
+
+    public void ForestFrameOnOff() // 숲 자원 수급 화면 On, Off
+    {
+        if(objectManager.forestFrame.activeSelf)
+            objectManager.forestFrame.SetActive(false);
+        else
+            objectManager.forestFrame.SetActive(true);
+    }
+
+    public void MineFrameOnOff() // 광산 자원 수급 화면 On, Off
+    {
+        if(objectManager.mineFrame.activeSelf)
+            objectManager.mineFrame.SetActive(false);
+        else
+            objectManager.mineFrame.SetActive(true);
+    }
+
+    public void treeWorkFrameOn()
+    {
+        objectManager.treeWorkFrame.SetActive(true);
+    }
+    #endregion
+
+    public void SceneLoadedButtons() // 씬이 로드될 때마다 버튼들 이벤트 할당
+    {
+        AllSceneButtonsEvent();
 
         switch (gameManager.currentSceneState)
         {
             case GameManager._ESceneState_.esMain:
                 if (gameManager.isAlreadyInMain)
                     return;
-                MainButtonRef();
                 MainButtonsEvent();
                 gameManager.isAlreadyInMain = true;
                 break;
             case GameManager._ESceneState_.esInCastle:
-                InCastleButtonsRef();
                 if (gameManager.isAlreadyInCastle)
                     return;
                 InCastleButtonsEvent();
                 gameManager.isAlreadyInCastle = true;
                 break;
             case GameManager._ESceneState_.esOutCastle:
-                OutCastleButtonsRef();
                 if (gameManager.isAlreadyOutCastle)
                     return;
                 OutCastleButtonsEvent();
                 gameManager.isAlreadyOutCastle = true;
                 break;
             case GameManager._ESceneState_.esDefence:
-                DefenceButtonsRef();
                 if (gameManager.isAlreadyDefence)
                     return;
                 DefenceButtonsEvent();
@@ -130,51 +154,33 @@ public class ButtonManager : Singleton<ButtonManager>
         }
     }
 
-    public void AllSceneButtonsRef()
+    // ~~~ButtonsEvent : ~~~씬 버튼의 이벤트 할당
+
+    public void AllSceneButtonsEvent()
     {
-        quitButton = objectManager.quitButton.GetComponent<Button>();
-
-        quitButton.onClick.AddListener(Aplication_Quit);
-    }
-
-    public void MainButtonRef()
-    {
-        mainToInCastleButton = objectManager.mainToInCastleButton.GetComponent<Button>();
-
-        mainToInCastleButton.onClick.AddListener(MainToStart_Button);
-    }
-
-    public void InCastleButtonsRef()
-    {
-        inCastleToOutCastleButton = objectManager.inCastleToOutCastleButton.GetComponent<Button>();
-        inCastleToDefenceButton = objectManager.inCastleToDefenceButton.GetComponent<Button>();
-
-        inCastleToDefenceButton.onClick.AddListener(InCastleToDeffence);
-        inCastleToOutCastleButton.onClick.AddListener(InCastleToOutCastle);
-    }
-
-    public void OutCastleButtonsRef()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void DefenceButtonsRef()
-    {
-        throw new NotImplementedException();
+        objectManager.quitButton.onClick.AddListener(Aplication_Quit);
     }
 
     public void MainButtonsEvent()
     {
-
+        objectManager.mainToInCastleButton.onClick.AddListener(MainToStart_Button);
     }
 
     public void InCastleButtonsEvent()
     {
-
+        objectManager.inCastleToDefenceButton.onClick.AddListener(InCastleToDeffence);
+        objectManager.inCastleToOutCastleButton.onClick.AddListener(InCastleToOutCastle);
     }
+
     public void OutCastleButtonsEvent()
     {
-
+        objectManager.outCastleToInCastleButton.onClick.AddListener(OutCastleToInCastle);
+        objectManager.forestFrameOnButton.onClick.AddListener(ForestFrameOnOff);
+        objectManager.mineFrameOnButton.onClick.AddListener(MineFrameOnOff);
+        objectManager.forestFrameOffButton.onClick.AddListener(ForestFrameOnOff);
+        objectManager.mineFrameOffButton.onClick.AddListener(MineFrameOnOff);
+        objectManager.treeWorkFrameOnButton.onClick.AddListener(treeWorkFrameOn);
+        //objectManager.treeHireButton.onClick.AddListener();
     }
 
     public void DefenceButtonsEvent()
