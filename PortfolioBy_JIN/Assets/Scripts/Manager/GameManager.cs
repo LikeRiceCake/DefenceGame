@@ -23,17 +23,6 @@ public class GameManager : Singleton<GameManager>
     } _ESceneState_ _currentSceneState;
     #endregion
 
-    public enum _EResourceType_
-    {
-        ertMoney,
-        ertWood,
-        ertStone,
-        ertIron,
-        ertGold,
-        ertDiamond,
-        ertMax
-    }
-
     #region delegate
     delegate void MyDelegate();
 
@@ -48,6 +37,7 @@ public class GameManager : Singleton<GameManager>
     bool _isAlreadyInCastle;
     bool _isAlreadyOutCastle;
     bool _isAlreadyDefence;
+    bool _isAlreadyPlayed;
     #endregion
 
     #region //constant//
@@ -75,6 +65,7 @@ public class GameManager : Singleton<GameManager>
     public bool isAlreadyOutCastle { get { return _isAlreadyOutCastle; } set { _isAlreadyOutCastle = value; } }
     public bool isAlreadyDefence { get { return _isAlreadyDefence; } set { _isAlreadyDefence = value; } }
     public bool isAlreadyInMain { get { return _isAlreadyInMain; } set { _isAlreadyInMain = value; } }
+    public bool isAlreadyPlayed { get { return _isAlreadyPlayed; } set { _isAlreadyPlayed = value; } }
     #endregion
 
     #region //unityLifeCycle//
@@ -98,6 +89,8 @@ public class GameManager : Singleton<GameManager>
 
         sceneLoadedManager += _objectManager.SceneLoadedObjects;
         sceneLoadedManager += _buttonManager.SceneLoadedButtons;
+
+        _isAlreadyPlayed = false;
 
         _isAlreadyInMain = _isAlreadyInCastle = _isAlreadyOutCastle = _isAlreadyDefence = false;
     }

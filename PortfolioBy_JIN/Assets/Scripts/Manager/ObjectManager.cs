@@ -31,7 +31,12 @@ public class ObjectManager : Singleton<ObjectManager>
     #endregion
 
     #region ///MainScene///
+    GameObject _createUserFrame;
+
     Button _mainToInCastleButton;
+    Button _createUserButton;
+
+    InputField _userNameInputText;
     #endregion
 
     #region ///InCastleScene///
@@ -68,7 +73,12 @@ public class ObjectManager : Singleton<ObjectManager>
     #endregion
 
     #region ///MainScene///
+    public GameObject createUserFrame { get { return _createUserFrame; } }
+
     public Button mainToInCastleButton { get { return _mainToInCastleButton; } }
+    public Button createUserButton { get { return _createUserButton; } }
+
+    public InputField userNameInputText { get { return _userNameInputText; } }
     #endregion
 
     #region ///InCastleScene///
@@ -77,12 +87,12 @@ public class ObjectManager : Singleton<ObjectManager>
     #endregion
 
     #region ///InCastleScene, OutCastleScene///
-    public Text moneyText { get { return _resourcesText[(int)GameManager._EResourceType_.ertMoney]; } }
-    public Text woodText { get { return _resourcesText[(int)GameManager._EResourceType_.ertWood]; } }
-    public Text stoneText { get { return _resourcesText[(int)GameManager._EResourceType_.ertStone]; } }
-    public Text ironText { get { return _resourcesText[(int)GameManager._EResourceType_.ertIron]; } }
-    public Text goldText { get { return _resourcesText[(int)GameManager._EResourceType_.ertGold]; } }
-    public Text diamondText { get { return _resourcesText[(int)GameManager._EResourceType_.ertDiamond]; } }
+    public Text moneyText { get { return _resourcesText[(int)DataManager._EResource_.ertMoney]; } }
+    public Text woodText { get { return _resourcesText[(int)DataManager._EResource_.ertWood]; } }
+    public Text stoneText { get { return _resourcesText[(int)DataManager._EResource_.ertStone]; } }
+    public Text ironText { get { return _resourcesText[(int)DataManager._EResource_.ertIron]; } }
+    public Text goldText { get { return _resourcesText[(int)DataManager._EResource_.ertGold]; } }
+    public Text diamondText { get { return _resourcesText[(int)DataManager._EResource_.ertDiamond]; } }
     #endregion
 
     #region ///OutCastleScene///
@@ -112,7 +122,7 @@ public class ObjectManager : Singleton<ObjectManager>
     public void DataInit()
     {
         gameManager = GameManager.instance;
-        _resourcesText = new Text[(int)GameManager._EResourceType_.ertMax];
+        _resourcesText = new Text[(int)DataManager._EResource_.ertMax];
     }
 
     public void SceneLoadedObjects() // 각각의 씬이 로드될 때마다 필요한 오브젝트들을 참조한다
@@ -151,7 +161,13 @@ public class ObjectManager : Singleton<ObjectManager>
 
     public void MainObjectsRef()
     {
+        _createUserFrame = GameObject.Find("Canvas").transform.Find("CreateUserFrame").gameObject;
+
         _mainToInCastleButton = GameObject.Find("Start_Button").GetComponent<Button>();
+
+        _createUserButton = _createUserFrame.transform.Find("Create_Button").GetComponent<Button>();
+
+        _userNameInputText = _createUserFrame.transform.Find("UserName_Input").gameObject.GetComponent<InputField>();
     }
 
     public void InCastleObjectsRef()
@@ -159,12 +175,12 @@ public class ObjectManager : Singleton<ObjectManager>
         _inCastleToOutCastleButton = GameObject.Find("InCastleToOutCastle_Button").GetComponent<Button>();
         _inCastleToDefenceButton = GameObject.Find("InCastleToDefence_Button").GetComponent<Button>();
 
-        _resourcesText[(int)GameManager._EResourceType_.ertMoney] = GameObject.Find("Money_Text").GetComponent<Text>();
-        _resourcesText[(int)GameManager._EResourceType_.ertWood] = GameObject.Find("Wood_Text").GetComponent<Text>();
-        _resourcesText[(int)GameManager._EResourceType_.ertStone] = GameObject.Find("Stone_Text").GetComponent<Text>();
-        _resourcesText[(int)GameManager._EResourceType_.ertIron] = GameObject.Find("Iron_Text").GetComponent<Text>();
-        _resourcesText[(int)GameManager._EResourceType_.ertGold] = GameObject.Find("Gold_Text").GetComponent<Text>();
-        _resourcesText[(int)GameManager._EResourceType_.ertDiamond] = GameObject.Find("Diamond_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.ertMoney] = GameObject.Find("Money_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.ertWood] = GameObject.Find("Wood_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.ertStone] = GameObject.Find("Stone_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.ertIron] = GameObject.Find("Iron_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.ertGold] = GameObject.Find("Gold_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.ertDiamond] = GameObject.Find("Diamond_Text").GetComponent<Text>();
     }
 
     public void OutCastleObjectsRef()
@@ -181,12 +197,12 @@ public class ObjectManager : Singleton<ObjectManager>
         _treeWorkFrameOnButton = forestFrame.transform.Find("TreeFrame").transform.Find("TreeWorkFrameOn_Button").gameObject.GetComponent<Button>();
         _treeHireButton = _treeWorkFrame.transform.Find("TreeHire_Button").gameObject.GetComponent<Button>();
 
-        _resourcesText[(int)GameManager._EResourceType_.ertMoney] = GameObject.Find("Money_Text").GetComponent<Text>();
-        _resourcesText[(int)GameManager._EResourceType_.ertWood] = GameObject.Find("Wood_Text").GetComponent<Text>();
-        _resourcesText[(int)GameManager._EResourceType_.ertStone] = GameObject.Find("Stone_Text").GetComponent<Text>();
-        _resourcesText[(int)GameManager._EResourceType_.ertIron] = GameObject.Find("Iron_Text").GetComponent<Text>();
-        _resourcesText[(int)GameManager._EResourceType_.ertGold] = GameObject.Find("Gold_Text").GetComponent<Text>();
-        _resourcesText[(int)GameManager._EResourceType_.ertDiamond] = GameObject.Find("Diamond_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.ertMoney] = GameObject.Find("Money_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.ertWood] = GameObject.Find("Wood_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.ertStone] = GameObject.Find("Stone_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.ertIron] = GameObject.Find("Iron_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.ertGold] = GameObject.Find("Gold_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.ertDiamond] = GameObject.Find("Diamond_Text").GetComponent<Text>();
     }
 
     public void DefenceObjectsRef()

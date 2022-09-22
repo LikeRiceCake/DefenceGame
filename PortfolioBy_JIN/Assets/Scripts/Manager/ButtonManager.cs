@@ -44,6 +44,8 @@ public class ButtonManager : Singleton<ButtonManager>
     ObjectManager objectManager;
 
     GameManager gameManager;
+
+    FirebaseDBManager firebaseDBManager;
     #endregion
 
     #region //property//
@@ -63,6 +65,7 @@ public class ButtonManager : Singleton<ButtonManager>
     {
         gameManager = GameManager.instance;
         objectManager = ObjectManager.instance;
+        firebaseDBManager = FirebaseDBManager.instance;
     }
 
     #region ///AllScene///
@@ -73,7 +76,24 @@ public class ButtonManager : Singleton<ButtonManager>
     #endregion
 
     #region ///MainScene///
-    public void MainToStart_Button() // 게임 스타트(Main)
+    public void MainToStart() // 게임 스타트(Main)(이미 플레이한 적이 있다면 바로 시작)(아니라면 유저 만들기 창 온)
+    {
+        if (gameManager.isAlreadyPlayed)
+        {
+            MainToInCastle();
+        }
+        else
+        {
+            objectManager.createUserFrame.SetActive(true);
+        }
+    }
+
+    public void CreateUserData()
+    {
+        firebaseDBManager.CheckUserName(objectManager.userNameInputText.text);
+    }
+
+    public void MainToInCastle()
     {
         SceneManager.LoadScene("InCastle");
     }
@@ -99,7 +119,7 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void ForestFrameOnOff() // 숲 자원 수급 화면 On, Off
     {
-        if(objectManager.forestFrame.activeSelf)
+        if (objectManager.forestFrame.activeSelf)
             objectManager.forestFrame.SetActive(false);
         else
             objectManager.forestFrame.SetActive(true);
@@ -107,7 +127,7 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void MineFrameOnOff() // 광산 자원 수급 화면 On, Off
     {
-        if(objectManager.mineFrame.activeSelf)
+        if (objectManager.mineFrame.activeSelf)
             objectManager.mineFrame.SetActive(false);
         else
             objectManager.mineFrame.SetActive(true);
@@ -163,7 +183,8 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void MainButtonsEvent()
     {
-        objectManager.mainToInCastleButton.onClick.AddListener(MainToStart_Button);
+        objectManager.mainToInCastleButton.onClick.AddListener(MainToStart);
+        objectManager.createUserButton.onClick.AddListener(CreateUserData);
     }
 
     public void InCastleButtonsEvent()

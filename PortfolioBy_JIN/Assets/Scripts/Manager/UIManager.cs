@@ -74,8 +74,8 @@ public class UIManager : Singleton<UIManager>
         gameManager = GameManager.instance;
         objectManager = ObjectManager.instance;
 
-        resourcesText = new Text[(int)GameManager._EResourceType_.ertMax];
-        resourcesValue = new int[(int)GameManager._EResourceType_.ertMax];
+        resourcesText = new Text[(int)DataManager._EResource_.ertMax];
+        resourcesValue = new int[(int)DataManager._EResource_.ertMax];
     }
 
     public void QuitFrameOnOff() // 종료 화면 온 오프
@@ -124,22 +124,22 @@ public class UIManager : Singleton<UIManager>
 
     public void InCastleUIsRef()
     {
-        resourcesText[(int)GameManager._EResourceType_.ertMoney] = objectManager.moneyText;
-        resourcesText[(int)GameManager._EResourceType_.ertWood] = objectManager.woodText;
-        resourcesText[(int)GameManager._EResourceType_.ertStone] = objectManager.stoneText;
-        resourcesText[(int)GameManager._EResourceType_.ertIron] = objectManager.ironText;
-        resourcesText[(int)GameManager._EResourceType_.ertGold] = objectManager.goldText;
-        resourcesText[(int)GameManager._EResourceType_.ertDiamond] = objectManager.diamondText;
+        resourcesText[(int)DataManager._EResource_.ertMoney] = objectManager.moneyText;
+        resourcesText[(int)DataManager._EResource_.ertWood] = objectManager.woodText;
+        resourcesText[(int)DataManager._EResource_.ertStone] = objectManager.stoneText;
+        resourcesText[(int)DataManager._EResource_.ertIron] = objectManager.ironText;
+        resourcesText[(int)DataManager._EResource_.ertGold] = objectManager.goldText;
+        resourcesText[(int)DataManager._EResource_.ertDiamond] = objectManager.diamondText;
     }
 
     public void OutCastleUIsRef()
     {
-        resourcesText[(int)GameManager._EResourceType_.ertMoney] = objectManager.moneyText;
-        resourcesText[(int)GameManager._EResourceType_.ertWood] = objectManager.woodText;
-        resourcesText[(int)GameManager._EResourceType_.ertStone] = objectManager.stoneText;
-        resourcesText[(int)GameManager._EResourceType_.ertIron] = objectManager.ironText;
-        resourcesText[(int)GameManager._EResourceType_.ertGold] = objectManager.goldText;
-        resourcesText[(int)GameManager._EResourceType_.ertDiamond] = objectManager.diamondText;
+        resourcesText[(int)DataManager._EResource_.ertMoney] = objectManager.moneyText;
+        resourcesText[(int)DataManager._EResource_.ertWood] = objectManager.woodText;
+        resourcesText[(int)DataManager._EResource_.ertStone] = objectManager.stoneText;
+        resourcesText[(int)DataManager._EResource_.ertIron] = objectManager.ironText;
+        resourcesText[(int)DataManager._EResource_.ertGold] = objectManager.goldText;
+        resourcesText[(int)DataManager._EResource_.ertDiamond] = objectManager.diamondText;
     }
 
     public void DefenceUIsRef()
@@ -149,7 +149,7 @@ public class UIManager : Singleton<UIManager>
 
     public void SetResourceUI() // 리소스UI 세팅
     {
-        for(int i = 0; i < (int)GameManager._EResourceType_.ertMax; i++)
+        for(int i = 0; i < (int)DataManager._EResource_.ertMax; i++)
         {
             resourcesText[i].text = resourcesValue[i].ToString();
         }
