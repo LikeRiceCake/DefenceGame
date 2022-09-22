@@ -139,6 +139,7 @@ public class DataManager : Singleton<DataManager>
     public void DataInit()
     {
         firebaseDBManager = FirebaseDBManager.instance;
+        _myUserInfo = null;
     }
 
     public void UserDataCreate(string _name)

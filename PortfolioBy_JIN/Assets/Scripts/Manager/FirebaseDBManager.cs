@@ -70,10 +70,6 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
         DBRef.Child("users").Child(dataManager.myUserInfo.m_sUserName).SetRawJsonValueAsync(jsonData);
         print("완료");
         print(jsonData);
-
-        ButtonManager.instance.MainToInCastle();
-
-        print("왜 안넘어가지?");
     }
 
     public void WriteUpdateData()

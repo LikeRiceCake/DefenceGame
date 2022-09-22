@@ -91,6 +91,11 @@ public class ButtonManager : Singleton<ButtonManager>
     public void CreateUserData()
     {
         firebaseDBManager.CheckUserName(objectManager.userNameInputText.text);
+
+        if(DataManager.instance.myUserInfo != null)
+        {
+
+        }
     }
 
     public void MainToInCastle()
