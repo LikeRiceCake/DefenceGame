@@ -142,11 +142,9 @@ public class DataManager : Singleton<DataManager>
         _myUserInfo = null;
     }
 
-    public void UserDataCreate(string _name)
+    public User UserDataInit(string _name) // User의 이름을 가지고 초기 데이타 생성
     {
-        _myUserInfo = new User(_name);
-
-        firebaseDBManager.WriteCreateData();
+        return _myUserInfo = new User(_name);
     }
     //-------------------------------------------- private
 

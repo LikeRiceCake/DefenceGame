@@ -38,6 +38,8 @@ public class GameManager : Singleton<GameManager>
     bool _isAlreadyOutCastle;
     bool _isAlreadyDefence;
     bool _isAlreadyPlayed;
+    bool _isCompletedCheck;
+    bool _isCompletedRead;
     #endregion
 
     #region //constant//
@@ -66,6 +68,8 @@ public class GameManager : Singleton<GameManager>
     public bool isAlreadyDefence { get { return _isAlreadyDefence; } set { _isAlreadyDefence = value; } }
     public bool isAlreadyInMain { get { return _isAlreadyInMain; } set { _isAlreadyInMain = value; } }
     public bool isAlreadyPlayed { get { return _isAlreadyPlayed; } set { _isAlreadyPlayed = value; } }
+    public bool isCompletedCheck { get { return _isCompletedCheck; } set { _isCompletedCheck = value; } }
+    public bool isCompletedRead { get { return _isCompletedRead; } set { _isCompletedRead = value; } }
     #endregion
 
     #region //unityLifeCycle//
@@ -90,7 +94,9 @@ public class GameManager : Singleton<GameManager>
         sceneLoadedManager += _objectManager.SceneLoadedObjects;
         sceneLoadedManager += _buttonManager.SceneLoadedButtons;
 
-        _isAlreadyPlayed = false;
+        _isCompletedCheck = false;
+
+        _isCompletedRead = false;
 
         _isAlreadyInMain = _isAlreadyInCastle = _isAlreadyOutCastle = _isAlreadyDefence = false;
     }

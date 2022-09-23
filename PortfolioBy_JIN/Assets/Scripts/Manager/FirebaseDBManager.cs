@@ -30,6 +30,8 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
     DataManager dataManager;
 
     ObjectManager objectManager;
+
+    GameManager gameManager;
     #endregion
 
     #region //property//
@@ -45,11 +47,11 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
     {
         if(Input.GetKeyDown(KeyCode.L))
         {
-            ReadDataTest("users");
+            ReadData("users");
         }
         if(Input.GetKeyDown(KeyCode.K))
         {
-            WriteCreateData();
+            WriteCreateData(dataManager.myUserInfo);
         }
     }
     #endregion
@@ -61,9 +63,19 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
         DBRef = FirebaseDatabase.DefaultInstance.RootReference;
         dataManager = DataManager.instance;
         objectManager = ObjectManager.instance;
+        gameManager = GameManager.instance;
     }
 
-    public void WriteCreateData()
+    public void WriteCreateData(DataManager.User userData) // 처음 데이터 생성 시 서버에 저장
+    {
+        string jsonData = JsonUtility.ToJson(userData);
+
+        DBRef.Child("users").Child(dataManager.myUserInfo.m_sUserName).SetRawJsonValueAsync(jsonData);
+        print("완료");
+        print(jsonData);
+    }
+
+    public void WriteUpdateData() // 데이터 덮어쓰기(업데이트) 서버에 저장
     {
         string jsonData = JsonUtility.ToJson(dataManager.myUserInfo);
 
@@ -72,18 +84,11 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
         print(jsonData);
     }
 
-    public void WriteUpdateData()
+    public void ReadData(string _path)
     {
-        string jsonData = JsonUtility.ToJson(dataManager.myUserInfo);
+        DatabaseReference readData = FirebaseDatabase.DefaultInstance.GetReference("users");
 
-        DBRef.Child("users").Child(dataManager.myUserInfo.m_sUserName).SetRawJsonValueAsync(jsonData);
-        print("완료");
-        print(jsonData);
-    }
-
-    public void ReadDataTest(string _path)
-    {
-        DatabaseReference readData = FirebaseDatabase.DefaultInstance.GetReference(_path);
+        print("데이터 읽기 시작");
 
         readData.GetValueAsync().ContinueWith(
             task =>
@@ -92,16 +97,19 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
                 {
                     DataSnapshot testSnapShot = task.Result;
 
-                    foreach (DataSnapshot data in testSnapShot.Children)
+                    print("데이터 읽기 시작 2");
+                    foreach (var data in testSnapShot.Child(_path).Children)
                     {
-                        IDictionary info = (IDictionary)data.Value;
-                        print(info["name"] + " " + info["number"]);
+                        print(data);
                     }
+ 
+                    print(dataManager.myUserInfo);
+                    gameManager.isCompletedRead = true;
                 }
             });
     }
 
-    public void CheckUserName(string _name)
+    public void CheckUserName(string _name) // 최초 플레이 시 닉네임 중복 체크
     {
         DatabaseReference readData = FirebaseDatabase.DefaultInstance.GetReference("users");
 
@@ -114,15 +122,10 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
 
                     IDictionary info = (IDictionary)testSnapShot.Value;
 
-                    if(info.Contains(_name))
-                    {
-                        print("닉네임이 중복됩니다.");
-                    }
+                    if (info.Contains(_name))
+                        gameManager.isCompletedCheck = false;
                     else
-                    {
-                        print("중복이 아닙니다");
-                        dataManager.UserDataCreate(_name);
-                    }
+                        gameManager.isCompletedCheck = true;
                 }
             });
     }

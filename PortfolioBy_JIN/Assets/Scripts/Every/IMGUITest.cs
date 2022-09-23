@@ -41,5 +41,10 @@ public class IMGUITest : MonoBehaviour
                 resource.setResources();
             }
         }
+
+        if(GUI.Button(new Rect(900, 600, 300, 100), "ResetNameData"))
+        {
+            PlayerPrefsManager.instance.SetPlayerPrefsPlayed(0);
+        }
     }
 }

@@ -46,6 +46,10 @@ public class ButtonManager : Singleton<ButtonManager>
     GameManager gameManager;
 
     FirebaseDBManager firebaseDBManager;
+
+    DataManager dataManager;
+
+    PlayerPrefsManager playerPrefsManager;
     #endregion
 
     #region //property//
@@ -57,12 +61,26 @@ public class ButtonManager : Singleton<ButtonManager>
     {
         DataInit();
     }
+
+    void Update()
+    {
+        if(gameManager.isCompletedCheck) // 닉네임의 중복 체크가 완료되었고 문제가 없다면
+            CreateUserData();
+
+        if (gameManager.isCompletedRead)
+        {
+            MainToInCastle();
+            gameManager.isCompletedRead = false;
+        }
+    }
     #endregion
 
     #region //function//
     //-------------------------------------------- public
     public void DataInit()
     {
+        playerPrefsManager = PlayerPrefsManager.instance;
+        dataManager = DataManager.instance;
         gameManager = GameManager.instance;
         objectManager = ObjectManager.instance;
         firebaseDBManager = FirebaseDBManager.instance;
@@ -76,31 +94,34 @@ public class ButtonManager : Singleton<ButtonManager>
     #endregion
 
     #region ///MainScene///
-    public void MainToStart() // 게임 스타트(Main)(이미 플레이한 적이 있다면 바로 시작)(아니라면 유저 만들기 창 온)
+    public void MainStart() // 게임 스타트(Main)(이미 플레이한 적이 있다면 바로 시작)(아니라면 유저 만들기 창 온)
     {
+        print(gameManager.isAlreadyPlayed);
         if (gameManager.isAlreadyPlayed)
         {
-            MainToInCastle();
+            firebaseDBManager.ReadData(playerPrefsManager.myName);
         }
         else
-        {
             objectManager.createUserFrame.SetActive(true);
-        }
     }
 
-    public void CreateUserData()
+    public void ConfirmName() // 닉네임 확인 버튼
     {
         firebaseDBManager.CheckUserName(objectManager.userNameInputText.text);
-
-        if(DataManager.instance.myUserInfo != null)
-        {
-
-        }
     }
 
-    public void MainToInCastle()
+    public void MainToInCastle() // InCastle씬으로(Main)
     {
         SceneManager.LoadScene("InCastle");
+    }
+
+    public void CreateUserData() // 닉네임이 중복이 아니라면 유저 데이터 생성 과정 실행
+    {
+        firebaseDBManager.WriteCreateData(dataManager.UserDataInit(objectManager.userNameInputText.text));
+        gameManager.isCompletedCheck = false;
+        playerPrefsManager.SetPlayerPrefsName(objectManager.userNameInputText.text);
+        playerPrefsManager.SetPlayerPrefsPlayed(1);
+        MainToInCastle();
     }
     #endregion
 
@@ -138,7 +159,7 @@ public class ButtonManager : Singleton<ButtonManager>
             objectManager.mineFrame.SetActive(true);
     }
 
-    public void treeWorkFrameOn()
+    public void treeWorkFrameOn() // 나무 워크 프레임
     {
         objectManager.treeWorkFrame.SetActive(true);
     }
@@ -188,8 +209,8 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void MainButtonsEvent()
     {
-        objectManager.mainToInCastleButton.onClick.AddListener(MainToStart);
-        objectManager.createUserButton.onClick.AddListener(CreateUserData);
+        objectManager.mainToInCastleButton.onClick.AddListener(MainStart);
+        objectManager.createUserButton.onClick.AddListener(ConfirmName);
     }
 
     public void InCastleButtonsEvent()
