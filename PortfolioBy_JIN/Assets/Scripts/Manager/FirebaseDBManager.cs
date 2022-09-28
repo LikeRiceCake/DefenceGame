@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Firebase;
@@ -75,20 +76,23 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
         print(jsonData);
     }
 
-    public void WriteUpdateData() // 데이터 덮어쓰기(업데이트) 서버에 저장
+    public void WriteUpdateData() // 데이터 덮어쓰기(업데이트) 서버에 저장(만들어야함)
     {
         string jsonData = JsonUtility.ToJson(dataManager.myUserInfo);
+
+        if (dataManager.myUserInfo == null)
+            return;
 
         DBRef.Child("users").Child(dataManager.myUserInfo.m_sUserName).SetRawJsonValueAsync(jsonData);
         print("완료");
         print(jsonData);
     }
 
-    public void ReadData(string _path)
+    public void ReadData(string _path) // 서버에서 데이터 읽어오기
     {
         DatabaseReference readData = FirebaseDatabase.DefaultInstance.GetReference("users");
 
-        print("데이터 읽기 시작");
+        dataManager.UserDataInit();
 
         readData.GetValueAsync().ContinueWith(
             task =>
@@ -97,13 +101,49 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
                 {
                     DataSnapshot testSnapShot = task.Result;
 
-                    print("데이터 읽기 시작 2");
-                    foreach (var data in testSnapShot.Child(_path).Children)
+                    IDictionary info = (IDictionary)testSnapShot.Child(_path).Value;
+
+                    dataManager.myUserInfo.m_nWave = Convert.ToInt32(info["m_nWave"]);
+                    dataManager.myUserInfo.m_nCastleUpgrade = Convert.ToInt32(info["m_nCastleUpgrade"]);
+                    dataManager.myUserInfo.m_nBallistaUpgrade = Convert.ToInt32(info["myUserInfom_nBallistaUpgrade"]);
+                    dataManager.myUserInfo.m_sUserName = Convert.ToString(info["m_sUserName"]);
+                    dataManager.myUserInfo.m_sQuitTime = Convert.ToString(info["m_sQuitTime"]);
+
+                    int index = 0;
+
+                    foreach (var value in testSnapShot.Child(_path).Child("m_nSoldierUpgrade").Children)
                     {
-                        print(data);
+                        dataManager.myUserInfo.m_nSoldierUpgrade[index++] = Convert.ToInt32(value.Value);
                     }
- 
-                    print(dataManager.myUserInfo);
+
+                    index = 0;
+
+                    foreach (var value in testSnapShot.Child(_path).Child("m_nSoldierLock").Children)
+                    {
+                        dataManager.myUserInfo.m_nSoldierLock[index++] = Convert.ToInt32(value.Value);
+                    }
+
+                    index = 0;
+
+                    foreach (var value in testSnapShot.Child(_path).Child("m_nResource").Children)
+                    {
+                        dataManager.myUserInfo.m_nResource[index++] = Convert.ToInt32(value.Value);
+                    }
+
+                    index = 0;
+
+                    foreach (var value in testSnapShot.Child(_path).Child("m_nHired").Children)
+                    {
+                        dataManager.myUserInfo.m_nHired[index++] = Convert.ToInt32(value.Value);
+                    }
+
+                    index = 0;
+
+                    foreach (var value in testSnapShot.Child(_path).Child("m_fLeftTime").Children)
+                    {
+                        dataManager.myUserInfo.m_fLeftTime[index++] = Convert.ToSingle(value.Value);
+                    }
+
                     gameManager.isCompletedRead = true;
                 }
             });
@@ -122,12 +162,17 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
 
                     IDictionary info = (IDictionary)testSnapShot.Value;
 
-                    if (info.Contains(_name))
+                    if (info.Contains(_name) && info != null)
                         gameManager.isCompletedCheck = false;
                     else
                         gameManager.isCompletedCheck = true;
                 }
             });
+    }
+
+    private void OnApplicationQuit()
+    {
+        //WriteUpdateData();
     }
     //-------------------------------------------- private
 

@@ -67,7 +67,7 @@ public class ButtonManager : Singleton<ButtonManager>
         if(gameManager.isCompletedCheck) // 닉네임의 중복 체크가 완료되었고 문제가 없다면
             CreateUserData();
 
-        if (gameManager.isCompletedRead)
+        if (gameManager.isCompletedRead) // 데이터 불러오기가 완료됐다면
         {
             MainToInCastle();
             gameManager.isCompletedRead = false;
@@ -96,7 +96,6 @@ public class ButtonManager : Singleton<ButtonManager>
     #region ///MainScene///
     public void MainStart() // 게임 스타트(Main)(이미 플레이한 적이 있다면 바로 시작)(아니라면 유저 만들기 창 온)
     {
-        print(gameManager.isAlreadyPlayed);
         if (gameManager.isAlreadyPlayed)
         {
             firebaseDBManager.ReadData(playerPrefsManager.myName);

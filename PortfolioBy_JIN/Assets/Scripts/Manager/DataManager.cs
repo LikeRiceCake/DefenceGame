@@ -80,19 +80,36 @@ public class DataManager : Singleton<DataManager>
         public int m_nWave;
         public int m_nCastleUpgrade;
         public int m_nBallistaUpgrade;
+        public string m_sUserName;
+        public string m_sQuitTime;
         public int[] m_nSoldierUpgrade;
         public int[] m_nSoldierLock;
         public int[] m_nResource;
         public int[] m_nHired;
         public float[] m_fLeftTime;
-        public string m_sUserName;
-        public string m_sQuitTime;
 
+        public User()
+        {
+            Init();
+        }
         public User(string _name)
         {
             Init(_name);
         }
 
+        void Init()
+        {
+            m_nWave = 1;
+            m_nCastleUpgrade = 0;
+            m_nBallistaUpgrade = 0;
+            m_nSoldierUpgrade = new int[(int)_ESoldierUpgrade_.esuMax];
+            m_nSoldierLock = new int[(int)_ESoldierLock_.eslMax];
+            m_nResource = new int[(int)_EResource_.ertMax];
+            m_nHired = new int[(int)_EHired_.ehMax];
+            m_fLeftTime = new float[(int)_ELeftTime_.eltMax];
+            m_sUserName = null;
+            m_sQuitTime = null;
+        }
         void Init(string _name)
         {
             m_nWave = 1;
@@ -142,7 +159,12 @@ public class DataManager : Singleton<DataManager>
         _myUserInfo = null;
     }
 
-    public User UserDataInit(string _name) // User의 이름을 가지고 초기 데이타 생성
+    public User UserDataInit() // 서버에서 받아올 데이터의 껍데기를 생성
+    {
+        return _myUserInfo = new User();
+    }
+
+    public User UserDataInit(string _name) // User의 이름을 가지고 초기 데이터 생성
     {
         return _myUserInfo = new User(_name);
     }

@@ -53,9 +53,11 @@ public class GameManager : Singleton<GameManager>
     //-------------------------------------------- public
 
     //-------------------------------------------- private
-    ObjectManager _objectManager;
+    ObjectManager objectManager;
 
-    ButtonManager _buttonManager;
+    ButtonManager buttonManager;
+
+    SoundManager soundManager;
     #endregion
 
     #region //property//
@@ -88,11 +90,13 @@ public class GameManager : Singleton<GameManager>
         SetGameState(_EGameState_.egInGame);
         SetSceneState(_ESceneState_.esMain);
 
-        _objectManager = ObjectManager.instance;
-        _buttonManager = ButtonManager.instance;
+        objectManager = ObjectManager.instance;
+        buttonManager = ButtonManager.instance;
+        soundManager = SoundManager.instance;
 
-        sceneLoadedManager += _objectManager.SceneLoadedObjects;
-        sceneLoadedManager += _buttonManager.SceneLoadedButtons;
+        sceneLoadedManager += objectManager.SceneLoadedObjects;
+        sceneLoadedManager += buttonManager.SceneLoadedButtons;
+        sceneLoadedManager += soundManager.SceneLoadedSounds;
 
         _isCompletedCheck = false;
 

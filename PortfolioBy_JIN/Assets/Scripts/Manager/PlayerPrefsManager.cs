@@ -60,18 +60,15 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
     public void SetPlayerPrefsPlayed(int value) // 최초 실행인지 아닌지 저장
     {
         PlayerPrefs.SetInt(isAlreadyPlayedKey, value);
-        print("플레이어 프랩스 Played 저장 완료");
     }
 
     public void SetPlayerPrefsName(string _name) // 로컬네임 저장
     {
         PlayerPrefs.SetString(myNameKey, _name);
-        print("플레이어 프랩스 이름 저장 완료");
     }
 
     public void CheckFirstPlay() // 최초 플레이인지 확인
     {
-        print(PlayerPrefs.GetInt(isAlreadyPlayedKey));
         if (PlayerPrefs.GetInt(isAlreadyPlayedKey) == 0)
             gameManager.isAlreadyPlayed = false;
         else
