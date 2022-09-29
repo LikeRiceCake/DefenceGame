@@ -50,6 +50,8 @@ public class ButtonManager : Singleton<ButtonManager>
     DataManager dataManager;
 
     PlayerPrefsManager playerPrefsManager;
+
+    TimeManager timeManager;
     #endregion
 
     #region //property//
@@ -84,6 +86,7 @@ public class ButtonManager : Singleton<ButtonManager>
         gameManager = GameManager.instance;
         objectManager = ObjectManager.instance;
         firebaseDBManager = FirebaseDBManager.instance;
+        timeManager = TimeManager.instance;
     }
 
     #region ///AllScene///
@@ -111,6 +114,8 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void MainToInCastle() // InCastle씬으로(Main)
     {
+        timeManager.IdleTimeCalculation();
+        timeManager.IdleTimeForLeftTime();
         SceneManager.LoadScene("InCastle");
     }
 
@@ -158,9 +163,18 @@ public class ButtonManager : Singleton<ButtonManager>
             objectManager.mineFrame.SetActive(true);
     }
 
-    public void treeWorkFrameOn() // 나무 워크 프레임
+    public void TreeWorkFrameOn() // 나무 워크 프레임
     {
         objectManager.treeWorkFrame.SetActive(true);
+    }
+
+    public void TreeHire() // 나무 인력 고용
+    {
+        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.TreeHirePrice && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood])
+        {
+            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood]++;
+            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.TreeHirePrice;
+        }
     }
     #endregion
 
@@ -225,8 +239,8 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager.mineFrameOnButton.onClick.AddListener(MineFrameOnOff);
         objectManager.forestFrameOffButton.onClick.AddListener(ForestFrameOnOff);
         objectManager.mineFrameOffButton.onClick.AddListener(MineFrameOnOff);
-        objectManager.treeWorkFrameOnButton.onClick.AddListener(treeWorkFrameOn);
-        //objectManager.treeHireButton.onClick.AddListener();
+        objectManager.treeWorkFrameOnButton.onClick.AddListener(TreeWorkFrameOn);
+        objectManager.treeHireButton.onClick.AddListener(TreeHire);
     }
 
     public void DefenceButtonsEvent()

@@ -60,6 +60,8 @@ public class ObjectManager : Singleton<ObjectManager>
     Button _mineFrameOffButton;
     Button _treeWorkFrameOnButton;
     Button _treeHireButton;
+
+    Text _treeLeftTimeText;
     #endregion
 
     GameManager gameManager;
@@ -87,12 +89,12 @@ public class ObjectManager : Singleton<ObjectManager>
     #endregion
 
     #region ///InCastleScene, OutCastleScene///
-    public Text moneyText { get { return _resourcesText[(int)DataManager._EResource_.ertMoney]; } }
-    public Text woodText { get { return _resourcesText[(int)DataManager._EResource_.ertWood]; } }
-    public Text stoneText { get { return _resourcesText[(int)DataManager._EResource_.ertStone]; } }
-    public Text ironText { get { return _resourcesText[(int)DataManager._EResource_.ertIron]; } }
-    public Text goldText { get { return _resourcesText[(int)DataManager._EResource_.ertGold]; } }
-    public Text diamondText { get { return _resourcesText[(int)DataManager._EResource_.ertDiamond]; } }
+    public Text moneyText { get { return _resourcesText[(int)DataManager._EResource_.erMoney]; } }
+    public Text woodText { get { return _resourcesText[(int)DataManager._EResource_.erWood]; } }
+    public Text stoneText { get { return _resourcesText[(int)DataManager._EResource_.erStone]; } }
+    public Text ironText { get { return _resourcesText[(int)DataManager._EResource_.erIron]; } }
+    public Text goldText { get { return _resourcesText[(int)DataManager._EResource_.erGold]; } }
+    public Text diamondText { get { return _resourcesText[(int)DataManager._EResource_.erDiamond]; } }
     #endregion
 
     #region ///OutCastleScene///
@@ -107,6 +109,8 @@ public class ObjectManager : Singleton<ObjectManager>
     public Button mineFrameOffButton { get { return _mineFrameOffButton; } }
     public Button treeWorkFrameOnButton { get { return _treeWorkFrameOnButton; } }
     public Button treeHireButton { get { return _treeHireButton; } }
+
+    public Text treeLeftTimeText { get { return _treeLeftTimeText; } }
     #endregion
     #endregion
 
@@ -122,7 +126,7 @@ public class ObjectManager : Singleton<ObjectManager>
     public void DataInit()
     {
         gameManager = GameManager.instance;
-        _resourcesText = new Text[(int)DataManager._EResource_.ertMax];
+        _resourcesText = new Text[(int)DataManager._EResource_.erMax];
     }
 
     public void SceneLoadedObjects() // 각각의 씬이 로드될 때마다 필요한 오브젝트들을 참조한다
@@ -175,12 +179,12 @@ public class ObjectManager : Singleton<ObjectManager>
         _inCastleToOutCastleButton = GameObject.Find("InCastleToOutCastle_Button").GetComponent<Button>();
         _inCastleToDefenceButton = GameObject.Find("InCastleToDefence_Button").GetComponent<Button>();
 
-        _resourcesText[(int)DataManager._EResource_.ertMoney] = GameObject.Find("Money_Text").GetComponent<Text>();
-        _resourcesText[(int)DataManager._EResource_.ertWood] = GameObject.Find("Wood_Text").GetComponent<Text>();
-        _resourcesText[(int)DataManager._EResource_.ertStone] = GameObject.Find("Stone_Text").GetComponent<Text>();
-        _resourcesText[(int)DataManager._EResource_.ertIron] = GameObject.Find("Iron_Text").GetComponent<Text>();
-        _resourcesText[(int)DataManager._EResource_.ertGold] = GameObject.Find("Gold_Text").GetComponent<Text>();
-        _resourcesText[(int)DataManager._EResource_.ertDiamond] = GameObject.Find("Diamond_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.erMoney] = GameObject.Find("Money_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.erWood] = GameObject.Find("Wood_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.erStone] = GameObject.Find("Stone_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.erIron] = GameObject.Find("Iron_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.erGold] = GameObject.Find("Gold_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.erDiamond] = GameObject.Find("Diamond_Text").GetComponent<Text>();
     }
 
     public void OutCastleObjectsRef()
@@ -197,12 +201,14 @@ public class ObjectManager : Singleton<ObjectManager>
         _treeWorkFrameOnButton = forestFrame.transform.Find("TreeFrame").transform.Find("TreeWorkFrameOn_Button").gameObject.GetComponent<Button>();
         _treeHireButton = _treeWorkFrame.transform.Find("TreeHire_Button").gameObject.GetComponent<Button>();
 
-        _resourcesText[(int)DataManager._EResource_.ertMoney] = GameObject.Find("Money_Text").GetComponent<Text>();
-        _resourcesText[(int)DataManager._EResource_.ertWood] = GameObject.Find("Wood_Text").GetComponent<Text>();
-        _resourcesText[(int)DataManager._EResource_.ertStone] = GameObject.Find("Stone_Text").GetComponent<Text>();
-        _resourcesText[(int)DataManager._EResource_.ertIron] = GameObject.Find("Iron_Text").GetComponent<Text>();
-        _resourcesText[(int)DataManager._EResource_.ertGold] = GameObject.Find("Gold_Text").GetComponent<Text>();
-        _resourcesText[(int)DataManager._EResource_.ertDiamond] = GameObject.Find("Diamond_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.erMoney] = GameObject.Find("Money_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.erWood] = GameObject.Find("Wood_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.erStone] = GameObject.Find("Stone_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.erIron] = GameObject.Find("Iron_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.erGold] = GameObject.Find("Gold_Text").GetComponent<Text>();
+        _resourcesText[(int)DataManager._EResource_.erDiamond] = GameObject.Find("Diamond_Text").GetComponent<Text>();
+
+        _treeLeftTimeText = GameObject.Find("TreeLeftTime_Text").GetComponent<Text>();
     }
 
     public void DefenceObjectsRef()

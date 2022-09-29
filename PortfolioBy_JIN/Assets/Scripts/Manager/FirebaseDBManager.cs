@@ -107,7 +107,7 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
                     dataManager.myUserInfo.m_nCastleUpgrade = Convert.ToInt32(info["m_nCastleUpgrade"]);
                     dataManager.myUserInfo.m_nBallistaUpgrade = Convert.ToInt32(info["myUserInfom_nBallistaUpgrade"]);
                     dataManager.myUserInfo.m_sUserName = Convert.ToString(info["m_sUserName"]);
-                    dataManager.myUserInfo.m_sQuitTime = Convert.ToString(info["m_sQuitTime"]);
+                    dataManager.myUserInfo.m_sQuitTime = Convert.ToDateTime(info["m_sQuitTime"]);
 
                     int index = 0;
 
@@ -120,7 +120,7 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
 
                     foreach (var value in testSnapShot.Child(_path).Child("m_nSoldierLock").Children)
                     {
-                        dataManager.myUserInfo.m_nSoldierLock[index++] = Convert.ToInt32(value.Value);
+                        dataManager.myUserInfo.m_nSoldierLock[index++] = Convert.ToBoolean(value.Value);
                     }
 
                     index = 0;
@@ -141,7 +141,7 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
 
                     foreach (var value in testSnapShot.Child(_path).Child("m_fLeftTime").Children)
                     {
-                        dataManager.myUserInfo.m_fLeftTime[index++] = Convert.ToSingle(value.Value);
+                        dataManager.myUserInfo.m_fLeftTime[index++] = Convert.ToDouble(value.Value);
                     }
 
                     gameManager.isCompletedRead = true;

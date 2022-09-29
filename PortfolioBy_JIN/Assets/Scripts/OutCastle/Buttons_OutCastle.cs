@@ -185,16 +185,6 @@ public class Buttons_OutCastle : MonoBehaviour
         }
     }
 
-    public void Hire_Tree()
-    {
-        if (resources.resources[0] >= 5000 && Max_Hire > resources.Hire[0])
-        {
-            resources.Hire[0]++;
-            resources.resources[0] -= 5000;
-            resources.setHire();
-            resources.setResources();
-        }
-    }
     public void Hire_Stone()
     {
         if (resources.resources[0] >= 10000 && Max_Hire > resources.Hire[1])

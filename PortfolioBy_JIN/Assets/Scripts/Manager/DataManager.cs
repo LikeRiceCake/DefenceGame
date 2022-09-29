@@ -1,19 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class DataManager : Singleton<DataManager>
 {
     #region //enumeration//
     public enum _EResource_
     {
-        ertMoney,
-        ertWood,
-        ertStone,
-        ertIron,
-        ertGold,
-        ertDiamond,
-        ertMax
+        erMoney,
+        erWood,
+        erStone,
+        erIron,
+        erGold,
+        erDiamond,
+        erMax
     }
 
     public enum _EHired_
@@ -68,7 +69,10 @@ public class DataManager : Singleton<DataManager>
 
     #region //constant//
     //-------------------------------------------- public
+    public const int MaxHire = 5;
+    public static readonly float[] MaxLeftTime = { 3600f, 3600f, 10800f, 86400f, 604800f };
 
+    public const int TreeHirePrice = 5000;
     //-------------------------------------------- private
 
     #endregion
@@ -81,12 +85,12 @@ public class DataManager : Singleton<DataManager>
         public int m_nCastleUpgrade;
         public int m_nBallistaUpgrade;
         public string m_sUserName;
-        public string m_sQuitTime;
         public int[] m_nSoldierUpgrade;
-        public int[] m_nSoldierLock;
         public int[] m_nResource;
         public int[] m_nHired;
-        public float[] m_fLeftTime;
+        public bool[] m_nSoldierLock;
+        public double[] m_fLeftTime;
+        public DateTime m_sQuitTime;
 
         public User()
         {
@@ -102,26 +106,78 @@ public class DataManager : Singleton<DataManager>
             m_nWave = 1;
             m_nCastleUpgrade = 0;
             m_nBallistaUpgrade = 0;
+
             m_nSoldierUpgrade = new int[(int)_ESoldierUpgrade_.esuMax];
-            m_nSoldierLock = new int[(int)_ESoldierLock_.eslMax];
-            m_nResource = new int[(int)_EResource_.ertMax];
+            for (int i = 0; i < (int)_ESoldierUpgrade_.esuMax; i++)
+            {
+                m_nSoldierUpgrade[i] = 0;
+            }
+
+            m_nSoldierLock = new bool[(int)_ESoldierLock_.eslMax];
+            for (int i = 1; i < (int)_ESoldierLock_.eslMax; i++)
+            {
+                m_nSoldierLock[i] = false;
+            }
+
+            m_nResource = new int[(int)_EResource_.erMax];
+            for (int i = 0; i < (int)_EResource_.erMax; i++)
+            {
+                m_nResource[i] = 0;
+            }
+
             m_nHired = new int[(int)_EHired_.ehMax];
-            m_fLeftTime = new float[(int)_ELeftTime_.eltMax];
+            for (int i = 0; i < (int)_EHired_.ehMax; i++)
+            {
+                m_nHired[i] = 0;
+            }
+
+            m_fLeftTime = new double[(int)_ELeftTime_.eltMax];
+            for (int i = 0; i < (int)_ELeftTime_.eltMax; i++)
+            {
+                m_fLeftTime[i] = MaxLeftTime[i];
+            }
+
             m_sUserName = null;
-            m_sQuitTime = null;
+            m_sQuitTime = default;
         }
         void Init(string _name)
         {
             m_nWave = 1;
             m_nCastleUpgrade = 0;
             m_nBallistaUpgrade = 0;
+
             m_nSoldierUpgrade = new int[(int)_ESoldierUpgrade_.esuMax];
-            m_nSoldierLock = new int[(int)_ESoldierLock_.eslMax];
-            m_nResource = new int[(int)_EResource_.ertMax];
+            for(int i = 0; i < (int)_ESoldierUpgrade_.esuMax; i++)
+            {
+                m_nSoldierUpgrade[i] = 0;
+            }
+
+            m_nSoldierLock = new bool[(int)_ESoldierLock_.eslMax];
+            for(int i = 1; i < (int)_ESoldierLock_.eslMax; i++)
+            {
+                m_nSoldierLock[i] = false;
+            }
+
+            m_nResource = new int[(int)_EResource_.erMax];
+            for (int i = 0; i < (int)_EResource_.erMax; i++)
+            {
+                m_nResource[i] = 0;
+            }
+
             m_nHired = new int[(int)_EHired_.ehMax];
-            m_fLeftTime = new float[(int)_ELeftTime_.eltMax];
+            for (int i = 0; i < (int)_EHired_.ehMax; i++)
+            {
+                m_nHired[i] = 0;
+            }
+
+            m_fLeftTime = new double[(int)_ELeftTime_.eltMax];
+            for (int i = 0; i < (int)_ELeftTime_.eltMax; i++)
+            {
+                m_fLeftTime[i] = MaxLeftTime[i];
+            }
+
             m_sUserName = _name;
-            m_sQuitTime = null;
+            m_sQuitTime = default;
         }
     }
     //-------------------------------------------- private
