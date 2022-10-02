@@ -162,7 +162,7 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
 
                     IDictionary info = (IDictionary)testSnapShot.Value;
 
-                    if (info.Contains(_name) && info != null)
+                    if (info != null && info.Contains(_name))
                         gameManager.isCompletedCheck = false;
                     else
                         gameManager.isCompletedCheck = true;

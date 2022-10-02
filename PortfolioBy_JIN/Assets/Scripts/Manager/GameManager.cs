@@ -24,9 +24,9 @@ public class GameManager : Singleton<GameManager>
     #endregion
 
     #region delegate
-    delegate void MyDelegate();
+    delegate void myDelegate();
 
-    MyDelegate sceneLoadedManager;
+    myDelegate sceneLoadedManager;
     #endregion
 
     #region //variable//
@@ -58,6 +58,8 @@ public class GameManager : Singleton<GameManager>
     ButtonManager buttonManager;
 
     SoundManager soundManager;
+
+    UIManager uiManager;
     #endregion
 
     #region //property//
@@ -93,9 +95,11 @@ public class GameManager : Singleton<GameManager>
         objectManager = ObjectManager.instance;
         buttonManager = ButtonManager.instance;
         soundManager = SoundManager.instance;
+        uiManager = UIManager.instance;
 
         sceneLoadedManager += objectManager.SceneLoadedObjects;
         sceneLoadedManager += buttonManager.SceneLoadedButtons;
+        sceneLoadedManager += uiManager.SceneLoadedUIs;
         sceneLoadedManager += soundManager.SceneLoadedSounds;
 
         _isCompletedCheck = false;

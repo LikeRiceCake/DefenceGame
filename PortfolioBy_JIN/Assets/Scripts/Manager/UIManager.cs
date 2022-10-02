@@ -107,46 +107,39 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
-    public void SceneLoadedUI() // 씬이 로드될 때마다 UI에 관련된 오브젝트들 참조
+    public void SceneLoadedUIs() // 씬이 로드될 때마다 UI에 관련된 오브젝트들 참조
     {
         switch (gameManager.currentSceneState)
         {
             case GameManager._ESceneState_.esInCastle:
                 InCastleUIsRef();
-                if (gameManager.isAlreadyInCastle)
-                    return;
-                gameManager.isAlreadyInCastle = true;
+                SetResourceUI();
                 break;
             case GameManager._ESceneState_.esOutCastle:
                 OutCastleUIsRef();
-                if (gameManager.isAlreadyOutCastle)
-                    return;
-                gameManager.isAlreadyOutCastle = true;
+                SetResourceUI();
                 break;
             case GameManager._ESceneState_.esDefence:
                 DefenceUIsRef();
-                if (gameManager.isAlreadyDefence)
-                    return;
-                gameManager.isAlreadyDefence = true;
                 break;
             default:
                 break;
         }
-        SetResourceUI(); // 씬이 로드될 때마다 ResourceUI 세팅
+        // 씬이 로드될 때마다 ResourceUI 세팅
     }
 
     // ~~~UIsRef : ~~~씬 UI오브젝트 참조
 
     public void InCastleUIsRef()
     {
-        
+
     }
 
     public void OutCastleUIsRef()
     {
-        
 
-        
+
+
     }
 
     public void DefenceUIsRef()
@@ -156,12 +149,10 @@ public class UIManager : Singleton<UIManager>
 
     public void SetResourceUI() // 리소스UI 세팅
     {
-        objectManager.moneyText.text = dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney].ToString();
-        objectManager.woodText.text = dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erWood].ToString();
-        objectManager.stoneText.text = dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erStone].ToString();
-        objectManager.ironText.text = dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erIron].ToString();
-        objectManager.goldText.text = dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erGold].ToString();
-        objectManager.diamondText.text = dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erDiamond].ToString();
+        for (int i = 0; i < (int)DataManager._EResource_.erMax; i++)
+        {
+            objectManager.resourceText[i].text = dataManager.myUserInfo.m_nResource[i].ToString();
+        }
     }
     //-------------------------------------------- private
 

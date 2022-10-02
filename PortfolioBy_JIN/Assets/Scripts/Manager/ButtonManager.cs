@@ -7,6 +7,10 @@ using UnityEngine.UI;
 
 public class ButtonManager : Singleton<ButtonManager>
 {
+    #region //delegate//
+
+    #endregion
+
     #region //variable//
     //-------------------------------------------- public
 
@@ -66,13 +70,17 @@ public class ButtonManager : Singleton<ButtonManager>
 
     void Update()
     {
-        if(gameManager.isCompletedCheck) // 닉네임의 중복 체크가 완료되었고 문제가 없다면
+        if (gameManager.isCompletedCheck) // 닉네임의 중복 체크가 완료되었고 문제가 없다면
+        {
             CreateUserData();
+        }
 
         if (gameManager.isCompletedRead) // 데이터 불러오기가 완료됐다면
         {
-            MainToInCastle();
             gameManager.isCompletedRead = false;
+            timeManager.IdleTimeCalculation();
+            timeManager.IdleTimeForLeftTime();
+            MainToInCastle();
         }
     }
     #endregion
@@ -100,9 +108,7 @@ public class ButtonManager : Singleton<ButtonManager>
     public void MainStart() // 게임 스타트(Main)(이미 플레이한 적이 있다면 바로 시작)(아니라면 유저 만들기 창 온)
     {
         if (gameManager.isAlreadyPlayed)
-        {
             firebaseDBManager.ReadData(playerPrefsManager.myName);
-        }
         else
             objectManager.createUserFrame.SetActive(true);
     }
@@ -114,8 +120,6 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void MainToInCastle() // InCastle씬으로(Main)
     {
-        timeManager.IdleTimeCalculation();
-        timeManager.IdleTimeForLeftTime();
         SceneManager.LoadScene("InCastle");
     }
 
@@ -150,9 +154,14 @@ public class ButtonManager : Singleton<ButtonManager>
     public void ForestFrameOnOff() // 숲 자원 수급 화면 On, Off
     {
         if (objectManager.forestFrame.activeSelf)
+        {
             objectManager.forestFrame.SetActive(false);
+            TreeWorkFrameOff();
+        }
         else
+        {
             objectManager.forestFrame.SetActive(true);
+        }
     }
 
     public void MineFrameOnOff() // 광산 자원 수급 화면 On, Off
@@ -163,9 +172,14 @@ public class ButtonManager : Singleton<ButtonManager>
             objectManager.mineFrame.SetActive(true);
     }
 
-    public void TreeWorkFrameOn() // 나무 워크 프레임
+    public void TreeWorkFrameOn() // 나무 워크 프레임 On
     {
         objectManager.treeWorkFrame.SetActive(true);
+    }
+
+    public void TreeWorkFrameOff() // 나무 워크 프레임 Off
+    {
+        objectManager.treeWorkFrame.SetActive(false);
     }
 
     public void TreeHire() // 나무 인력 고용
@@ -176,6 +190,131 @@ public class ButtonManager : Singleton<ButtonManager>
             dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.TreeHirePrice;
         }
     }
+
+    public void StoneButtonOn() // 돌 버튼 On
+    {
+        objectManager.mineralOnButton[(int)DataManager._EMineral_.emStone].gameObject.SetActive(true);
+    }
+
+    public void StoneButtonOff() // 돌 버튼 Off
+    {
+        objectManager.mineralOnButton[(int)DataManager._EMineral_.emStone].gameObject.SetActive(false);
+    }
+
+    public void IronButtonOn() // 철 버튼 On
+    {
+        objectManager.mineralOnButton[(int)DataManager._EMineral_.emIron].gameObject.SetActive(true);
+    }
+
+    public void IronButtonOff() // 철 버튼 Off
+    {
+        objectManager.mineralOnButton[(int)DataManager._EMineral_.emIron].gameObject.SetActive(false);
+    }
+
+    public void GoldButtonOn() // 금 버튼 On
+    {
+        objectManager.mineralOnButton[(int)DataManager._EMineral_.emGold].gameObject.SetActive(true);
+    }
+
+    public void GoldButtonOff() // 금 버튼 Off
+    {
+        objectManager.mineralOnButton[(int)DataManager._EMineral_.emGold].gameObject.SetActive(false);
+    }
+
+    public void DiamondButtonOn() // 다이아 버튼 On
+    {
+        objectManager.mineralOnButton[(int)DataManager._EMineral_.emDiamond].gameObject.SetActive(true);
+    }
+
+    public void DiamondButtonOff() // 다이아 버튼 Off
+    {
+        objectManager.mineralOnButton[(int)DataManager._EMineral_.emDiamond].gameObject.SetActive(false);
+    }
+
+    public void StoneWorkFrameOn() // 돌 워크 프레임 On
+    {
+        objectManager.mineralWorkFrame[(int)DataManager._EMineral_.emStone].SetActive(true);
+    }
+
+    public void StoneWorkFrameOff() // 돌 워크 프레임 Off
+    {
+        objectManager.mineralWorkFrame[(int)DataManager._EMineral_.emStone].SetActive(false);
+    }
+
+    public void IronWorkFrameOn() // 철 워크 프레임 On
+    {
+        objectManager.mineralWorkFrame[(int)DataManager._EMineral_.emIron].SetActive(true);
+    }
+
+    public void IronWorkFrameOff() // 철 워크 프레임 Off
+    {
+        objectManager.mineralWorkFrame[(int)DataManager._EMineral_.emIron].SetActive(false);
+    }
+
+    public void GoldWorkFrameOn() // 금 워크 프레임 On
+    {
+        objectManager.mineralWorkFrame[(int)DataManager._EMineral_.emGold].SetActive(true);
+    }
+
+    public void GoldWorkFrameOff() // 금 워크 프레임 Off
+    {
+        objectManager.mineralWorkFrame[(int)DataManager._EMineral_.emGold].SetActive(false);
+    }
+
+    public void DiamondWorkFrameOn() // 다이아 워크 프레임 On
+    {
+        objectManager.mineralWorkFrame[(int)DataManager._EMineral_.emDiamond].SetActive(true);
+    }
+
+    public void DiamondWorkFrameOff() // 다이아 워크 프레임 Off
+    {
+        objectManager.mineralWorkFrame[(int)DataManager._EMineral_.emDiamond].SetActive(false);
+    }
+
+    public void SwitchToNextMineral() // 다음 광물로 변경
+    {
+        switch (dataManager.currentMineralState)
+        {
+            case DataManager._EMineral_.emStone:
+                SetMineralState(DataManager._EMineral_.emIron);
+                break;
+            case DataManager._EMineral_.emIron:
+                SetMineralState(DataManager._EMineral_.emGold);
+                break;
+            case DataManager._EMineral_.emGold:
+                SetMineralState(DataManager._EMineral_.emDiamond);
+                break;
+            case DataManager._EMineral_.emDiamond:
+                SetMineralState(DataManager._EMineral_.emStone);
+                break;
+            default:
+                SetMineralState(DataManager._EMineral_.emStone);
+                break;
+        }
+
+        MineralObjectSelectedOnOff();
+    }
+
+    public void MineralObjectSelectedOnOff() // 현재 광물에 맞는 프레임 및 버튼 On, Off
+    {
+        for(int i = 0; i < (int)DataManager._EMineral_.emMax; i++)
+        {
+            if((int)dataManager.currentMineralState == i)
+            {
+                objectManager.mineralOnButton[i].gameObject.SetActive(true);
+                objectManager.mineralWorkFrame[i].SetActive(true);
+                continue;
+            }
+            objectManager.mineralOnButton[i].gameObject.SetActive(false);
+            objectManager.mineralWorkFrame[i].SetActive(false);
+        }
+    }
+
+    public void SetMineralState(DataManager._EMineral_ newMineralState)
+    {
+        dataManager.currentMineralState = newMineralState;
+    }
+
     #endregion
 
     public void SceneLoadedButtons() // 씬이 로드될 때마다 버튼들 이벤트 할당
@@ -185,28 +324,16 @@ public class ButtonManager : Singleton<ButtonManager>
         switch (gameManager.currentSceneState)
         {
             case GameManager._ESceneState_.esMain:
-                if (gameManager.isAlreadyInMain)
-                    return;
                 MainButtonsEvent();
-                gameManager.isAlreadyInMain = true;
                 break;
             case GameManager._ESceneState_.esInCastle:
-                if (gameManager.isAlreadyInCastle)
-                    return;
                 InCastleButtonsEvent();
-                gameManager.isAlreadyInCastle = true;
                 break;
             case GameManager._ESceneState_.esOutCastle:
-                if (gameManager.isAlreadyOutCastle)
-                    return;
                 OutCastleButtonsEvent();
-                gameManager.isAlreadyOutCastle = true;
                 break;
             case GameManager._ESceneState_.esDefence:
-                if (gameManager.isAlreadyDefence)
-                    return;
                 DefenceButtonsEvent();
-                gameManager.isAlreadyDefence = true;
                 break;
             default:
                 break;
@@ -241,6 +368,11 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager.mineFrameOffButton.onClick.AddListener(MineFrameOnOff);
         objectManager.treeWorkFrameOnButton.onClick.AddListener(TreeWorkFrameOn);
         objectManager.treeHireButton.onClick.AddListener(TreeHire);
+        objectManager.mineralOnButton[(int)DataManager._EMineral_.emStone].onClick.AddListener(StoneWorkFrameOn);
+        objectManager.mineralOnButton[(int)DataManager._EMineral_.emIron].onClick.AddListener(IronWorkFrameOn);
+        objectManager.mineralOnButton[(int)DataManager._EMineral_.emGold].onClick.AddListener(GoldWorkFrameOn);
+        objectManager.mineralOnButton[(int)DataManager._EMineral_.emDiamond].onClick.AddListener(DiamondWorkFrameOn);
+        objectManager.nextMineralButton.onClick.AddListener(SwitchToNextMineral);
     }
 
     public void DefenceButtonsEvent()

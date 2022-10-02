@@ -17,6 +17,15 @@ public class DataManager : Singleton<DataManager>
         erMax
     }
 
+    public enum _EMineral_
+    {
+        emStone,
+        emIron,
+        emGold,
+        emDiamond,
+        emMax
+    } _EMineral_ _currentMineralState;
+
     public enum _EHired_
     {
         ehWood,
@@ -187,6 +196,8 @@ public class DataManager : Singleton<DataManager>
     #endregion
 
     #region //property//
+    public _EMineral_ currentMineralState { get { return _currentMineralState; } set { _currentMineralState = value; } }
+
     public User myUserInfo { get { return _myUserInfo; } set { _myUserInfo = value; } }
     #endregion
 
@@ -212,6 +223,7 @@ public class DataManager : Singleton<DataManager>
     public void DataInit()
     {
         firebaseDBManager = FirebaseDBManager.instance;
+        _currentMineralState = _EMineral_.emStone;
         _myUserInfo = null;
     }
 

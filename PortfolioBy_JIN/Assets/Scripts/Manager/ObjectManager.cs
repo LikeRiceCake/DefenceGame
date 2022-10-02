@@ -52,6 +52,7 @@ public class ObjectManager : Singleton<ObjectManager>
     GameObject _forestFrame;
     GameObject _mineFrame;
     GameObject _treeWorkFrame;
+    GameObject[] _mineralWorkFrame;
 
     Button _outCastleToInCastleButton;
     Button _forestFrameOnButton;
@@ -60,8 +61,11 @@ public class ObjectManager : Singleton<ObjectManager>
     Button _mineFrameOffButton;
     Button _treeWorkFrameOnButton;
     Button _treeHireButton;
+    Button[] _mineralOnButton;
+    Button _nextMineralButton;
 
     Text _treeLeftTimeText;
+    Text[] _mineralLeftTimeText;
     #endregion
 
     GameManager gameManager;
@@ -89,18 +93,14 @@ public class ObjectManager : Singleton<ObjectManager>
     #endregion
 
     #region ///InCastleScene, OutCastleScene///
-    public Text moneyText { get { return _resourcesText[(int)DataManager._EResource_.erMoney]; } }
-    public Text woodText { get { return _resourcesText[(int)DataManager._EResource_.erWood]; } }
-    public Text stoneText { get { return _resourcesText[(int)DataManager._EResource_.erStone]; } }
-    public Text ironText { get { return _resourcesText[(int)DataManager._EResource_.erIron]; } }
-    public Text goldText { get { return _resourcesText[(int)DataManager._EResource_.erGold]; } }
-    public Text diamondText { get { return _resourcesText[(int)DataManager._EResource_.erDiamond]; } }
+    public Text[] resourceText { get { return _resourcesText; } }
     #endregion
 
     #region ///OutCastleScene///
     public GameObject forestFrame { get { return _forestFrame; } }
     public GameObject mineFrame { get { return _mineFrame; } }
     public GameObject treeWorkFrame { get { return _treeWorkFrame; } }
+    public GameObject[] mineralWorkFrame { get { return _mineralWorkFrame; } }
 
     public Button outCastleToInCastleButton { get { return _outCastleToInCastleButton; } }
     public Button forestFrameOnButton { get { return _forestFrameOnButton; } }
@@ -109,8 +109,11 @@ public class ObjectManager : Singleton<ObjectManager>
     public Button mineFrameOffButton { get { return _mineFrameOffButton; } }
     public Button treeWorkFrameOnButton { get { return _treeWorkFrameOnButton; } }
     public Button treeHireButton { get { return _treeHireButton; } }
+    public Button[] mineralOnButton { get { return _mineralOnButton; } }
+    public Button nextMineralButton { get { return _nextMineralButton; } }
 
     public Text treeLeftTimeText { get { return _treeLeftTimeText; } }
+    public Text[] mineralLeftTimeText { get { return _mineralLeftTimeText; } }
     #endregion
     #endregion
 
@@ -126,6 +129,11 @@ public class ObjectManager : Singleton<ObjectManager>
     public void DataInit()
     {
         gameManager = GameManager.instance;
+
+        _mineralWorkFrame = new GameObject[(int)DataManager._EMineral_.emMax];
+
+        _mineralOnButton = new Button[(int)DataManager._EMineral_.emMax];
+
         _resourcesText = new Text[(int)DataManager._EResource_.erMax];
     }
 
@@ -168,7 +176,6 @@ public class ObjectManager : Singleton<ObjectManager>
         _createUserFrame = GameObject.Find("Canvas").transform.Find("CreateUserFrame").gameObject;
 
         _mainToInCastleButton = GameObject.Find("Start_Button").GetComponent<Button>();
-
         _createUserButton = _createUserFrame.transform.Find("Create_Button").GetComponent<Button>();
 
         _userNameInputText = _createUserFrame.transform.Find("UserName_Input").gameObject.GetComponent<InputField>();
@@ -192,6 +199,10 @@ public class ObjectManager : Singleton<ObjectManager>
         _forestFrame = GameObject.Find("ForestResource").transform.Find("ForestFrame").gameObject;
         _mineFrame = GameObject.Find("MineResource").transform.Find("MineFrame").gameObject;
         _treeWorkFrame = forestFrame.transform.Find("TreeWorkFrame").gameObject;
+        _mineralWorkFrame[(int)DataManager._EMineral_.emStone] = _mineFrame.transform.Find("MineralWorkFrame").transform.Find("StoneWorkFrame").gameObject;
+        _mineralWorkFrame[(int)DataManager._EMineral_.emIron] = _mineFrame.transform.Find("MineralWorkFrame").transform.Find("IronWorkFrame").gameObject;
+        _mineralWorkFrame[(int)DataManager._EMineral_.emGold] = _mineFrame.transform.Find("MineralWorkFrame").transform.Find("GoldWorkFrame").gameObject;
+        _mineralWorkFrame[(int)DataManager._EMineral_.emDiamond] = _mineFrame.transform.Find("MineralWorkFrame").transform.Find("DiamondWorkFrame").gameObject;
 
         _outCastleToInCastleButton = GameObject.Find("OutCastleToInCastle_Button").GetComponent<Button>();
         _forestFrameOnButton = GameObject.Find("ForestFrameOn_Button").GetComponent<Button>();
@@ -200,6 +211,11 @@ public class ObjectManager : Singleton<ObjectManager>
         _mineFrameOffButton = _mineFrame.transform.Find("MineFrameOff_Button").gameObject.GetComponent<Button>();
         _treeWorkFrameOnButton = forestFrame.transform.Find("TreeFrame").transform.Find("TreeWorkFrameOn_Button").gameObject.GetComponent<Button>();
         _treeHireButton = _treeWorkFrame.transform.Find("TreeHire_Button").gameObject.GetComponent<Button>();
+        _mineralOnButton[(int)DataManager._EMineral_.emStone] = _mineFrame.transform.Find("MineralFrame").transform.Find("StoneWorkFrameOn_Button").GetComponent<Button>();
+        _mineralOnButton[(int)DataManager._EMineral_.emIron] = _mineFrame.transform.Find("MineralFrame").transform.Find("IronWorkFrameOn_Button").GetComponent<Button>();
+        _mineralOnButton[(int)DataManager._EMineral_.emGold] = _mineFrame.transform.Find("MineralFrame").transform.Find("GoldWorkFrameOn_Button").GetComponent<Button>();
+        _mineralOnButton[(int)DataManager._EMineral_.emDiamond] = _mineFrame.transform.Find("MineralFrame").transform.Find("DiamondWorkFrameOn_Button").GetComponent<Button>();
+        _nextMineralButton = mineFrame.transform.Find("NextMineral_Button").GetComponent<Button>();
 
         _resourcesText[(int)DataManager._EResource_.erMoney] = GameObject.Find("Money_Text").GetComponent<Text>();
         _resourcesText[(int)DataManager._EResource_.erWood] = GameObject.Find("Wood_Text").GetComponent<Text>();
@@ -207,8 +223,8 @@ public class ObjectManager : Singleton<ObjectManager>
         _resourcesText[(int)DataManager._EResource_.erIron] = GameObject.Find("Iron_Text").GetComponent<Text>();
         _resourcesText[(int)DataManager._EResource_.erGold] = GameObject.Find("Gold_Text").GetComponent<Text>();
         _resourcesText[(int)DataManager._EResource_.erDiamond] = GameObject.Find("Diamond_Text").GetComponent<Text>();
-
-        _treeLeftTimeText = GameObject.Find("TreeLeftTime_Text").GetComponent<Text>();
+        _treeLeftTimeText = _forestFrame.transform.Find("TreeLeftTime_Text").GetComponent<Text>();
+        _mineralLeftTimeText[(int)DataManager._EMineral_.emStone] = _mineFrame.transform.Find("MineralLeftText").transform.Find("Stone_Text").GetComponent<Text>();
     }
 
     public void DefenceObjectsRef()

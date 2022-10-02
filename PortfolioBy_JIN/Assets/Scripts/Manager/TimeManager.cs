@@ -25,8 +25,6 @@ public class TimeManager : Singleton<TimeManager>
     //-------------------------------------------- private
     TimeSpan idleTime;
 
-    TimeSpan testTime;
-
     DataManager dataManager;
     #endregion
 
@@ -74,17 +72,20 @@ public class TimeManager : Singleton<TimeManager>
 
     public void IdleTimeForLeftTime()
     {
-        for(int i = 0; i < (int)DataManager._ELeftTime_.eltMax; i++)
+        for (int i = 0; i < (int)DataManager._ELeftTime_.eltMax; i++)
         {
-            dataManager.myUserInfo.m_nResource[i + 1] += (int)(idleTime.TotalSeconds / DataManager.MaxLeftTime[i]);
-            dataManager.myUserInfo.m_fLeftTime[i] -= idleTime.TotalSeconds % DataManager.MaxLeftTime[i];
+            if (dataManager.myUserInfo.m_nHired[i] > 0)
+            {
+                dataManager.myUserInfo.m_nResource[i + 1] += (int)(idleTime.TotalSeconds / DataManager.MaxLeftTime[i]);
+                dataManager.myUserInfo.m_fLeftTime[i] -= idleTime.TotalSeconds % DataManager.MaxLeftTime[i];
+            }
         }
     }
 
     //-------------------------------------------- private
     void OnApplicationQuit()
     {
-        if(GameManager.instance.currentSceneState != GameManager._ESceneState_.esMain)
+        if (GameManager.instance.currentSceneState != GameManager._ESceneState_.esMain)
             dataManager.myUserInfo.m_sQuitTime = DateTime.Now;
     }
     #endregion
