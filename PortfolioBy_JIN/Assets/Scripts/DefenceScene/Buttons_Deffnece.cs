@@ -1587,7 +1587,7 @@ public class Buttons_Deffnece : MonoBehaviour
         switch (num)
         {
             case 0:
-                if(resources.resources[0] >= 25000)
+                if (resources.resources[0] >= 25000)
                 {
                     UnLockSoldierFrame.gameObject.SetActive(false);
                     resources.resources[0] -= 25000;

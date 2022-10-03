@@ -7,8 +7,14 @@ using UnityEngine.UI;
 
 public class ButtonManager : Singleton<ButtonManager>
 {
-    #region //delegate//
-
+    #region //enumeration//
+    public enum _EOptionButton_
+    {
+        eobToInCastle,
+        eobRePrepare,
+        eobContinue,
+        eobMax
+    }
     #endregion
 
     #region //variable//
@@ -56,6 +62,8 @@ public class ButtonManager : Singleton<ButtonManager>
     PlayerPrefsManager playerPrefsManager;
 
     TimeManager timeManager;
+
+    UIManager uiManager;
     #endregion
 
     #region //property//
@@ -95,6 +103,7 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager = ObjectManager.instance;
         firebaseDBManager = FirebaseDBManager.instance;
         timeManager = TimeManager.instance;
+        uiManager = UIManager.instance;
     }
 
     #region ///AllScene///
@@ -184,51 +193,52 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void TreeHire() // 나무 인력 고용
     {
-        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.TreeHirePrice && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood])
-        {
-            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood]++;
-            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.TreeHirePrice;
+        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehWood] && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood])
+        {                                                                                                                             
+            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood]++;                                                      
+            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehWood];
+            uiManager.SetTextHireCnt(DataManager._EHired_.ehWood);
         }
     }
 
     public void StoneButtonOn() // 돌 버튼 On
     {
-        objectManager.mineralOnButton[(int)DataManager._EMineral_.emStone].gameObject.SetActive(true);
+        objectManager.mineralWorkFrameOnButton[(int)DataManager._EMineral_.emStone].gameObject.SetActive(true);
     }
 
     public void StoneButtonOff() // 돌 버튼 Off
     {
-        objectManager.mineralOnButton[(int)DataManager._EMineral_.emStone].gameObject.SetActive(false);
+        objectManager.mineralWorkFrameOnButton[(int)DataManager._EMineral_.emStone].gameObject.SetActive(false);
     }
 
     public void IronButtonOn() // 철 버튼 On
     {
-        objectManager.mineralOnButton[(int)DataManager._EMineral_.emIron].gameObject.SetActive(true);
+        objectManager.mineralWorkFrameOnButton[(int)DataManager._EMineral_.emIron].gameObject.SetActive(true);
     }
 
     public void IronButtonOff() // 철 버튼 Off
     {
-        objectManager.mineralOnButton[(int)DataManager._EMineral_.emIron].gameObject.SetActive(false);
+        objectManager.mineralWorkFrameOnButton[(int)DataManager._EMineral_.emIron].gameObject.SetActive(false);
     }
 
     public void GoldButtonOn() // 금 버튼 On
     {
-        objectManager.mineralOnButton[(int)DataManager._EMineral_.emGold].gameObject.SetActive(true);
+        objectManager.mineralWorkFrameOnButton[(int)DataManager._EMineral_.emGold].gameObject.SetActive(true);
     }
 
     public void GoldButtonOff() // 금 버튼 Off
     {
-        objectManager.mineralOnButton[(int)DataManager._EMineral_.emGold].gameObject.SetActive(false);
+        objectManager.mineralWorkFrameOnButton[(int)DataManager._EMineral_.emGold].gameObject.SetActive(false);
     }
 
     public void DiamondButtonOn() // 다이아 버튼 On
     {
-        objectManager.mineralOnButton[(int)DataManager._EMineral_.emDiamond].gameObject.SetActive(true);
+        objectManager.mineralWorkFrameOnButton[(int)DataManager._EMineral_.emDiamond].gameObject.SetActive(true);
     }
 
     public void DiamondButtonOff() // 다이아 버튼 Off
     {
-        objectManager.mineralOnButton[(int)DataManager._EMineral_.emDiamond].gameObject.SetActive(false);
+        objectManager.mineralWorkFrameOnButton[(int)DataManager._EMineral_.emDiamond].gameObject.SetActive(false);
     }
 
     public void StoneWorkFrameOn() // 돌 워크 프레임 On
@@ -301,20 +311,92 @@ public class ButtonManager : Singleton<ButtonManager>
         {
             if((int)dataManager.currentMineralState == i)
             {
-                objectManager.mineralOnButton[i].gameObject.SetActive(true);
+                objectManager.mineralWorkFrameOnButton[i].gameObject.SetActive(true);
                 objectManager.mineralWorkFrame[i].SetActive(true);
+                objectManager.mineralLeftTimeText[i].gameObject.SetActive(true);
                 continue;
             }
-            objectManager.mineralOnButton[i].gameObject.SetActive(false);
+            objectManager.mineralWorkFrameOnButton[i].gameObject.SetActive(false);
             objectManager.mineralWorkFrame[i].SetActive(false);
+            objectManager.mineralLeftTimeText[i].gameObject.SetActive(false);
         }
     }
 
-    public void SetMineralState(DataManager._EMineral_ newMineralState)
+    public void SetMineralState(DataManager._EMineral_ newMineralState) // 현재 선택 광물 변경
     {
         dataManager.currentMineralState = newMineralState;
     }
 
+    public void StoneHire() // 돌 인력 고용
+    {
+        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehStone] && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehStone])
+        {
+            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehStone]++;
+            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehStone];
+            uiManager.SetTextHireCnt(DataManager._EHired_.ehStone);
+        }
+    }
+
+    public void IronHire() // 철 인력 고용
+    {
+        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehIron] && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehIron])
+        {
+            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehIron]++;
+            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehIron];
+            uiManager.SetTextHireCnt(DataManager._EHired_.ehIron);
+        }
+    }
+
+    public void GoldHire() // 금 인력 고용
+    {
+        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehGold] && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehGold])
+        {
+            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood]++;
+            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehGold];
+            uiManager.SetTextHireCnt(DataManager._EHired_.ehGold);
+        }
+    }
+
+    public void DiamondHire() // 다이아 인력 고용
+    {
+        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehDiamond] && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehDiamond])
+        {
+            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehDiamond]++;
+            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehDiamond];
+            uiManager.SetTextHireCnt(DataManager._EHired_.ehDiamond);
+        }
+    }
+
+    #endregion
+
+    #region ///DefenceScene///
+    public void DefenceToInCastle() // Defence씬에서 InCastle씬으로
+    {
+        gameManager.SetBattleState(GameManager._EBattleState_.egNotBattle);
+        SceneManager.LoadScene("InCastle");
+    }
+
+    public void OptionFrameOnOff() // 옵션 창 On, Off
+    {
+        if(objectManager.optionFrame.activeSelf)
+        {
+            objectManager.optionFrame.SetActive(false);
+            timeManager.TimeControl(TimeManager._ETimeFast_.etfNormal);
+        }
+        else
+        {
+            objectManager.optionFrame.SetActive(true);
+            timeManager.TimeControl(TimeManager._ETimeFast_.etfStop);
+        }
+    }
+
+    public void RePrepare() // Prepare로 돌아감
+    {
+        gameManager.SetBattleState(GameManager._EBattleState_.egNotBattle);
+        objectManager.prepareFrame.SetActive(true);
+        objectManager.battleFrame.SetActive(false);
+        // EnemyManager를 리셋하는 코드
+    }
     #endregion
 
     public void SceneLoadedButtons() // 씬이 로드될 때마다 버튼들 이벤트 할당
@@ -368,16 +450,24 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager.mineFrameOffButton.onClick.AddListener(MineFrameOnOff);
         objectManager.treeWorkFrameOnButton.onClick.AddListener(TreeWorkFrameOn);
         objectManager.treeHireButton.onClick.AddListener(TreeHire);
-        objectManager.mineralOnButton[(int)DataManager._EMineral_.emStone].onClick.AddListener(StoneWorkFrameOn);
-        objectManager.mineralOnButton[(int)DataManager._EMineral_.emIron].onClick.AddListener(IronWorkFrameOn);
-        objectManager.mineralOnButton[(int)DataManager._EMineral_.emGold].onClick.AddListener(GoldWorkFrameOn);
-        objectManager.mineralOnButton[(int)DataManager._EMineral_.emDiamond].onClick.AddListener(DiamondWorkFrameOn);
+        objectManager.mineralWorkFrameOnButton[(int)DataManager._EMineral_.emStone].onClick.AddListener(StoneWorkFrameOn);
+        objectManager.mineralWorkFrameOnButton[(int)DataManager._EMineral_.emIron].onClick.AddListener(IronWorkFrameOn);
+        objectManager.mineralWorkFrameOnButton[(int)DataManager._EMineral_.emGold].onClick.AddListener(GoldWorkFrameOn);
+        objectManager.mineralWorkFrameOnButton[(int)DataManager._EMineral_.emDiamond].onClick.AddListener(DiamondWorkFrameOn);
         objectManager.nextMineralButton.onClick.AddListener(SwitchToNextMineral);
+        objectManager.mineralHireButton[(int)DataManager._EMineral_.emStone].onClick.AddListener(StoneHire);
+        objectManager.mineralHireButton[(int)DataManager._EMineral_.emIron].onClick.AddListener(IronHire);
+        objectManager.mineralHireButton[(int)DataManager._EMineral_.emGold].onClick.AddListener(GoldHire);
+        objectManager.mineralHireButton[(int)DataManager._EMineral_.emDiamond].onClick.AddListener(DiamondHire);
     }
 
     public void DefenceButtonsEvent()
     {
-
+        objectManager.defenceToInCastleButton.onClick.AddListener(DefenceToInCastle);
+        objectManager.optionFrameOnButton.onClick.AddListener(OptionFrameOnOff);
+        objectManager.optionButton[(int)_EOptionButton_.eobToInCastle].onClick.AddListener(DefenceToInCastle);
+        objectManager.optionButton[(int)_EOptionButton_.eobRePrepare].onClick.AddListener(RePrepare);
+        objectManager.optionButton[(int)_EOptionButton_.eobContinue].onClick.AddListener(OptionFrameOnOff);
     }
 
     // -------------------------------------------- private

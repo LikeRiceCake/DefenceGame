@@ -81,7 +81,7 @@ public class DataManager : Singleton<DataManager>
     public const int MaxHire = 5;
     public static readonly float[] MaxLeftTime = { 3600f, 3600f, 10800f, 86400f, 604800f };
 
-    public const int TreeHirePrice = 5000;
+    public static readonly int[] ResourceHirePrice = { 5000, 10000, 25000, 40000, 100000 };
     //-------------------------------------------- private
 
     #endregion

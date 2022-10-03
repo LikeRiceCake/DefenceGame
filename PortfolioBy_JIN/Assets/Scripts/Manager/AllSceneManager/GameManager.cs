@@ -21,6 +21,13 @@ public class GameManager : Singleton<GameManager>
         esMain,
         esMax
     } _ESceneState_ _currentSceneState;
+
+    public enum _EBattleState_
+    {
+        egNotBattle,
+        egBattle,
+        eqMax
+    } _EBattleState_ _currentBattleState;
     #endregion
 
     #region delegate
@@ -67,6 +74,8 @@ public class GameManager : Singleton<GameManager>
 
     public _ESceneState_ currentSceneState { get { return _currentSceneState; } }
 
+    public _EBattleState_ currentBattleState { get { return _currentBattleState; } }
+
     public bool isAlreadyInCastle { get { return _isAlreadyInCastle; } set { _isAlreadyInCastle = value; } }
     public bool isAlreadyOutCastle { get { return _isAlreadyOutCastle; } set { _isAlreadyOutCastle = value; } }
     public bool isAlreadyDefence { get { return _isAlreadyDefence; } set { _isAlreadyDefence = value; } }
@@ -91,6 +100,7 @@ public class GameManager : Singleton<GameManager>
 
         SetGameState(_EGameState_.egInGame);
         SetSceneState(_ESceneState_.esMain);
+        SetBattleState(_EBattleState_.egNotBattle);
 
         objectManager = ObjectManager.instance;
         buttonManager = ButtonManager.instance;
@@ -117,6 +127,11 @@ public class GameManager : Singleton<GameManager>
     public void SetSceneState(_ESceneState_ newSceneState) // 현재 장면 변경
     {
         _currentSceneState = newSceneState;
+    }
+
+    public void SetBattleState(_EBattleState_ newBattleState) // 현재 배틀 상태 변경
+    {
+        _currentBattleState = newBattleState;
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode) // 씬이 로드될 때마다 호출되는 함수
