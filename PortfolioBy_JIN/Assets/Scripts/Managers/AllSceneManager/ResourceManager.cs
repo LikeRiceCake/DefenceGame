@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class ResourceManager : Singleton<ResourceManager>
 {
     #region //variable//
     //-------------------------------------------- public
@@ -22,7 +22,8 @@ public class Enemy : MonoBehaviour
     //-------------------------------------------- public
 
     //-------------------------------------------- private
-
+    Dictionary<string, AudioClip> audioResource = new Dictionary<string, AudioClip>();
+    Dictionary<string, GameObject> characterResource = new Dictionary<string, GameObject>();
     #endregion
 
     #region //property//
@@ -43,7 +44,27 @@ public class Enemy : MonoBehaviour
 
     #region //function//
     //-------------------------------------------- public
+    public AudioClip LoadAudioResource(string _key)
+    {
+        if (audioResource.ContainsKey(_key))
+            return audioResource[_key];
+        else
+        {
+            audioResource.Add(_key, Resources.Load<AudioClip>(_key));
+            return audioResource[_key];
+        }
+    }
 
+    public GameObject LoadCharacterResource(string _key)
+    {
+        if (characterResource.ContainsKey(_key))
+            return characterResource[_key];
+        else
+        {
+            characterResource.Add(_key, Resources.Load<GameObject>(_key));
+            return characterResource[_key];
+        }
+    }
     //-------------------------------------------- private
 
     #endregion

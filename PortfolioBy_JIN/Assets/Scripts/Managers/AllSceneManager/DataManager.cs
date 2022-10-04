@@ -69,13 +69,6 @@ public class DataManager : Singleton<DataManager>
     }
     #endregion
 
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //constant//
     //-------------------------------------------- public
     public const int MaxHire = 5;
