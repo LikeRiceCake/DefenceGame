@@ -4,10 +4,23 @@ using UnityEngine;
 
 public class Enemy : Character
 {
+    #region //class//
+    EnemyManager _enemyManager;
+    #endregion
+
+    #region //property//
+    public EnemyManager enemyManager { set { _enemyManager = value; } }
+    #endregion
+
     #region //unityLifeCycle//
     void FixedUpdate()
     {
         Move();
+    }
+
+    void OnDisable()
+    {
+        _enemyManager.CurrentEnemyDecrease();
     }
     #endregion
 

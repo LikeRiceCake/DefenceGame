@@ -8,6 +8,10 @@ using UnityEngine.UI;
 public class ButtonManager : Singleton<ButtonManager>
 {
     #region //enumeration//
+    IEnumerator _coroutineManager;
+    #endregion
+
+    #region //enumeration//
     public enum _EOptionButton_
     {
         eobToInCastle,
@@ -21,7 +25,7 @@ public class ButtonManager : Singleton<ButtonManager>
     //-------------------------------------------- public
 
     //-------------------------------------------- private
-
+    bool _isSoldierUpgraded;
     #endregion
 
     #region //constant//
@@ -67,7 +71,9 @@ public class ButtonManager : Singleton<ButtonManager>
     #endregion
 
     #region //property//
+    public IEnumerator coroutineManager { get { return _coroutineManager; } }
 
+    public bool isSoldierUpgraded { get { return _isSoldierUpgraded; } set { _isSoldierUpgraded = value; } }
     #endregion
 
     #region //unityLifeCycle//
@@ -104,6 +110,8 @@ public class ButtonManager : Singleton<ButtonManager>
         firebaseDBManager = FirebaseDBManager.instance;
         timeManager = TimeManager.instance;
         uiManager = UIManager.instance;
+
+        _isSoldierUpgraded = false;
     }
 
     #region ///AllScene///
@@ -165,7 +173,6 @@ public class ButtonManager : Singleton<ButtonManager>
         if (objectManager.forestFrame.activeSelf)
         {
             objectManager.forestFrame.SetActive(false);
-            TreeWorkFrameOff();
         }
         else
         {
@@ -397,6 +404,100 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager.battleFrame.SetActive(false);
         // EnemyManager를 리셋하는 코드
     }
+
+    public void SoldierUpgradeFrameOnOff() // 병사 강화 프레임 On, Off
+    {
+        if (objectManager.soldierUpgradeFrame.activeSelf)
+        {
+            objectManager.soldierUpgradeFrame.SetActive(false);
+        }
+        else
+            objectManager.soldierUpgradeFrame.SetActive(true);
+    }
+
+    public void SoldierUpgradeConfirmFrameOnOff() // 병사 강화 확인 프레임 온 오프
+    {
+        if (objectManager.soldierUpgradeConfirmFrame.activeSelf)
+        {
+            objectManager.soldierUpgradeConfirmFrame.SetActive(false);
+        }
+        else
+        {
+            objectManager.soldierUpgradeConfirmFrame.SetActive(true);
+            SoldierUpgradeObjectSelectedOnOff();
+        }
+    }
+
+    public void SwitchToNextSoldierUpgrade() // 업그레이드 할 다음 병사 선택
+    {
+        switch (dataManager.currentSoldierUpgradeState)
+        {
+            case DataManager._ESoldierUpgrade_.esuNormalSoldier:
+                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuRareSoldier;
+                break;
+            case DataManager._ESoldierUpgrade_.esuRareSoldier:
+                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuTankSoldier;
+                break;
+            case DataManager._ESoldierUpgrade_.esuTankSoldier:
+                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuUniversalSoldier;
+                break;
+            case DataManager._ESoldierUpgrade_.esuUniversalSoldier:
+                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuAssassinSoldier;
+                break;
+            case DataManager._ESoldierUpgrade_.esuAssassinSoldier:
+                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuUnknownSoldier;
+                break;
+            case DataManager._ESoldierUpgrade_.esuUnknownSoldier:
+                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuNormalSoldier;
+                break;
+            default:
+                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuNormalSoldier;
+                break;
+        }
+
+        SoldierUpgradeObjectSelectedOnOff();
+    }
+
+    public void SoldierUpgradeObjectSelectedOnOff() // 병사 강화 오브젝트 선택 온오프
+    {
+        for(int i = 0; i < (int)DataManager._ESoldierUpgrade_.esuMax; i++)
+        {
+            if((int)dataManager.currentSoldierUpgradeState == i)
+                objectManager.soldierUpgradeConfirmFrameOnButton[i].gameObject.SetActive(true);
+
+            objectManager.soldierUpgradeConfirmFrameOnButton[i].gameObject.SetActive(false);
+        }
+        uiManager.SetTextSoldierUpgrade();
+    }
+
+    public void SoldierUpgrade() // 병사 강화
+    {
+        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] <
+            DataManager.SoldierUpgradePrice[(int)dataManager.currentSoldierUpgradeState, dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] / (DataManager.SoldierUpgradePriceCnt - 1)]
+            && DataManager.MaxSoldierUpgrade > dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState])
+        {
+            dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState]++;
+            dataManager.myUserInfo.m_nSoldierUpgrade[(int)DataManager._EResource_.erMoney] -= DataManager.SoldierUpgradePrice[(int)dataManager.currentSoldierUpgradeState, dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] / (DataManager.SoldierUpgradePriceCnt - 1)];
+            uiManager.SetTextSoldierUpgrade();
+            _isSoldierUpgraded = true;
+        }
+    }
+
+    public void BallistaUpgradeFrameOnOff() // 발리스타 강화 프레임 On, Off
+    {
+        if (objectManager.ballistaUpgradeFrame.activeSelf)
+            objectManager.ballistaUpgradeFrame.SetActive(false);
+        else
+            objectManager.ballistaUpgradeFrame.SetActive(true);
+    }
+
+    public void BallistaUpgradeConfirmFrameOnOff()
+    {
+        if (objectManager.ballistaUpgradeConfirmFrame.activeSelf)
+            objectManager.ballistaUpgradeConfirmFrame.SetActive(false);
+        else
+            objectManager.ballistaUpgradeConfirmFrame.SetActive(true);
+    }
     #endregion
 
     public void SceneLoadedButtons() // 씬이 로드될 때마다 버튼들 이벤트 할당
@@ -468,6 +569,21 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager.optionButton[(int)_EOptionButton_.eobToInCastle].onClick.AddListener(DefenceToInCastle);
         objectManager.optionButton[(int)_EOptionButton_.eobRePrepare].onClick.AddListener(RePrepare);
         objectManager.optionButton[(int)_EOptionButton_.eobContinue].onClick.AddListener(OptionFrameOnOff);
+        objectManager.soldierUpgradeFrameOnButton.onClick.AddListener(SoldierUpgradeFrameOnOff);
+        objectManager.soldierUpgradeFrameOffButton.onClick.AddListener(SoldierUpgradeFrameOnOff);
+        objectManager.soldierUpgradeConfirmFrameOnButton[(int)DataManager._ESoldierUpgrade_.esuNormalSoldier].onClick.AddListener(SoldierUpgradeConfirmFrameOnOff);
+        objectManager.soldierUpgradeConfirmFrameOnButton[(int)DataManager._ESoldierUpgrade_.esuRareSoldier].onClick.AddListener(SoldierUpgradeConfirmFrameOnOff);
+        objectManager.soldierUpgradeConfirmFrameOnButton[(int)DataManager._ESoldierUpgrade_.esuTankSoldier].onClick.AddListener(SoldierUpgradeConfirmFrameOnOff);
+        objectManager.soldierUpgradeConfirmFrameOnButton[(int)DataManager._ESoldierUpgrade_.esuUniversalSoldier].onClick.AddListener(SoldierUpgradeConfirmFrameOnOff);
+        objectManager.soldierUpgradeConfirmFrameOnButton[(int)DataManager._ESoldierUpgrade_.esuAssassinSoldier].onClick.AddListener(SoldierUpgradeConfirmFrameOnOff);
+        objectManager.soldierUpgradeConfirmFrameOnButton[(int)DataManager._ESoldierUpgrade_.esuUnknownSoldier].onClick.AddListener(SoldierUpgradeConfirmFrameOnOff);
+        objectManager.soldierUpgradeConfirmFrameOffButton.onClick.AddListener(SoldierUpgradeConfirmFrameOnOff);
+        objectManager.soldierUpgradeConfirmButton.onClick.AddListener(SoldierUpgrade);
+
+        objectManager.ballistaUpgradeFrameOnButton.onClick.AddListener(BallistaUpgradeFrameOnOff);
+        objectManager.ballistaUpgradeFrameOffButton.onClick.AddListener(BallistaUpgradeFrameOnOff);
+        objectManager.ballistaUpgradeConfirmFrameOnButton.onClick.AddListener(BallistaUpgradeConfirmFrameOnOff);
+        objectManager.ballistaUpgradeConfirmFrameOffButton.onClick.AddListener(BallistaUpgradeConfirmFrameOnOff);
     }
 
     // -------------------------------------------- private

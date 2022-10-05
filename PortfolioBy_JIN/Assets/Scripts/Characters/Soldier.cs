@@ -18,9 +18,16 @@ public class Soldier : Character
 
     //-------------------------------------------- private
     LayerMask layerMask;
+
+    ButtonManager buttonManager;
     #endregion
 
     #region //unityLifeCycle//
+    void Start()
+    {
+        buttonManager = ButtonManager.instance;
+    }
+
     void FixedUpdate()
     {
         Move();
@@ -29,6 +36,12 @@ public class Soldier : Character
     void Update()
     {
         FindOpponent();
+
+        if (buttonManager.isSoldierUpgraded)
+        {
+            buttonManager.isSoldierUpgraded = false;
+            StatInit();
+        }
     }
     #endregion
 

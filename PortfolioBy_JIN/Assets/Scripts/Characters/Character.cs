@@ -36,9 +36,9 @@ public abstract class Character : MonoBehaviour
     #endregion
 
     #region //constant//
-    public readonly float[] SoldierIncreaseHp =      { 1f,   1.1f, 2f,   1.3f, 0.5f, 1.7f};
-    public readonly float[] SoldierIncreaseAttack =  { 1f,   1.1f, 0.5f, 1.3f, 2f,   1.7f};
-    public readonly float[] SoldierIncreaseDefence = { 0.1f, 0.2f, 0.7f, 0.4f, 0.1f, 0.5f};
+    public static readonly float[] SoldierIncreaseHp =      { 1f,   1.1f, 2f,   1.3f, 0.5f, 1.7f};
+    public static readonly float[] SoldierIncreaseAttack =  { 1f,   1.1f, 0.5f, 1.3f, 2f,   1.7f};
+    public static readonly float[] SoldierIncreaseDefence = { 0.1f, 0.2f, 0.7f, 0.4f, 0.1f, 0.5f};
     #endregion
 
     #region //struct//
@@ -80,7 +80,7 @@ public abstract class Character : MonoBehaviour
     {
         dataManager = DataManager.instance;
 
-        characterStat = GetComponent<CharacterInfo>();
+        characterStat = GetComponent<CharacterInfoPocket>().characterStat;
 
         animator = GetComponent<Animator>();
 

@@ -65,7 +65,7 @@ public class EnemyManager : MonoBehaviour
         _coroutineManager = ActivateEnemy();
     }
 
-    public void CreateEnemy()
+    public void CreateEnemy() // 적 생성
     {
         GameObject hierarchyEnemyList = new GameObject();
         hierarchyEnemyList.name = "EnemyList";
@@ -73,18 +73,34 @@ public class EnemyManager : MonoBehaviour
         {
             GameObject enemy = Instantiate(enemyObject, hierarchyEnemyList.transform);
             enemy.name = "Enemy_" + i.ToString("00");
+            enemy.GetComponent<Enemy>().enemyManager = this;
             enemy.SetActive(false);
             enemy.transform.position = enemyPos.position;
             enemyList.Add(enemy);
         }
     }
 
-    public void MaximumEnemy()
+    public void MaximumEnemy() // 적의 최대 갯수 설정
     {
         maxEnemyCnt = DefaultMaxEnemyCnt + (dataManager.myUserInfo.m_nWave / 2);
+        CurrentEnemySetting();
     }
 
-    public IEnumerator ActivateEnemy()
+    public void CurrentEnemySetting() // 적의 현재 갯수 설정
+    {
+        currentEnemyCnt = maxEnemyCnt;
+    }
+
+    public void CurrentEnemyDecrease() // 적의 현재 갯수 감소
+    {
+        currentEnemyCnt--;
+        if(currentEnemyCnt <= 0)
+        {
+            // 디펜스 승리
+        }
+    }
+
+    public IEnumerator ActivateEnemy() // 적 소환
     {
         for (int i = 0; i < enemyList.Count; i++)
         {

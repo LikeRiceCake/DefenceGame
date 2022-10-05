@@ -207,9 +207,23 @@ public class UIManager : Singleton<UIManager>
         }
     }
     
-    public void SetTextPlacedSoldier()
+    public void SetTextPlacedSoldier() // 배치된 병사 수 세팅
     {
         objectManager.placedSoldierText.text = prepareManager.placedSoldier.ToString();
+    }
+
+    public void SetTextSoldierUpgrade() // 솔져 업그레이드 Text 세팅
+    {
+        objectManager.soldierUpgradePriceText.text = 
+            DataManager.SoldierUpgradePrice[(int)dataManager.currentSoldierUpgradeState, dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] / (DataManager.SoldierUpgradePriceCnt - 1)].ToString();
+
+        objectManager.soldierUpgradeInformationText[(int)DataManager._ESoldierUpgradeInfo_.esuiCurrentUpgrade].text =
+            "현재 업그레이드 : " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState].ToString();
+
+        objectManager.soldierUpgradeInformationText[(int)DataManager._ESoldierUpgradeInfo_.esuiAdditionalStat].text =
+            "추가 공격력 / 체력 / 방어력 : " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Character.SoldierIncreaseAttack[(int)dataManager.currentSoldierUpgradeState] +
+            " / " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Character.SoldierIncreaseHp[(int)dataManager.currentSoldierUpgradeState] +
+            " / " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Character.SoldierIncreaseDefence[(int)dataManager.currentSoldierUpgradeState];
     }
 
     public void SceneLoadedUIs() // 씬이 로드될 때마다 필요한 UI의 세팅

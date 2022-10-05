@@ -38,23 +38,23 @@ public class DataManager : Singleton<DataManager>
 
     public enum _ESoldierUpgrade_
     {
-        esuFirstSoldier,
-        esuSecondSoldier,
-        esuThirdSoldier,
-        esuFourthSoldier,
-        esuFifthSoldier,
-        esuSixthSoldier,
+        esuNormalSoldier,
+        esuRareSoldier,
+        esuTankSoldier,
+        esuUniversalSoldier,
+        esuAssassinSoldier,
+        esuUnknownSoldier,
         esuMax
-    }
+    } _ESoldierUpgrade_ _currentSoldierUpgradeState;
 
     public enum _ESoldierLock_
     {
-        eslFirstSoldier,
-        eslSecondSoldier,
-        eslThirdSoldier,
-        eslFourthSoldier,
-        eslFifthSoldier,
-        eslSixthSoldier,
+        eslNoramlSoldier,
+        eslRareSoldier,
+        eslTankSoldier,
+        eslUniversalSoldier,
+        eslAssassinSoldier,
+        eslUnknownSoldier,
         eslMax
     }
 
@@ -67,14 +67,31 @@ public class DataManager : Singleton<DataManager>
         eltDiamond,
         eltMax
     }
+
+    public enum _ESoldierUpgradeInfo_
+    {
+        esuiCurrentUpgrade,
+        esuiAdditionalStat,
+        esuiMax
+    }
     #endregion
 
     #region //constant//
     //-------------------------------------------- public
     public const int MaxHire = 5;
-    public static readonly float[] MaxLeftTime = { 3600f, 3600f, 10800f, 86400f, 604800f };
+    public const int MaxSoldierUpgrade = 10;
+    public const int SoldierUpgradePriceCnt = 4;
 
     public static readonly int[] ResourceHirePrice = { 5000, 10000, 25000, 40000, 100000 };
+    public static readonly int[,] SoldierUpgradePrice =  new int[,]  {  {10000, 35000, 70000, 100000 },
+                                                                        {12000, 40000, 80000, 130000 },
+                                                                        {20000, 56000, 89000, 150000 },
+                                                                        {30000, 67000, 95000, 170000 },
+                                                                        {45000, 80000, 120000, 200000 },
+                                                                        {66000, 130000, 180000, 300000 }
+    };
+
+    public static readonly float[] MaxLeftTime = { 3600f, 3600f, 10800f, 86400f, 604800f };
     //-------------------------------------------- private
 
     #endregion
@@ -190,6 +207,7 @@ public class DataManager : Singleton<DataManager>
 
     #region //property//
     public _EMineral_ currentMineralState { get { return _currentMineralState; } set { _currentMineralState = value; } }
+    public _ESoldierUpgrade_ currentSoldierUpgradeState { get { return _currentSoldierUpgradeState; } set { _currentSoldierUpgradeState = value; } }
 
     public User myUserInfo { get { return _myUserInfo; } set { _myUserInfo = value; } }
     #endregion
@@ -217,6 +235,7 @@ public class DataManager : Singleton<DataManager>
     {
         firebaseDBManager = FirebaseDBManager.instance;
         _currentMineralState = _EMineral_.emStone;
+        _currentSoldierUpgradeState = _ESoldierUpgrade_.esuNormalSoldier;
         _myUserInfo = null;
     }
 
