@@ -39,9 +39,17 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
     #endregion
 
     #region //unityLifeCycle//
-    private void Awake()
+    protected override void Awake()
     {
-        DataInit();
+        base.Awake();
+    }
+
+    private void OnEnable()
+    {
+        DBRef = FirebaseDatabase.DefaultInstance.RootReference;
+        dataManager = DataManager.instance;
+        objectManager = ObjectManager.instance;
+        gameManager = GameManager.instance;
     }
 
     void Update()
@@ -59,14 +67,6 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
 
     #region //function//
     //-------------------------------------------- public
-    public void DataInit()
-    {
-        DBRef = FirebaseDatabase.DefaultInstance.RootReference;
-        dataManager = DataManager.instance;
-        objectManager = ObjectManager.instance;
-        gameManager = GameManager.instance;
-    }
-
     public void WriteCreateData(DataManager.User userData) // 처음 데이터 생성 시 서버에 저장
     {
         string jsonData = JsonUtility.ToJson(userData);

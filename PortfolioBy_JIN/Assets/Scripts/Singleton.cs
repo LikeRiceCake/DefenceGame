@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour // 제네릭 타입을 이용하여 상속받을 때 타입만 지정하면 자동으로 싱글톤 제작
 {
@@ -32,23 +33,22 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour // 제네릭 타입
         {
             if (_instance == null)
             {
-                _instance = FindObjectOfType<T>();
-
-                if (_instance == null)
-                {
-                    GameObject obj = new GameObject(typeof(T).Name, typeof(T));
-                    _instance = obj.GetComponent<T>();
-                }
+                DataInit();
+                return _instance;
             }
-
-            return _instance;
+            else
+            {
+                return _instance;
+            }
         }
     }
     #endregion
 
     #region //unityLifeCycle//
-    void Awake()
+    protected virtual void Awake()
     {
+        DataInit();
+
         if (transform.parent != null && transform.root != null)
             DontDestroyOnLoad(this.transform.root.gameObject);
         else
@@ -58,7 +58,19 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour // 제네릭 타입
 
     #region //function//
     //-------------------------------------------- public
+    private static void DataInit()
+    {
+        if (_instance == null)
+        {
+            _instance = FindObjectOfType<T>();
 
+            if (_instance == null)
+            {
+                GameObject obj = new GameObject(typeof(T).Name, typeof(T));
+                _instance = obj.GetComponent<T>();
+            }
+        }
+    }
     //-------------------------------------------- private
 
     #endregion

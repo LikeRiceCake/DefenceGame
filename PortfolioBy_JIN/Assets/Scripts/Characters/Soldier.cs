@@ -23,9 +23,14 @@ public class Soldier : Character
     #endregion
 
     #region //unityLifeCycle//
-    void Start()
+    private void OnEnable()
     {
         buttonManager = ButtonManager.instance;
+    }
+
+    private void Start()
+    {
+        DataInit();
     }
 
     void FixedUpdate()

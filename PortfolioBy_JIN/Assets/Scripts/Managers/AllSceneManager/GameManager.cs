@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
@@ -86,7 +87,27 @@ public class GameManager : Singleton<GameManager>
     #endregion
 
     #region //unityLifeCycle//
-    void Awake()
+    protected override void Awake()
+    {
+        base.Awake();
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnEnable()
+    {
+        objectManager = ObjectManager.instance;
+        buttonManager = ButtonManager.instance;
+        uiManager = UIManager.instance;
+        soundManager = SoundManager.instance;
+
+        sceneLoadedManager += objectManager.SceneLoadedObjects;
+        sceneLoadedManager += buttonManager.SceneLoadedButtons;
+        sceneLoadedManager += uiManager.SceneLoadedUIs;
+        sceneLoadedManager += soundManager.SceneLoadedSounds;
+    }
+
+    private void Start()
     {
         DataInit();
     }
@@ -96,21 +117,9 @@ public class GameManager : Singleton<GameManager>
     //-------------------------------------------- public
     public void DataInit() // 최초 초기화
     {
-        SceneManager.sceneLoaded += OnSceneLoaded; // Scene이 로드될 때마다 호출될 이벤트를 추가
-
         SetGameState(_EGameState_.egInGame);
         SetSceneState(_ESceneState_.esMain);
         SetBattleState(_EBattleState_.egNotBattle);
-
-        objectManager = ObjectManager.instance;
-        buttonManager = ButtonManager.instance;
-        soundManager = SoundManager.instance;
-        uiManager = UIManager.instance;
-
-        sceneLoadedManager += objectManager.SceneLoadedObjects;
-        sceneLoadedManager += buttonManager.SceneLoadedButtons;
-        sceneLoadedManager += uiManager.SceneLoadedUIs;
-        sceneLoadedManager += soundManager.SceneLoadedSounds;
 
         _isCompletedCheck = false;
 
@@ -136,19 +145,22 @@ public class GameManager : Singleton<GameManager>
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode) // 씬이 로드될 때마다 호출되는 함수
     {
-        switch(scene.name) // 씬의 이름을 비교
+        
+        switch (scene.name) // 씬의 이름을 비교
         {
             case "Main":
                 SetSceneState(_ESceneState_.esMain);
                 break;
             case "InCastle":
                 SetSceneState(_ESceneState_.esInCastle);
+                GameObject.Find("PrepareManager").gameObject.GetComponent<PrepareManager>().enabled = false;
                 break;
             case "OutCastle":
                 SetSceneState(_ESceneState_.esOutCastle);
                 break;
             case "Defence":
                 SetSceneState(_ESceneState_.esDefence);
+                GameObject.Find("PrepareManager").gameObject.GetComponent<PrepareManager>().enabled = true;
                 break;
             default:
                 break;

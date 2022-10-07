@@ -43,7 +43,12 @@ public class EnemyManager : MonoBehaviour
     #endregion
 
     #region //unityLifeCycle//
-    void Awake()
+    private void OnEnable()
+    {
+        
+    }
+
+    private void Start()
     {
         DataInit();
     }

@@ -55,9 +55,17 @@ public class UIManager : Singleton<UIManager>
     #endregion
 
     #region //unityLifeCycle//
-    void Awake()
+    protected override void Awake()
     {
-        DataInit();
+        base.Awake(); 
+    }
+
+    private void OnEnable()
+    {
+        gameManager = GameManager.instance;
+        objectManager = ObjectManager.instance;
+        dataManager = DataManager.instance;
+        prepareManager = PrepareManager.instance;
     }
 
     private void Update()
@@ -70,26 +78,22 @@ public class UIManager : Singleton<UIManager>
         if (gameManager.currentSceneState == GameManager._ESceneState_.esOutCastle) // OutCastle에서만 호출
         {
             CutDownTreeLeftTime();
+            MiningStoneLeftTime();
+            MiningIronLeftTime();
+            MiningGoldLeftTime();
+            MiningDiamondLeftTime();
         }
     }
     #endregion
 
     #region //function//
     //-------------------------------------------- public
-    public void DataInit()
-    {
-        gameManager = GameManager.instance;
-        objectManager = ObjectManager.instance;
-        dataManager = DataManager.instance;
-        prepareManager = PrepareManager.instance;
-    }
-
     public void SetTextHirePrice() // 인력 고용 가격 설정
     {
         objectManager.treeHirePriceText.text = DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehWood].ToString();
         for (int i = 0; i < (int)DataManager._EMineral_.emMax; i++)
         {
-            objectManager.mineralHirePriceText[i].text = DataManager.ResourceHirePrice[i + 1].ToString();
+            objectManager.mineralsHirePriceText[i].text = DataManager.ResourceHirePrice[i + 1].ToString();
         }
     }
 
@@ -123,11 +127,11 @@ public class UIManager : Singleton<UIManager>
     {
         if (dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltStone] >= 360f)
         {
-            objectManager.mineralLeftTimeText[(int)DataManager._EMineral_.emStone].text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltStone] / 60) + "분";
+            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emStone].text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltStone] / 60) + "분";
         }
         else
         {
-            objectManager.mineralLeftTimeText[(int)DataManager._EMineral_.emStone].text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltStone] + "초";
+            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emStone].text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltStone] + "초";
         }
     }
 
@@ -135,11 +139,11 @@ public class UIManager : Singleton<UIManager>
     {
         if (dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltIron] >= 360f)
         {
-            objectManager.mineralLeftTimeText[(int)DataManager._EMineral_.emIron].text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltIron] / 60) + "분";
+            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emIron].text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltIron] / 60) + "분";
         }
         else
         {
-            objectManager.mineralLeftTimeText[(int)DataManager._EMineral_.emIron].text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltIron] + "초";
+            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emIron].text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltIron] + "초";
         }
     }
 
@@ -147,11 +151,11 @@ public class UIManager : Singleton<UIManager>
     {
         if (dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltGold] >= 360f)
         {
-            objectManager.mineralLeftTimeText[(int)DataManager._EMineral_.emGold].text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltGold] / 60) + "분";
+            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emGold].text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltGold] / 60) + "분";
         }
         else
         {
-            objectManager.mineralLeftTimeText[(int)DataManager._EMineral_.emGold].text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltGold] + "초";
+            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emGold].text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltGold] + "초";
         }
     }
 
@@ -159,11 +163,11 @@ public class UIManager : Singleton<UIManager>
     {
         if (dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltDiamond] >= 360f)
         {
-            objectManager.mineralLeftTimeText[(int)DataManager._EMineral_.emDiamond].text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltDiamond] / 60) + "분";
+            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emDiamond].text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltDiamond] / 60) + "분";
         }
         else
         {
-            objectManager.mineralLeftTimeText[(int)DataManager._EMineral_.emDiamond].text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltDiamond] + "초";
+            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emDiamond].text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltDiamond] + "초";
         }
     }
 
@@ -185,7 +189,7 @@ public class UIManager : Singleton<UIManager>
         objectManager.treeHiredCntText.text = dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood].ToString();
         for (int i = 0; i < (int)DataManager._EMineral_.emMax; i++)
         {
-            objectManager.mineralHiredCntText[i].text = dataManager.myUserInfo.m_nHired[i + 1].ToString();
+            objectManager.mineralsHiredCntText[i].text = dataManager.myUserInfo.m_nHired[i + 1].ToString();
         }
     }
 
@@ -200,7 +204,7 @@ public class UIManager : Singleton<UIManager>
             case DataManager._EHired_.ehIron:
             case DataManager._EHired_.ehGold:
             case DataManager._EHired_.ehDiamond:
-                objectManager.mineralHiredCntText[(int)select].text = dataManager.myUserInfo.m_nHired[(int)select].ToString();
+                objectManager.mineralsHiredCntText[(int)select].text = dataManager.myUserInfo.m_nHired[(int)select].ToString();
                 break;
             default:
                 break;
@@ -217,13 +221,35 @@ public class UIManager : Singleton<UIManager>
         objectManager.soldierUpgradePriceText.text = 
             DataManager.SoldierUpgradePrice[(int)dataManager.currentSoldierUpgradeState, dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] / (DataManager.SoldierUpgradePriceCnt - 1)].ToString();
 
-        objectManager.soldierUpgradeInformationText[(int)DataManager._ESoldierUpgradeInfo_.esuiCurrentUpgrade].text =
+        objectManager.soldierUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade].text =
             "현재 업그레이드 : " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState].ToString();
 
-        objectManager.soldierUpgradeInformationText[(int)DataManager._ESoldierUpgradeInfo_.esuiAdditionalStat].text =
+        objectManager.soldierUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat].text =
             "추가 공격력 / 체력 / 방어력 : " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Character.SoldierIncreaseAttack[(int)dataManager.currentSoldierUpgradeState] +
             " / " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Character.SoldierIncreaseHp[(int)dataManager.currentSoldierUpgradeState] +
             " / " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Character.SoldierIncreaseDefence[(int)dataManager.currentSoldierUpgradeState];
+    }
+
+    public void SetTextSoldierUnLock() // 솔져 언락 Text 세팅
+    {
+        objectManager.soldierUnLockPriceText.text = DataManager.SoldierUnLockPrice[(int)dataManager.currentSoldierUpgradeState].ToString();
+    }
+
+    public void SetTextBallistaUpgrade() // 발리스타 업그레이드 Text 세팅
+    {
+        objectManager.ballistaUpgradePriceText.text =
+            DataManager.BallistaUpgradePrice[dataManager.myUserInfo.m_nBallistaUpgrade / (DataManager.SoldierUpgradePriceCnt - 1)].ToString();
+
+        objectManager.ballistaUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade].text =
+            "현재 업그레이드 : " + dataManager.myUserInfo.m_nBallistaUpgrade.ToString();
+
+        objectManager.ballistaUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat].text =
+            "추가 공격력 : " + dataManager.myUserInfo.m_nBallistaUpgrade * Weapon.WeaponIncreaseAttack[(int)Weapon._EWeaponClass_.ewcBallista];
+
+        int i = dataManager.myUserInfo.m_nBallistaUpgrade / (DataManager.MaxBallistaUpgrade - 1);
+
+        for (int j = 0; j < (int)DataManager._EBallistaResource_.ebrMax; j++)
+            objectManager.ballistaUpgradeResourcesText[j].text = DataManager.BallistaUpgradeResource[j, i].ToString();
     }
 
     public void SceneLoadedUIs() // 씬이 로드될 때마다 필요한 UI의 세팅

@@ -24,6 +24,7 @@ public class ResourceManager : Singleton<ResourceManager>
     //-------------------------------------------- private
     Dictionary<string, AudioClip> audioResource = new Dictionary<string, AudioClip>();
     Dictionary<string, GameObject> characterResource = new Dictionary<string, GameObject>();
+    Dictionary<string, GameObject> projectileResource = new Dictionary<string, GameObject>();
     #endregion
 
     #region //property//
@@ -31,14 +32,9 @@ public class ResourceManager : Singleton<ResourceManager>
     #endregion
 
     #region //unityLifeCycle//
-    void Start()
+    protected override void Awake()
     {
-        
-    }
-
-    void Update()
-    {
-        
+        base.Awake();
     }
     #endregion
 
@@ -63,6 +59,17 @@ public class ResourceManager : Singleton<ResourceManager>
         {
             characterResource.Add(_key, Resources.Load<GameObject>(_key));
             return characterResource[_key];
+        }
+    }
+
+    public GameObject LoadProjectileResource(string _key)
+    {
+        if (projectileResource.ContainsKey(_key))
+            return projectileResource[_key];
+        else
+        {
+            projectileResource.Add(_key, Resources.Load<GameObject>(_key));
+            return projectileResource[_key];
         }
     }
     //-------------------------------------------- private

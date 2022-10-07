@@ -47,9 +47,16 @@ public class TimeManager : Singleton<TimeManager>
     #endregion
 
     #region //unityLifeCycle//
-    void Awake()
+    protected override void Awake()
     {
-        DataInit();
+        base.Awake();
+    }
+
+    private void OnEnable()
+    {
+        dataManager = DataManager.instance;
+        gameManager = GameManager.instance;
+        uiManager = UIManager.instance;
     }
 
     void Update()
@@ -60,13 +67,6 @@ public class TimeManager : Singleton<TimeManager>
 
     #region //function//
     //-------------------------------------------- public
-    public void DataInit()
-    {
-        dataManager = DataManager.instance;
-        gameManager = GameManager.instance;
-        uiManager = UIManager.instance;
-    }
-
     public void IdleTimeCalculation() // 최종 종료 시간과 현재 시간을 뺀 결과
     {
         idleTime = DateTime.Now - dataManager.myUserInfo.m_sQuitTime;

@@ -68,11 +68,21 @@ public class DataManager : Singleton<DataManager>
         eltMax
     }
 
-    public enum _ESoldierUpgradeInfo_
+    public enum _EUpgradeInfo_
     {
-        esuiCurrentUpgrade,
-        esuiAdditionalStat,
-        esuiMax
+        euiCurrentUpgrade,
+        euiAdditionalStat,
+        euiMax
+    }
+
+    public enum _EBallistaResource_
+    {
+        ebrWood,
+        ebrStone,
+        ebrIron,
+        ebrGold,
+        ebrDiamond,
+        ebrMax
     }
     #endregion
 
@@ -81,14 +91,24 @@ public class DataManager : Singleton<DataManager>
     public const int MaxHire = 5;
     public const int MaxSoldierUpgrade = 10;
     public const int SoldierUpgradePriceCnt = 4;
+    public const int MaxBallistaUpgrade = 10;
+    public const int BallistaUpgradeResourceCnt = 4;
 
     public static readonly int[] ResourceHirePrice = { 5000, 10000, 25000, 40000, 100000 };
-    public static readonly int[,] SoldierUpgradePrice =  new int[,]  {  {10000, 35000, 70000, 100000 },
-                                                                        {12000, 40000, 80000, 130000 },
-                                                                        {20000, 56000, 89000, 150000 },
-                                                                        {30000, 67000, 95000, 170000 },
-                                                                        {45000, 80000, 120000, 200000 },
-                                                                        {66000, 130000, 180000, 300000 }
+    public static readonly int[,] SoldierUpgradePrice = { {10000,  35000,  70000, 100000 },
+                                                          {12000,  40000,  80000, 130000 },
+                                                          {20000,  56000,  89000, 150000 },
+                                                          {30000,  67000,  95000, 170000 },
+                                                          {45000,  80000, 120000, 200000 },
+                                                          {66000, 130000, 180000, 300000 }
+    };
+    public static readonly int[] SoldierUnLockPrice = { 0, 65000, 75000, 85000, 100000, 150000 };
+    public static readonly int[] BallistaUpgradePrice = { 70000, 100000, 150000, 200000 };
+    public static readonly int[,] BallistaUpgradeResource = { { 5, 15, 50, 100},
+                                                              { 3,  8, 30,  60},
+                                                              { 0,  5, 20,  40},
+                                                              { 0,  3, 15,  30},
+                                                              { 0,  0,  5,  15}
     };
 
     public static readonly float[] MaxLeftTime = { 3600f, 3600f, 10800f, 86400f, 604800f };
@@ -133,6 +153,7 @@ public class DataManager : Singleton<DataManager>
             }
 
             m_nSoldierLock = new bool[(int)_ESoldierLock_.eslMax];
+            m_nSoldierLock[0] = true;
             for (int i = 1; i < (int)_ESoldierLock_.eslMax; i++)
             {
                 m_nSoldierLock[i] = false;
@@ -172,6 +193,7 @@ public class DataManager : Singleton<DataManager>
             }
 
             m_nSoldierLock = new bool[(int)_ESoldierLock_.eslMax];
+            m_nSoldierLock[0] = true;
             for(int i = 1; i < (int)_ESoldierLock_.eslMax; i++)
             {
                 m_nSoldierLock[i] = false;
@@ -213,19 +235,19 @@ public class DataManager : Singleton<DataManager>
     #endregion
 
     #region //unityLifeCycle//
-    void Awake()
+    protected override void Awake()
     {
-        DataInit();
+        base.Awake();
+    }
+
+    private void OnEnable()
+    {
+        firebaseDBManager = FirebaseDBManager.instance;
     }
 
     void Start()
     {
-        
-    }
-
-    void Update()
-    {
-        
+        DataInit();
     }
     #endregion
 
@@ -233,7 +255,6 @@ public class DataManager : Singleton<DataManager>
     //-------------------------------------------- public
     public void DataInit()
     {
-        firebaseDBManager = FirebaseDBManager.instance;
         _currentMineralState = _EMineral_.emStone;
         _currentSoldierUpgradeState = _ESoldierUpgrade_.esuNormalSoldier;
         _myUserInfo = null;

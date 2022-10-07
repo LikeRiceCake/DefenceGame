@@ -37,37 +37,27 @@ public class SoundManager : Singleton<SoundManager>
     #endregion
 
     #region //unityLifeCycle//
-    void Awake()
+    protected override void Awake()
     {
-        DataInit();
+        base.Awake();
     }
 
-    void Start()
+    private void OnEnable()
     {
-
+        gameManager = GameManager.instance;
+        resourceManager = ResourceManager.instance;
     }
 
-    void Update()
-    {
-        
-    }
     #endregion
 
     #region //function//
     //-------------------------------------------- public
-    public void DataInit()
-    {
-        gameManager = GameManager.instance;
-        resourceManager = ResourceManager.instance;
-
-        audioSource = GetComponent<AudioSource>();
-    }
-
     public void SceneLoadedSounds()
     {
         switch (gameManager.currentSceneState)
         {
             case GameManager._ESceneState_.esMain:
+                audioSource = GetComponent<AudioSource>();
                 currentAudioClip = resourceManager.LoadAudioResource("Audios/Main");
                 break;
             case GameManager._ESceneState_.esInCastle:

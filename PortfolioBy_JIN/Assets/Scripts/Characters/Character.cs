@@ -68,7 +68,12 @@ public abstract class Character : MonoBehaviour
     #endregion
 
     #region //unityLifeCycle//
-    void Awake()
+    private void OnEnable()
+    {
+        dataManager = DataManager.instance;
+    }
+
+    private void Start()
     {
         DataInit();
     }
@@ -78,8 +83,6 @@ public abstract class Character : MonoBehaviour
     //-------------------------------------------- public
     public virtual void DataInit()
     {
-        dataManager = DataManager.instance;
-
         characterStat = GetComponent<CharacterInfoPocket>().characterStat;
 
         animator = GetComponent<Animator>();
@@ -133,6 +136,21 @@ public abstract class Character : MonoBehaviour
     public void OpponentRemove() // 상대 초기화 (Die애니메이션에서 사용)
     {
         opponent = null;
+    }
+
+    public int GetStat(_ECharacterStat_ select)
+    {
+        switch (select)
+        {
+            case _ECharacterStat_.ecsHp:
+                return stat.CurrentHp;
+            case _ECharacterStat_.ecsAttack:
+                return stat.Attack;
+            case _ECharacterStat_.ecsDefence:
+                return stat.Defence;
+            default:
+                return 0;
+        }
     }
 
     public abstract int UpgradeStat(_ECharacterStat_ select); // 병사, 적이 강화된 게 있으면 적용

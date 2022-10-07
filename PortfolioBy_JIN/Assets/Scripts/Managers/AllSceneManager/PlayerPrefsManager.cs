@@ -34,7 +34,17 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
     #endregion
 
     #region //unityLifeCycle//
-    void Awake()
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
+    private void OnEnable()
+    {
+        gameManager = GameManager.instance;
+    }
+
+    private void Start()
     {
         DataInit();
         CheckFirstPlay();
@@ -45,7 +55,6 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
     //-------------------------------------------- public
     public void DataInit()
     {
-        gameManager = GameManager.instance;
         isAlreadyPlayedKey = "Played";
         myNameKey = "Name";
         _myName = null;
