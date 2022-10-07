@@ -35,6 +35,11 @@ public class DataManager : Singleton<DataManager>
         ehDiamond,
         ehMax
     }
+    public enum _EWeaponUpgrade_
+    {
+        ewuBallista,
+        ewuMax
+    } _EWeaponUpgrade_ _currentWeaponUpgradeState;
 
     public enum _ESoldierUpgrade_
     {
@@ -75,7 +80,7 @@ public class DataManager : Singleton<DataManager>
         euiMax
     }
 
-    public enum _EBallistaResource_
+    public enum _EWeaponResource_
     {
         ebrWood,
         ebrStone,
@@ -122,7 +127,7 @@ public class DataManager : Singleton<DataManager>
     {
         public int m_nWave;
         public int m_nCastleUpgrade;
-        public int m_nBallistaUpgrade;
+        public int[] m_nWeaponUpgrade;
         public string m_sUserName;
         public int[] m_nSoldierUpgrade;
         public int[] m_nResource;
@@ -144,7 +149,12 @@ public class DataManager : Singleton<DataManager>
         {
             m_nWave = 1;
             m_nCastleUpgrade = 0;
-            m_nBallistaUpgrade = 0;
+
+            m_nWeaponUpgrade = new int[(int)_EWeaponUpgrade_.ewuMax];
+            for(int i = 0; i < (int)_EWeaponUpgrade_.ewuMax; i++)
+            {
+                m_nWeaponUpgrade[i] = 0;
+            }
 
             m_nSoldierUpgrade = new int[(int)_ESoldierUpgrade_.esuMax];
             for (int i = 0; i < (int)_ESoldierUpgrade_.esuMax; i++)
@@ -184,7 +194,12 @@ public class DataManager : Singleton<DataManager>
         {
             m_nWave = 1;
             m_nCastleUpgrade = 0;
-            m_nBallistaUpgrade = 0;
+
+            m_nWeaponUpgrade = new int[(int)_EWeaponUpgrade_.ewuMax];
+            for (int i = 0; i < (int)_EWeaponUpgrade_.ewuMax; i++)
+            {
+                m_nWeaponUpgrade[i] = 0;
+            }
 
             m_nSoldierUpgrade = new int[(int)_ESoldierUpgrade_.esuMax];
             for(int i = 0; i < (int)_ESoldierUpgrade_.esuMax; i++)
@@ -229,7 +244,10 @@ public class DataManager : Singleton<DataManager>
 
     #region //property//
     public _EMineral_ currentMineralState { get { return _currentMineralState; } set { _currentMineralState = value; } }
+
     public _ESoldierUpgrade_ currentSoldierUpgradeState { get { return _currentSoldierUpgradeState; } set { _currentSoldierUpgradeState = value; } }
+
+    public _EWeaponUpgrade_ currentWeaponUpgradeState { get { return _currentWeaponUpgradeState; } set { _currentWeaponUpgradeState = value; } }
 
     public User myUserInfo { get { return _myUserInfo; } set { _myUserInfo = value; } }
     #endregion
@@ -257,6 +275,8 @@ public class DataManager : Singleton<DataManager>
     {
         _currentMineralState = _EMineral_.emStone;
         _currentSoldierUpgradeState = _ESoldierUpgrade_.esuNormalSoldier;
+        _currentWeaponUpgradeState = _EWeaponUpgrade_.ewuBallista;
+
         _myUserInfo = null;
     }
 

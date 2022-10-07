@@ -122,8 +122,7 @@ public abstract class Weapon : MonoBehaviour
         switch (select)
         {
             case _EWeaponStat_.ewsAttack:
-                return (int)(dataManager.myUserInfo.m_nBallistaUpgrade * WeaponIncreaseAttack[(int)_EWeaponClass_.ewcBallista]);
-               // 추후 Weapon이 추가되면 배열로 변경 및 이름도 WeaponUpgrade로 변경
+                return (int)(dataManager.myUserInfo.m_nWeaponUpgrade[(int)weaponStat.myClass] * WeaponIncreaseAttack[(int)_EWeaponClass_.ewcBallista]);
             default:
                 return 0;
         }

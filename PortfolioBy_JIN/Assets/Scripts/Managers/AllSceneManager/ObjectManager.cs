@@ -80,9 +80,8 @@ public class ObjectManager : Singleton<ObjectManager>
     GameObject _soldierUpgradeFrame;
     GameObject _soldierUpgradeConfirmFrame;
     GameObject _soldierUnLockFrame;
-
-    GameObject _ballistaUpgradeFrame;
-    GameObject _ballistaUpgradeConfirmFrame;
+    GameObject _WeaponUpgradeFrame;
+    GameObject _WeaponUpgradeConfirmFrame;
 
     Button _defenceToInCastleButton;
     Button _optionFrameOnButton;
@@ -95,11 +94,11 @@ public class ObjectManager : Singleton<ObjectManager>
     Button _nextSoldierButton;
     Button _soldierUnLockOffButton;
     Button _soldierUnLockConfirmButton;
-    Button _ballistaUpgradeFrameOnButton;
-    Button _ballistaUpgradeFrameOffButton;
-    Button _ballistaUpgradeConfirmFrameOnButton;
-    Button _ballistaUpgradeConfirmFrameOffButton;
-    Button _ballistaUpgradeConfirmButton;
+    Button _WeaponUpgradeFrameOnButton;
+    Button _WeaponUpgradeFrameOffButton;
+    Button _WeaponUpgradeConfirmFrameOnButton;
+    Button _WeaponUpgradeConfirmFrameOffButton;
+    Button _WeaponUpgradeConfirmButton;
 
     Text _moneyText;
     Text _waveText;
@@ -107,9 +106,9 @@ public class ObjectManager : Singleton<ObjectManager>
     Text[] _soldierUpgradeInformationsText;
     Text _soldierUpgradePriceText;
     Text _soldierUnLockPriceText;
-    Text[] _ballistaUpgradeInformationsText;
-    Text _ballistaUpgradePriceText;
-    Text[] _ballistaUpgradeResourcesText;
+    Text[] _WeaponUpgradeInformationsText;
+    Text _WeaponUpgradePriceText;
+    Text[] _WeaponUpgradeResourcesText;
     #endregion
 
     GameManager gameManager;
@@ -172,9 +171,8 @@ public class ObjectManager : Singleton<ObjectManager>
     public GameObject soldierUpgradeFrame { get { return _soldierUpgradeFrame; } }
     public GameObject soldierUpgradeConfirmFrame { get { return _soldierUpgradeConfirmFrame; } }
     public GameObject soldierUnLockFrame { get { return _soldierUnLockFrame; } }
-
-    public GameObject ballistaUpgradeFrame { get { return _ballistaUpgradeFrame; } }
-    public GameObject ballistaUpgradeConfirmFrame { get { return _ballistaUpgradeConfirmFrame; } }
+    public GameObject WeaponUpgradeFrame { get { return _WeaponUpgradeFrame; } }
+    public GameObject WeaponUpgradeConfirmFrame { get { return _WeaponUpgradeConfirmFrame; } }
 
     public Button defenceToInCastleButton { get { return _defenceToInCastleButton; } }
     public Button optionFrameOnButton { get { return _optionFrameOnButton; } }
@@ -187,11 +185,11 @@ public class ObjectManager : Singleton<ObjectManager>
     public Button nextSoldierButton { get { return _nextSoldierButton; } }
     public Button soldierUnLockOffButton { get { return _soldierUnLockOffButton; } }
     public Button soldierUnLockConfirmButton { get { return _soldierUnLockConfirmButton; } }
-    public Button ballistaUpgradeFrameOnButton { get { return _ballistaUpgradeFrameOnButton; } }
-    public Button ballistaUpgradeFrameOffButton { get { return _ballistaUpgradeFrameOffButton; } }
-    public Button ballistaUpgradeConfirmFrameOnButton { get { return _ballistaUpgradeConfirmFrameOnButton; } }
-    public Button ballistaUpgradeConfirmFrameOffButton { get { return _ballistaUpgradeConfirmFrameOffButton; } }
-    public Button ballistaUpgradeConfirmButton { get { return _ballistaUpgradeConfirmButton; } }
+    public Button WeaponUpgradeFrameOnButton { get { return _WeaponUpgradeFrameOnButton; } }
+    public Button WeaponUpgradeFrameOffButton { get { return _WeaponUpgradeFrameOffButton; } }
+    public Button WeaponUpgradeConfirmFrameOnButton { get { return _WeaponUpgradeConfirmFrameOnButton; } }
+    public Button WeaponUpgradeConfirmFrameOffButton { get { return _WeaponUpgradeConfirmFrameOffButton; } }
+    public Button WeaponUpgradeConfirmButton { get { return _WeaponUpgradeConfirmButton; } }
 
     public Text moneyText { get { return _moneyText; } }
     public Text waveText { get { return _waveText; } }
@@ -199,9 +197,9 @@ public class ObjectManager : Singleton<ObjectManager>
     public Text[] soldierUpgradeInformationsText { get { return _soldierUpgradeInformationsText; } }
     public Text soldierUpgradePriceText { get { return _soldierUpgradePriceText; } }
     public Text soldierUnLockPriceText { get { return _soldierUnLockPriceText; } }
-    public Text[] ballistaUpgradeInformationsText { get { return _ballistaUpgradeInformationsText; } }
-    public Text ballistaUpgradePriceText { get { return _ballistaUpgradePriceText; } }
-    public Text[] ballistaUpgradeResourcesText { get { return _ballistaUpgradeResourcesText; } }
+    public Text[] WeaponUpgradeInformationsText { get { return _WeaponUpgradeInformationsText; } }
+    public Text WeaponUpgradePriceText { get { return _WeaponUpgradePriceText; } }
+    public Text[] WeaponUpgradeResourcesText { get { return _WeaponUpgradeResourcesText; } }
     #endregion
     #endregion
 
@@ -239,8 +237,8 @@ public class ObjectManager : Singleton<ObjectManager>
         _mineralsLeftTimeText = new Text[(int)DataManager._EMineral_.emMax];
         _mineralsHirePriceText = new Text[(int)DataManager._EMineral_.emMax];
         _soldierUpgradeInformationsText = new Text[(int)DataManager._EUpgradeInfo_.euiMax];
-        _ballistaUpgradeInformationsText = new Text[(int)DataManager._EUpgradeInfo_.euiMax];
-        _ballistaUpgradeResourcesText = new Text[(int)DataManager._EBallistaResource_.ebrMax];
+        _WeaponUpgradeInformationsText = new Text[(int)DataManager._EUpgradeInfo_.euiMax];
+        _WeaponUpgradeResourcesText = new Text[(int)DataManager._EWeaponResource_.ebrMax];
     }
 
     public void SceneLoadedObjects() // 각각의 씬이 로드될 때마다 필요한 오브젝트들을 참조한다
@@ -358,9 +356,8 @@ public class ObjectManager : Singleton<ObjectManager>
         _soldierUpgradeFrame = _prepareFrame.transform.Find("SoldierUpgradeFrame").gameObject;
         _soldierUpgradeConfirmFrame = _soldierUpgradeFrame.transform.Find("SoldierUpgradeConfirmFrame").gameObject;
         _soldierUnLockFrame = _soldierUpgradeFrame.transform.Find("SoldierUnLockFrame").gameObject;
-
-        _ballistaUpgradeFrame = _prepareFrame.transform.Find("BallistaUpgradeFrame").gameObject;
-        _ballistaUpgradeConfirmFrame = _ballistaUpgradeFrame.transform.Find("BallistaUpgradeConfirmFrame").gameObject;
+        _WeaponUpgradeFrame = _prepareFrame.transform.Find("WeaponUpgradeFrame").gameObject;
+        _WeaponUpgradeConfirmFrame = _WeaponUpgradeFrame.transform.Find("WeaponUpgradeConfirmFrame").gameObject;
 
         _defenceToInCastleButton = GameObject.Find("DefenceToInCastle_Button").GetComponent<Button>();
         _optionFrameOnButton = GameObject.Find("OptionFrameOn_Button").GetComponent<Button>();
@@ -380,11 +377,11 @@ public class ObjectManager : Singleton<ObjectManager>
         _nextSoldierButton = _soldierUpgradeFrame.transform.Find("NextSoldier_Button").GetComponent<Button>();
         _soldierUnLockOffButton = _soldierUnLockFrame.transform.Find("SoldierUnLockFrameOff_Button").GetComponent<Button>();
         _soldierUnLockConfirmButton = _soldierUnLockFrame.transform.Find("SoldierUnLockConfirm_Button").GetComponent<Button>();
-        _ballistaUpgradeFrameOnButton = GameObject.Find("BallistaUpgradeFrameOn_Button").GetComponent<Button>();
-        _ballistaUpgradeFrameOffButton = _ballistaUpgradeFrame.transform.Find("BallistaUpgradeFrameOff_Button").GetComponent<Button>();
-        _ballistaUpgradeConfirmFrameOnButton = _ballistaUpgradeFrame.transform.Find("BallistaUpgradeConfirmFrameOn_Button").GetComponent<Button>();
-        _ballistaUpgradeConfirmFrameOffButton = _ballistaUpgradeConfirmFrame.transform.Find("BallistaUpgradeConfirmFrameOff_Button").GetComponent<Button>();
-        _ballistaUpgradeConfirmButton = _ballistaUpgradeConfirmFrame.transform.Find("BallistaUpgradeConfirm_Button").GetComponent<Button>();
+        _WeaponUpgradeFrameOnButton = GameObject.Find("WeaponUpgradeFrameOn_Button").GetComponent<Button>();
+        _WeaponUpgradeFrameOffButton = _WeaponUpgradeFrame.transform.Find("WeaponUpgradeFrameOff_Button").GetComponent<Button>();
+        _WeaponUpgradeConfirmFrameOnButton = _WeaponUpgradeFrame.transform.Find("BallistaUpgradeConfirmFrameOn_Button").GetComponent<Button>();
+        _WeaponUpgradeConfirmFrameOffButton = _WeaponUpgradeConfirmFrame.transform.Find("WeaponUpgradeConfirmFrameOff_Button").GetComponent<Button>();
+        _WeaponUpgradeConfirmButton = _WeaponUpgradeConfirmFrame.transform.Find("WeaponUpgradeConfirm_Button").GetComponent<Button>();
 
         _moneyText = GameObject.Find("Money_Text").GetComponent<Text>();
         _waveText = GameObject.Find("Wave_Text").GetComponent<Text>();
@@ -393,14 +390,14 @@ public class ObjectManager : Singleton<ObjectManager>
         _soldierUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat] = _soldierUpgradeConfirmFrame.transform.Find("AdditionalStat_Text").GetComponent<Text>();
         _soldierUpgradePriceText = _soldierUpgradeConfirmButton.gameObject.transform.Find("SoldierUpgradePrice_Text").GetComponent<Text>();
         _soldierUnLockPriceText = _soldierUnLockConfirmButton.gameObject.transform.Find("UnLockPrice_Text").GetComponent<Text>();
-        _ballistaUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade] = _ballistaUpgradeConfirmFrame.transform.Find("CurrentBallistaUpgrade_Text").GetComponent<Text>();
-        _ballistaUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat] = _ballistaUpgradeConfirmFrame.transform.Find("AdditionalStat_Text").GetComponent<Text>();
-        _ballistaUpgradePriceText = _ballistaUpgradeConfirmButton.gameObject.transform.Find("BallistaUpgradePrice_Text").GetComponent<Text>();
-        _ballistaUpgradeResourcesText[(int)DataManager._EBallistaResource_.ebrWood] = _ballistaUpgradeConfirmFrame.transform.Find("NeedResourceFrame").transform.Find("Wood_Image").transform.Find("Wood_Text").GetComponent<Text>();
-        _ballistaUpgradeResourcesText[(int)DataManager._EBallistaResource_.ebrStone] = _ballistaUpgradeConfirmFrame.transform.Find("NeedResourceFrame").transform.Find("Stone_Image").transform.Find("Stone_Text").GetComponent<Text>();
-        _ballistaUpgradeResourcesText[(int)DataManager._EBallistaResource_.ebrIron] = _ballistaUpgradeConfirmFrame.transform.Find("NeedResourceFrame").transform.Find("Iron_Image").transform.Find("Iron_Text").GetComponent<Text>();
-        _ballistaUpgradeResourcesText[(int)DataManager._EBallistaResource_.ebrGold] = _ballistaUpgradeConfirmFrame.transform.Find("NeedResourceFrame").transform.Find("Gold_Image").transform.Find("Gold_Text").GetComponent<Text>();
-        _ballistaUpgradeResourcesText[(int)DataManager._EBallistaResource_.ebrDiamond] = _ballistaUpgradeConfirmFrame.transform.Find("NeedResourceFrame").transform.Find("Diamond_Image").transform.Find("Diamond_Text").GetComponent<Text>();
+        _WeaponUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade] = _WeaponUpgradeConfirmFrame.transform.Find("CurrentWeaponUpgrade_Text").GetComponent<Text>();
+        _WeaponUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat] = _WeaponUpgradeConfirmFrame.transform.Find("AdditionalStat_Text").GetComponent<Text>();
+        _WeaponUpgradePriceText = _WeaponUpgradeConfirmButton.gameObject.transform.Find("WeaponUpgradePrice_Text").GetComponent<Text>();
+        _WeaponUpgradeResourcesText[(int)DataManager._EWeaponResource_.ebrWood] = _WeaponUpgradeConfirmFrame.transform.Find("NeedResourceFrame").transform.Find("Wood_Image").transform.Find("Wood_Text").GetComponent<Text>();
+        _WeaponUpgradeResourcesText[(int)DataManager._EWeaponResource_.ebrStone] = _WeaponUpgradeConfirmFrame.transform.Find("NeedResourceFrame").transform.Find("Stone_Image").transform.Find("Stone_Text").GetComponent<Text>();
+        _WeaponUpgradeResourcesText[(int)DataManager._EWeaponResource_.ebrIron] = _WeaponUpgradeConfirmFrame.transform.Find("NeedResourceFrame").transform.Find("Iron_Image").transform.Find("Iron_Text").GetComponent<Text>();
+        _WeaponUpgradeResourcesText[(int)DataManager._EWeaponResource_.ebrGold] = _WeaponUpgradeConfirmFrame.transform.Find("NeedResourceFrame").transform.Find("Gold_Image").transform.Find("Gold_Text").GetComponent<Text>();
+        _WeaponUpgradeResourcesText[(int)DataManager._EWeaponResource_.ebrDiamond] = _WeaponUpgradeConfirmFrame.transform.Find("NeedResourceFrame").transform.Find("Diamond_Image").transform.Find("Diamond_Text").GetComponent<Text>();
     }
     //-------------------------------------------- private
 

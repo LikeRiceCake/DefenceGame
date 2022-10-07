@@ -521,33 +521,52 @@ public class ButtonManager : Singleton<ButtonManager>
         }
     }
 
-    public void BallistaUpgradeFrameOnOff() // 발리스타 강화 프레임 On, Off
+    public void WeaponUpgradeFrameOnOff() // 무기 강화 프레임 On, Off
     {
-        if (objectManager.ballistaUpgradeFrame.activeSelf)
-            objectManager.ballistaUpgradeFrame.SetActive(false);
+        if (objectManager.WeaponUpgradeFrame.activeSelf)
+            objectManager.WeaponUpgradeFrame.SetActive(false);
         else
-            objectManager.ballistaUpgradeFrame.SetActive(true);
+            objectManager.WeaponUpgradeFrame.SetActive(true);
     }
 
-    public void BallistaUpgradeConfirmFrameOnOff() // 발리스타 업그레이드 확인 프레임 온오프
+    public void SwitchToNextWeaponUpgrade() // 다음 무기
     {
-        if (objectManager.ballistaUpgradeConfirmFrame.activeSelf)
-            objectManager.ballistaUpgradeConfirmFrame.SetActive(false);
+        switch (dataManager.currentWeaponUpgradeState)
+        {
+            case DataManager._EWeaponUpgrade_.ewuBallista:
+                // dataManager.currentWeaponUpgradeState = DataManager._EWeaponUpgrade_.ewuBallista;
+                break;
+            default:
+                dataManager.currentWeaponUpgradeState = DataManager._EWeaponUpgrade_.ewuBallista;
+                break;
+        }
+        WeaponUpgradeObjectSelectedOnOff();
+    }
+
+    public void WeaponUpgradeObjectSelectedOnOff() // 무기 오브젝트 선택 OnOff
+    {
+        //
+    }
+
+    public void WeaponUpgradeConfirmFrameOnOff() // 무기 업그레이드 확인 프레임 온오프
+    {
+        if (objectManager.WeaponUpgradeConfirmFrame.activeSelf)
+            objectManager.WeaponUpgradeConfirmFrame.SetActive(false);
         else
         {
-            objectManager.ballistaUpgradeConfirmFrame.SetActive(true);
+            objectManager.WeaponUpgradeConfirmFrame.SetActive(true);
             uiManager.SetTextBallistaUpgrade();
         }
     }
 
-    public void BallistaUpgrade() // 발리스타 업그레이드
+    public void WeaponUpgrade() // 무기 업그레이드
     {
-        if(DataManager.MaxBallistaUpgrade > dataManager.myUserInfo.m_nBallistaUpgrade 
-            && dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.BallistaUpgradePrice[dataManager.myUserInfo.m_nBallistaUpgrade / (DataManager.MaxBallistaUpgrade - 1)])
+        if(DataManager.MaxBallistaUpgrade > dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState]
+            && dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.BallistaUpgradePrice[dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.MaxBallistaUpgrade - 1)])
         {
-            int i = dataManager.myUserInfo.m_nBallistaUpgrade / (DataManager.MaxBallistaUpgrade - 1);
+            int i = dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.MaxBallistaUpgrade - 1);
 
-            for(int j = 0; j < (int)DataManager._EBallistaResource_.ebrMax; j++)
+            for(int j = 0; j < (int)DataManager._EWeaponResource_.ebrMax; j++)
             {
                 if (dataManager.myUserInfo.m_nResource[j + 1] >= DataManager.BallistaUpgradeResource[j, i])
                     continue;
@@ -557,7 +576,7 @@ public class ButtonManager : Singleton<ButtonManager>
 
             dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.BallistaUpgradePrice[i];
 
-            for (int j = 0; j < (int)DataManager._EBallistaResource_.ebrMax; j++)
+            for (int j = 0; j < (int)DataManager._EWeaponResource_.ebrMax; j++)
                 dataManager.myUserInfo.m_nResource[j + 1] -= DataManager.BallistaUpgradeResource[j, i];
 
             uiManager.SetTextBallistaUpgrade();
@@ -647,11 +666,11 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager.soldierUpgradeConfirmButton.onClick.AddListener(SoldierUpgrade);
         objectManager.nextSoldierButton.onClick.AddListener(SwitchToNextSoldierUpgrade);
         objectManager.soldierUnLockOffButton.onClick.AddListener(SoldierUnLockFrameOff);
-        objectManager.ballistaUpgradeFrameOnButton.onClick.AddListener(BallistaUpgradeFrameOnOff);
-        objectManager.ballistaUpgradeFrameOffButton.onClick.AddListener(BallistaUpgradeFrameOnOff);
-        objectManager.ballistaUpgradeConfirmFrameOnButton.onClick.AddListener(BallistaUpgradeConfirmFrameOnOff);
-        objectManager.ballistaUpgradeConfirmFrameOffButton.onClick.AddListener(BallistaUpgradeConfirmFrameOnOff);
-        objectManager.ballistaUpgradeConfirmButton.onClick.AddListener(BallistaUpgrade);
+        objectManager.WeaponUpgradeFrameOnButton.onClick.AddListener(WeaponUpgradeFrameOnOff);
+        objectManager.WeaponUpgradeFrameOffButton.onClick.AddListener(WeaponUpgradeFrameOnOff);
+        objectManager.WeaponUpgradeConfirmFrameOnButton.onClick.AddListener(WeaponUpgradeConfirmFrameOnOff);
+        objectManager.WeaponUpgradeConfirmFrameOffButton.onClick.AddListener(WeaponUpgradeConfirmFrameOnOff);
+        objectManager.WeaponUpgradeConfirmButton.onClick.AddListener(WeaponUpgrade);
     }
 
     // -------------------------------------------- private

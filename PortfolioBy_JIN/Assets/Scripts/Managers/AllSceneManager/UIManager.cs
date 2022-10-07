@@ -237,19 +237,19 @@ public class UIManager : Singleton<UIManager>
 
     public void SetTextBallistaUpgrade() // 발리스타 업그레이드 Text 세팅
     {
-        objectManager.ballistaUpgradePriceText.text =
-            DataManager.BallistaUpgradePrice[dataManager.myUserInfo.m_nBallistaUpgrade / (DataManager.SoldierUpgradePriceCnt - 1)].ToString();
+        objectManager.WeaponUpgradePriceText.text =
+            DataManager.BallistaUpgradePrice[dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.SoldierUpgradePriceCnt - 1)].ToString();
 
-        objectManager.ballistaUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade].text =
-            "현재 업그레이드 : " + dataManager.myUserInfo.m_nBallistaUpgrade.ToString();
+        objectManager.WeaponUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade].text =
+            "현재 업그레이드 : " + dataManager.myUserInfo.m_nWeaponUpgrade.ToString();
 
-        objectManager.ballistaUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat].text =
-            "추가 공격력 : " + dataManager.myUserInfo.m_nBallistaUpgrade * Weapon.WeaponIncreaseAttack[(int)Weapon._EWeaponClass_.ewcBallista];
+        objectManager.WeaponUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat].text =
+            "추가 공격력 : " + dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] * Weapon.WeaponIncreaseAttack[(int)Weapon._EWeaponClass_.ewcBallista];
 
-        int i = dataManager.myUserInfo.m_nBallistaUpgrade / (DataManager.MaxBallistaUpgrade - 1);
+        int i = dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.MaxBallistaUpgrade - 1);
 
-        for (int j = 0; j < (int)DataManager._EBallistaResource_.ebrMax; j++)
-            objectManager.ballistaUpgradeResourcesText[j].text = DataManager.BallistaUpgradeResource[j, i].ToString();
+        for (int j = 0; j < (int)DataManager._EWeaponResource_.ebrMax; j++)
+            objectManager.WeaponUpgradeResourcesText[j].text = DataManager.BallistaUpgradeResource[j, i].ToString();
     }
 
     public void SceneLoadedUIs() // 씬이 로드될 때마다 필요한 UI의 세팅

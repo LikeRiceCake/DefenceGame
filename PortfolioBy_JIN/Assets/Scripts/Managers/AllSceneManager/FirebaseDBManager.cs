@@ -105,11 +105,17 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
 
                     dataManager.myUserInfo.m_nWave = Convert.ToInt32(info["m_nWave"]);
                     dataManager.myUserInfo.m_nCastleUpgrade = Convert.ToInt32(info["m_nCastleUpgrade"]);
-                    dataManager.myUserInfo.m_nBallistaUpgrade = Convert.ToInt32(info["myUserInfom_nBallistaUpgrade"]);
                     dataManager.myUserInfo.m_sUserName = Convert.ToString(info["m_sUserName"]);
                     dataManager.myUserInfo.m_sQuitTime = Convert.ToDateTime(info["m_sQuitTime"]);
 
                     int index = 0;
+
+                    foreach (var value in testSnapShot.Child(_path).Child("m_nWeaponUpgrade").Children)
+                    {
+                        dataManager.myUserInfo.m_nWeaponUpgrade[index++] = Convert.ToInt32(value.Value);
+                    }
+
+                    index = 0;
 
                     foreach (var value in testSnapShot.Child(_path).Child("m_nSoldierUpgrade").Children)
                     {
