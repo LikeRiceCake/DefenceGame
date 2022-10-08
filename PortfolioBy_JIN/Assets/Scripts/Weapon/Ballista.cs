@@ -72,9 +72,9 @@ public class Ballista : Weapon
         if (opponent == null)
             StopCoroutine(coroutine);
         GameObject projectileObj = Instantiate(projectile, transform.position, Quaternion.identity);
-        projectileObj.GetComponent<BallistaArrow>().opponent = opponent;
-        projectileObj.GetComponent<BallistaArrow>().Attack = stat.Attack;
-        projectileObj.GetComponent<BallistaArrow>().Speed = stat.Speed;
+        projectileObj.GetComponent<BallistaArrow>().target = opponent.GetComponent<Enemy>();
+        projectileObj.GetComponent<BallistaArrow>().sAttack = stat.Attack;
+        projectileObj.GetComponent<BallistaArrow>().sSpeed = stat.Speed;
         yield return new WaitForSeconds(stat.RateOfFire);
     }
     //-------------------------------------------- private

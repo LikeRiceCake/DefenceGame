@@ -17,6 +17,8 @@ public class Soldier : Character
     //-------------------------------------------- public
 
     //-------------------------------------------- private
+    Collider2D opponent;
+
     LayerMask layerMask;
 
     ButtonManager buttonManager;
@@ -66,9 +68,14 @@ public class Soldier : Character
             if (opponent != null)
             {
                 SetCharacterState(_ECharacterState_.ecsMove);
-                SetAnimation("Move");
+                SetAnimation("isMove");
             }
         }
+    }
+
+    public void OpponentRemove() // 상대 초기화 (Die애니메이션에서 사용)
+    {
+        opponent = null;
     }
 
     public override void Move()
@@ -100,22 +107,23 @@ public class Soldier : Character
     #endregion
 
     #region //collision//
-    public override void OnCollisionEnter2D(Collision2D collision)
+    public override void OnTriggerEnter2D(Collider2D collision)
     {
-        if (myCurrentCharacterState == _ECharacterState_.ecsMove && collision.collider.CompareTag("Enemy"))
+        if (myCurrentCharacterState == _ECharacterState_.ecsMove && collision.transform.CompareTag("Enemy"))
         {
             SetCharacterState(_ECharacterState_.ecsFight);
-            SetAnimation("Attack");
-            opponent = collision.collider;
+            SetAnimation("isAttack");
+            target = collision.GetComponent<Enemy>();
         }
     }
 
-    public override void OnCollisionExit2D(Collision2D collision)
+    public override void OnTriggerExit2D(Collider2D collision)
     {
-        if (myCurrentCharacterState == _ECharacterState_.ecsFight && collision.collider.CompareTag("Enemy"))
+        if (myCurrentCharacterState == _ECharacterState_.ecsFight && collision.transform.CompareTag("Enemy"))
         {
             SetCharacterState(_ECharacterState_.ecsIdle);
-            SetAnimation("Idle");
+            SetAnimation("isIdle");
+            TargetRemove();
             OpponentRemove();
         }
     }

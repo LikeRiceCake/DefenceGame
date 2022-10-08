@@ -2,14 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BallistaArrow : MonoBehaviour
+public class BallistaArrow : MonoBehaviour, IAttack
 {
     #region //variable//
     //-------------------------------------------- public
 
     //-------------------------------------------- private
-    int _Attack;
-    float _Speed;
     #endregion
 
     #region //constant//
@@ -19,17 +17,28 @@ public class BallistaArrow : MonoBehaviour
 
     #endregion
 
+    #region //struct//
+    struct _stat
+    {
+        public int Attack;
+        public float Speed;
+    }
+    _stat stat;
+    #endregion
+
     #region //class//
     //-------------------------------------------- public
 
     //-------------------------------------------- private
-    Collider2D _opponent;
+    IAttacked _target;
     #endregion
 
     #region //property//
-    public Collider2D opponent { set { _opponent = value; } }
-    public int Attack { set { _Attack = value; } }
-    public float Speed { set { _Speed = value; } }
+    public IAttacked target { set { _target = value; } }
+
+    public int sAttack { set { stat.Attack = value; } }
+
+    public float sSpeed { set { stat.Speed = value; } }
     #endregion
 
     #region //unityLifeCycle//
@@ -42,27 +51,27 @@ public class BallistaArrow : MonoBehaviour
 
     #region //function//
     //-------------------------------------------- public
-    public int AttackEnemy(Enemy _opponent)
+    public void Attack()
     {
-        return _Attack - _opponent.GetStat(Character._ECharacterStat_.ecsDefence);
+        _target.Attacked(stat.Attack);
     }
 
     public void TrackDownEnemy()
     {
-        Vector2 dir = _opponent.gameObject.transform.position - transform.position;
+        Vector2 dir = _target.GetOpponent().gameObject.transform.position - transform.position;
 
-        transform.Translate(dir.normalized * _Speed * Time.deltaTime);
+        transform.Translate(dir.normalized * stat.Speed * Time.deltaTime);
     }
     //-------------------------------------------- private
 
     #endregion
 
     #region //collision//
-    public void OnCollisionEnter2D(Collision2D collision)
+    public void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.collider.CompareTag("Enemy"))
+        if(collision.transform.CompareTag("Enemy"))
         {
-            collision.collider.GetComponent<Enemy>().Attacked(AttackEnemy(collision.collider.GetComponent<Enemy>()));
+            Attack();
             Destroy(gameObject);
         }
     }

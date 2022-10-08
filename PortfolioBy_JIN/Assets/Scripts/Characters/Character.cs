@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Character : MonoBehaviour
+public abstract class Character : MonoBehaviour, IAttack, IAttacked
 {
     #region //enumeration//
     public enum _ECharacterClass_
@@ -57,13 +57,13 @@ public abstract class Character : MonoBehaviour
     //-------------------------------------------- public
 
     //-------------------------------------------- protected
-    protected Collider2D opponent;
-
     protected CharacterInfo characterStat;
 
     protected Animator animator;
 
     protected DataManager dataManager;
+
+    protected IAttacked target;
     //-------------------------------------------- private
     #endregion
 
@@ -102,22 +102,28 @@ public abstract class Character : MonoBehaviour
     }
 
     public abstract void Move(); // 움직임을 담당하는 함수
-
-    public int Attack(Character _opponent) // 상대가 받을 데미지를 반환
+    
+    public void Attack() // 상대를 공격
     {
-        return stat.Attack - _opponent.stat.Defence;
+        target.Attacked(stat.Attack);
     }
 
     public void Attacked(int _damage) // 데미지 만큼 내 Hp 감소 (Attack애니메이션에서 사용)
     {
+        _damage = _damage <= stat.Defence ? 0 : _damage - stat.Defence;
         stat.CurrentHp -= _damage;
         if(stat.CurrentHp <= 0)
         {
             SetCharacterState(_ECharacterState_.ecsDie);
-            SetAnimation("DIe");
+            SetAnimation("isDIe");
         }
     }
 
+    public Collider2D GetOpponent()
+    {
+        return GetComponent<Collider2D>();
+    }
+    
     public void SetCharacterState(_ECharacterState_ newCharacterState) // 캐릭터 상태 갱신
     {
         myCurrentCharacterState = newCharacterState;
@@ -131,14 +137,14 @@ public abstract class Character : MonoBehaviour
     public void ObjectOnOff(bool value) // 오브젝트 비활성, 활성화 (Die애니메이션에서 사용)
     {
         gameObject.SetActive(value);
-    }
+    } 
 
-    public void OpponentRemove() // 상대 초기화 (Die애니메이션에서 사용)
+    public void TargetRemove() // 상대 초기화 (Die애니메이션에서 사용)
     {
-        opponent = null;
+        target = null;
     }
 
-    public int GetStat(_ECharacterStat_ select)
+    public int GetStat(_ECharacterStat_ select) // 스탯 반환
     {
         switch (select)
         {
@@ -159,8 +165,8 @@ public abstract class Character : MonoBehaviour
     #endregion
 
     #region //collision//
-    public abstract void OnCollisionEnter2D(Collision2D collision); // 상대를 만났을 때
+    public abstract void OnTriggerEnter2D(Collider2D collision);
 
-    public abstract void OnCollisionExit2D(Collision2D collision); // 상대를 떠났을 때
+    public abstract void OnTriggerExit2D(Collider2D collision); // 상대를 만났을 때
     #endregion
 }

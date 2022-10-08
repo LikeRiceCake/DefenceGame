@@ -18,6 +18,15 @@ public class Enemy : Character
         Move();
     }
 
+    private void Update()
+    {
+        if(myCurrentCharacterState == _ECharacterState_.ecsIdle)
+        {
+            SetCharacterState(_ECharacterState_.ecsMove);
+            SetAnimation("isMove");
+        }
+    }
+
     void OnDisable()
     {
         _enemyManager.CurrentEnemyDecrease();
@@ -29,7 +38,9 @@ public class Enemy : Character
     public override void Move()
     {
         if(myCurrentCharacterState == _ECharacterState_.ecsMove)
-            transform.Translate(Vector3.left * stat.Speed * Time.deltaTime);
+        {
+            transform.Translate(Vector2.left * stat.Speed * Time.deltaTime);
+        }
     }
 
     public override int UpgradeStat(_ECharacterStat_ select)
@@ -51,23 +62,30 @@ public class Enemy : Character
     #endregion
 
     #region //collision//
-    public override void OnCollisionEnter2D(Collision2D collision)
+    public override void OnTriggerEnter2D(Collider2D collision)
     {
-        if (myCurrentCharacterState == _ECharacterState_.ecsMove && collision.collider.CompareTag("Soldier"))
+        if (myCurrentCharacterState == _ECharacterState_.ecsMove && collision.transform.CompareTag("Soldier"))
         {
             SetCharacterState(_ECharacterState_.ecsFight);
-            SetAnimation("Attack");
-            opponent = collision.collider;
+            SetAnimation("isAttack");
+            target = collision.GetComponent<Soldier>();
+        }
+        else if (myCurrentCharacterState == _ECharacterState_.ecsMove && collision.transform.CompareTag("Castle"))
+        {
+            print("º¯°æ");
+            SetCharacterState(_ECharacterState_.ecsFight);
+            SetAnimation("isC_Attack");
+            target = collision.GetComponent<Castle>();
         }
     }
 
-    public override void OnCollisionExit2D(Collision2D collision)
+    public override void OnTriggerExit2D(Collider2D collision)
     {
-        if (myCurrentCharacterState == _ECharacterState_.ecsFight && collision.collider.CompareTag("Soldier"))
+        if (myCurrentCharacterState == _ECharacterState_.ecsFight && collision.transform.CompareTag("Soldier"))
         {
             SetCharacterState(_ECharacterState_.ecsIdle);
-            SetAnimation("Idle");
-            OpponentRemove();
+            SetAnimation("isIdle");
+            TargetRemove();
         }
     }
     #endregion

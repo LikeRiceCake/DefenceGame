@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Castle : MonoBehaviour
+public class Castle : MonoBehaviour, IAttacked
 {
     #region //enumeration//
     public enum _ECastleStat_
@@ -101,9 +101,29 @@ public class Castle : MonoBehaviour
         }
     }
 
+    public int GetStat(_ECastleStat_ select)
+    {
+        switch (select)
+        {
+            case _ECastleStat_.ecsHp:
+                return stat.CurrentHp;
+            case _ECastleStat_.ecsDefence:
+                return stat.Defence;
+            default:
+                return 0;
+        }
+    }
+
+    public Collider2D GetOpponent()
+    {
+        return GetComponent<Collider2D>();
+    }
+
     public void Attacked(int _damage)
     {
+        _damage = _damage <= stat.Defence ? 0 : _damage - stat.Defence;
         stat.CurrentHp -= _damage;
+        print(stat.CurrentHp);
         if (stat.CurrentHp <= 0)
         {
             // 게임 오버

@@ -45,12 +45,13 @@ public class EnemyManager : Singleton<EnemyManager>
     #region //unityLifeCycle//
     private void OnEnable()
     {
-
+        
     }
 
     private void Start()
     {
         DataInit();
+        CreateEnemy();
     }
     #endregion
 
