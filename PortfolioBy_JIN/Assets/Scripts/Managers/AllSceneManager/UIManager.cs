@@ -171,7 +171,7 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
-    public void SetResourceUI() // 자원UI 세팅
+    public void SetTextResourceUI() // 자원UI 세팅
     {
         for (int i = 0; i < (int)DataManager._EResource_.erMax; i++)
         {
@@ -179,7 +179,7 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
-    public void SetResourceUI(DataManager._EResource_ select) // 자원 UI 선택 세팅
+    public void SetTextResourceUI(DataManager._EResource_ select) // 자원 UI 선택 세팅
     {
         objectManager.resourceText[(int)select].text = dataManager.myUserInfo.m_nResource[(int)select].ToString();
     }
@@ -213,7 +213,12 @@ public class UIManager : Singleton<UIManager>
     
     public void SetTextPlacedSoldier() // 배치된 병사 수 세팅
     {
-        objectManager.placedSoldierText.text = prepareManager.placedSoldier.ToString();
+        objectManager.placedSoldierText.text = prepareManager.placedSoldier + " / " + prepareManager.placedSoldierMax; ;
+    }
+
+    public void SetTextWave()
+    {
+        objectManager.waveText.text = dataManager.myUserInfo.m_nWave.ToString();
     }
 
     public void SetTextSoldierUpgrade() // 솔져 업그레이드 Text 세팅
@@ -235,21 +240,33 @@ public class UIManager : Singleton<UIManager>
         objectManager.soldierUnLockPriceText.text = DataManager.SoldierUnLockPrice[(int)dataManager.currentSoldierUpgradeState].ToString();
     }
 
-    public void SetTextBallistaUpgrade() // 발리스타 업그레이드 Text 세팅
+    public void SetTextWeaponUpgrade() // 무기 업그레이드 Text 세팅
     {
-        objectManager.WeaponUpgradePriceText.text =
+        objectManager.weaponUpgradePriceText.text =
             DataManager.BallistaUpgradePrice[dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.SoldierUpgradePriceCnt - 1)].ToString();
 
-        objectManager.WeaponUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade].text =
-            "현재 업그레이드 : " + dataManager.myUserInfo.m_nWeaponUpgrade.ToString();
+        objectManager.weaponUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade].text =
+            "현재 업그레이드 : " + dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState].ToString();
 
-        objectManager.WeaponUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat].text =
+        objectManager.weaponUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat].text =
             "추가 공격력 : " + dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] * Weapon.WeaponIncreaseAttack[(int)Weapon._EWeaponClass_.ewcBallista];
 
         int i = dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.MaxBallistaUpgrade - 1);
 
         for (int j = 0; j < (int)DataManager._EWeaponResource_.ebrMax; j++)
-            objectManager.WeaponUpgradeResourcesText[j].text = DataManager.BallistaUpgradeResource[j, i].ToString();
+            objectManager.weaponUpgradeResourcesText[j].text = DataManager.BallistaUpgradeResource[j, i].ToString();
+    }
+
+    public void SetTextCastleUpgrade() // 성 업그레이드 Text 세팅
+    {
+        objectManager.castleUpgradePriceText.text = DataManager.CastleUpgradePrice[(int)dataManager.myUserInfo.m_nCastleUpgrade / DataManager.CastleUpgradePriceCnt].ToString();
+
+        objectManager.castleUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade].text =
+            "현재 업그레이드 : " + dataManager.myUserInfo.m_nCastleUpgrade.ToString();
+
+        objectManager.castleUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat].text =
+            "추가 체력 / 방어력 : " + dataManager.myUserInfo.m_nCastleUpgrade * Castle.CastleIncreaseHp +
+            " / " + dataManager.myUserInfo.m_nCastleUpgrade * Castle.CastleIncreaseDefence;
     }
 
     public void SceneLoadedUIs() // 씬이 로드될 때마다 필요한 UI의 세팅
@@ -274,19 +291,21 @@ public class UIManager : Singleton<UIManager>
 
     public void InCastleUIsRef()
     {
-        SetResourceUI();
+        SetTextResourceUI();
     }
 
     public void OutCastleUIsRef()
     {
-        SetResourceUI();
+        SetTextResourceUI();
         SetTextHirePrice();
         SetTextHireCnt();
     }
 
     public void DefenceUIsRef()
     {
-
+        SetTextResourceUI(DataManager._EResource_.erMoney);
+        SetTextWave();
+        SetTextPlacedSoldier();
     }
     //-------------------------------------------- private
 

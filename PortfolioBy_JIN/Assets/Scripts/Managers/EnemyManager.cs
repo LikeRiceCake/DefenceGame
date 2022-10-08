@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyManager : MonoBehaviour
+public class EnemyManager : Singleton<EnemyManager>
 {
     #region //enumeration//
     IEnumerator _coroutineManager;
@@ -45,7 +45,7 @@ public class EnemyManager : MonoBehaviour
     #region //unityLifeCycle//
     private void OnEnable()
     {
-        
+
     }
 
     private void Start()

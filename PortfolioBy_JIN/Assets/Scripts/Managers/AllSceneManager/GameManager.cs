@@ -153,14 +153,18 @@ public class GameManager : Singleton<GameManager>
                 break;
             case "InCastle":
                 SetSceneState(_ESceneState_.esInCastle);
-                GameObject.Find("PrepareManager").gameObject.GetComponent<PrepareManager>().enabled = false;
+                GameObject.Find("Managers").transform.Find("PrepareManager").gameObject.SetActive(false);
+                GameObject.Find("Managers").transform.Find("BattleManager").gameObject.SetActive(false);
+                GameObject.Find("Managers").transform.Find("EnemyManager").gameObject.SetActive(false);
                 break;
             case "OutCastle":
                 SetSceneState(_ESceneState_.esOutCastle);
                 break;
             case "Defence":
                 SetSceneState(_ESceneState_.esDefence);
-                GameObject.Find("PrepareManager").gameObject.GetComponent<PrepareManager>().enabled = true;
+                GameObject.Find("Managers").transform.Find("PrepareManager").gameObject.SetActive(true);
+                GameObject.Find("Managers").transform.Find("BattleManager").gameObject.SetActive(true);
+                GameObject.Find("Managers").transform.Find("EnemyManager").gameObject.SetActive(true);
                 break;
             default:
                 break;

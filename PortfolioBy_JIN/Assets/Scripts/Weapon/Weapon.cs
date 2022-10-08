@@ -117,16 +117,7 @@ public abstract class Weapon : MonoBehaviour
         }
     }
 
-    public int UpgradeStat(_EWeaponStat_ select)
-    {
-        switch (select)
-        {
-            case _EWeaponStat_.ewsAttack:
-                return (int)(dataManager.myUserInfo.m_nWeaponUpgrade[(int)weaponStat.myClass] * WeaponIncreaseAttack[(int)_EWeaponClass_.ewcBallista]);
-            default:
-                return 0;
-        }
-    }
+    public abstract int UpgradeStat(_EWeaponStat_ select);
 
     public abstract IEnumerator ShootTheWeapon();
     //-------------------------------------------- private

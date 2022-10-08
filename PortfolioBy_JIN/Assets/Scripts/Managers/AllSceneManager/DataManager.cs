@@ -98,6 +98,8 @@ public class DataManager : Singleton<DataManager>
     public const int SoldierUpgradePriceCnt = 4;
     public const int MaxBallistaUpgrade = 10;
     public const int BallistaUpgradeResourceCnt = 4;
+    public const int MaxCastleUpgrade = 20;
+    public const int CastleUpgradePriceCnt = 4;
 
     public static readonly int[] ResourceHirePrice = { 5000, 10000, 25000, 40000, 100000 };
     public static readonly int[,] SoldierUpgradePrice = { {10000,  35000,  70000, 100000 },
@@ -115,6 +117,7 @@ public class DataManager : Singleton<DataManager>
                                                               { 0,  3, 15,  30},
                                                               { 0,  0,  5,  15}
     };
+    public static readonly int[] CastleUpgradePrice = { 15000, 30000, 60000, 120000, 150000, 200000 };
 
     public static readonly float[] MaxLeftTime = { 3600f, 3600f, 10800f, 86400f, 604800f };
     //-------------------------------------------- private

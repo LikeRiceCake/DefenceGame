@@ -13,7 +13,7 @@ public class Ballista : Weapon
 
     #region //constant//
     //-------------------------------------------- public
-    
+
     //-------------------------------------------- private
 
     #endregion
@@ -22,7 +22,7 @@ public class Ballista : Weapon
     //-------------------------------------------- public
 
     //-------------------------------------------- private
-    
+
     #endregion
 
     #region //property//
@@ -39,7 +39,7 @@ public class Ballista : Weapon
     {
         FindOpponent();
 
-        if(buttonManager.isBallistaUpgraded)
+        if (buttonManager.isBallistaUpgraded)
         {
             buttonManager.isBallistaUpgraded = false;
             StatInit();
@@ -54,6 +54,17 @@ public class Ballista : Weapon
     {
         projectile = resourceManager.LoadProjectileResource("Prefabs/Arrow");
         base.DataInit();
+    }
+
+    public override int UpgradeStat(_EWeaponStat_ select)
+    {
+        switch (select)
+        {
+            case _EWeaponStat_.ewsAttack:
+                return (int)(dataManager.myUserInfo.m_nWeaponUpgrade[(int)weaponStat.myClass] * WeaponIncreaseAttack[(int)_EWeaponClass_.ewcBallista]);
+            default:
+                return 0;
+        }
     }
 
     public override IEnumerator ShootTheWeapon()

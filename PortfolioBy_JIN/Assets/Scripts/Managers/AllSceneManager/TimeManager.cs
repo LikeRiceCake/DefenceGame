@@ -116,7 +116,7 @@ public class TimeManager : Singleton<TimeManager>
         {
             dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erWood] += dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood];
             dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltWood] = DataManager.MaxLeftTime[(int)DataManager._ELeftTime_.eltWood];
-            uiManager.SetResourceUI(DataManager._EResource_.erWood);
+            uiManager.SetTextResourceUI(DataManager._EResource_.erWood);
         }
     }
 
@@ -128,7 +128,7 @@ public class TimeManager : Singleton<TimeManager>
         {
             dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erStone] += dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehStone];
             dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltStone] = DataManager.MaxLeftTime[(int)DataManager._ELeftTime_.eltStone];
-            uiManager.SetResourceUI(DataManager._EResource_.erStone);
+            uiManager.SetTextResourceUI(DataManager._EResource_.erStone);
         }
     }
 
@@ -140,7 +140,7 @@ public class TimeManager : Singleton<TimeManager>
         {
             dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erIron] += dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehIron];
             dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltIron] = DataManager.MaxLeftTime[(int)DataManager._ELeftTime_.eltIron];
-            uiManager.SetResourceUI(DataManager._EResource_.erIron);
+            uiManager.SetTextResourceUI(DataManager._EResource_.erIron);
         }
     }
 
@@ -152,7 +152,7 @@ public class TimeManager : Singleton<TimeManager>
         {
             dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erGold] += dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehGold];
             dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltGold] = DataManager.MaxLeftTime[(int)DataManager._ELeftTime_.eltGold];
-            uiManager.SetResourceUI(DataManager._EResource_.erGold);
+            uiManager.SetTextResourceUI(DataManager._EResource_.erGold);
         }
     }
 
@@ -164,7 +164,7 @@ public class TimeManager : Singleton<TimeManager>
         {
             dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erDiamond] += dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehDiamond];
             dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltDiamond] = DataManager.MaxLeftTime[(int)DataManager._ELeftTime_.eltDiamond];
-            uiManager.SetResourceUI(DataManager._EResource_.erDiamond);
+            uiManager.SetTextResourceUI(DataManager._EResource_.erDiamond);
         }
     }
 

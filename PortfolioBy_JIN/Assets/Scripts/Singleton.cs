@@ -66,8 +66,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour // 제네릭 타입
 
             if (_instance == null)
             {
-                GameObject obj = new GameObject(typeof(T).Name, typeof(T));
-                _instance = obj.GetComponent<T>();
+                _instance = GameObject.Find("Managers").transform.Find(typeof(T).Name).GetComponent<T>();
             }
         }
     }

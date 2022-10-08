@@ -32,19 +32,16 @@ public class PrepareManager : Singleton<PrepareManager>
     #endregion
 
     #region //unityLifeCycle//
-    protected override void Awake()
-    {
-        base.Awake(); 
-    }
-
     private void OnEnable()
     {
         dataManager = DataManager.instance;
+
+        DataInit();
     }
 
     private void Start()
     {
-        DataInit();
+        
     }
 
     void Update()
@@ -59,11 +56,6 @@ public class PrepareManager : Singleton<PrepareManager>
     {
         _placedSoldier = 0;
         _placedSoldierMax = PlacedSoldierMaxDefault + dataManager.myUserInfo.m_nWave / PlacedSoldierMaxIncreased;
-    }
-
-    public void PlacedSoldierSet()
-    {
-        
     }
     //-------------------------------------------- private
 

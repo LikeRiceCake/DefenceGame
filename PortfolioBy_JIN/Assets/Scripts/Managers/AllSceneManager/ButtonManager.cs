@@ -27,6 +27,7 @@ public class ButtonManager : Singleton<ButtonManager>
     //-------------------------------------------- private
     bool _isSoldierUpgraded;
     bool _isBallistaUpgraded;
+    bool _isCastleUpgraded;
     #endregion
 
     #region //constant//
@@ -76,6 +77,7 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public bool isSoldierUpgraded { get { return _isSoldierUpgraded; } set { _isSoldierUpgraded = value; } }
     public bool isBallistaUpgraded { get { return _isBallistaUpgraded; } set { _isBallistaUpgraded = value; } }
+    public bool isCastleUpgraded { get { return _isCastleUpgraded; } set { _isCastleUpgraded = value; } }
     #endregion
 
     #region //unityLifeCycle//
@@ -123,6 +125,7 @@ public class ButtonManager : Singleton<ButtonManager>
     {
         _isSoldierUpgraded = false;
         _isBallistaUpgraded = false;
+        _isCastleUpgraded = false;
     }
 
     #region ///AllScene///
@@ -523,10 +526,10 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void WeaponUpgradeFrameOnOff() // 무기 강화 프레임 On, Off
     {
-        if (objectManager.WeaponUpgradeFrame.activeSelf)
-            objectManager.WeaponUpgradeFrame.SetActive(false);
+        if (objectManager.weaponUpgradeFrame.activeSelf)
+            objectManager.weaponUpgradeFrame.SetActive(false);
         else
-            objectManager.WeaponUpgradeFrame.SetActive(true);
+            objectManager.weaponUpgradeFrame.SetActive(true);
     }
 
     public void SwitchToNextWeaponUpgrade() // 다음 무기
@@ -545,17 +548,28 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void WeaponUpgradeObjectSelectedOnOff() // 무기 오브젝트 선택 OnOff
     {
-        //
+        for (int i = 0; i < (int)DataManager._EWeaponUpgrade_.ewuMax; i++)
+        {
+            if ((int)dataManager.currentWeaponUpgradeState == i)
+            {
+                objectManager.weaponUpgradeConfirmFramesOnButton[i].gameObject.SetActive(true);
+                continue;
+            }
+
+            objectManager.weaponUpgradeConfirmFramesOnButton[i].gameObject.SetActive(false);
+            objectManager.weaponUpgradeConfirmFrame.SetActive(false);
+        }
+        uiManager.SetTextWeaponUpgrade();
     }
 
     public void WeaponUpgradeConfirmFrameOnOff() // 무기 업그레이드 확인 프레임 온오프
     {
-        if (objectManager.WeaponUpgradeConfirmFrame.activeSelf)
-            objectManager.WeaponUpgradeConfirmFrame.SetActive(false);
+        if (objectManager.weaponUpgradeConfirmFrame.activeSelf)
+            objectManager.weaponUpgradeConfirmFrame.SetActive(false);
         else
         {
-            objectManager.WeaponUpgradeConfirmFrame.SetActive(true);
-            uiManager.SetTextBallistaUpgrade();
+            objectManager.weaponUpgradeConfirmFrame.SetActive(true);
+            uiManager.SetTextWeaponUpgrade();
         }
     }
 
@@ -579,8 +593,44 @@ public class ButtonManager : Singleton<ButtonManager>
             for (int j = 0; j < (int)DataManager._EWeaponResource_.ebrMax; j++)
                 dataManager.myUserInfo.m_nResource[j + 1] -= DataManager.BallistaUpgradeResource[j, i];
 
-            uiManager.SetTextBallistaUpgrade();
-            
+            uiManager.SetTextWeaponUpgrade();
+            dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState]++;
+        }
+    }
+
+    public void DefenceStart() // 디펜스 웨이브 시작
+    {
+        gameManager.SetBattleState(GameManager._EBattleState_.egBattle);
+        objectManager.prepareFrame.SetActive(false);
+        objectManager.battleFrame.SetActive(true);
+        StartCoroutine(EnemyManager.instance.coroutineManager);
+    }
+
+    public void DefenceEnd() // 디펜스 웨이브 종료
+    {
+        gameManager.SetBattleState(GameManager._EBattleState_.egNotBattle);
+    }
+
+    public void CastleUpgradeFrameOnOff() // 성 업그레이드 프레임 On, Off
+    {
+        if (objectManager.castleUpgradeFrame.activeSelf)
+            objectManager.castleUpgradeFrame.SetActive(false);
+        else
+        {
+            objectManager.castleUpgradeFrame.SetActive(true);
+            uiManager.SetTextCastleUpgrade();
+        }
+    }
+
+    public void CastleUpgrade() // 성 업그레이드
+    {
+        if(DataManager.MaxCastleUpgrade > dataManager.myUserInfo.m_nCastleUpgrade 
+            && dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.CastleUpgradePrice[(int)dataManager.myUserInfo.m_nCastleUpgrade / DataManager.CastleUpgradePriceCnt])
+        {
+            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.CastleUpgradePrice[(int)dataManager.myUserInfo.m_nCastleUpgrade / DataManager.CastleUpgradePriceCnt];
+            dataManager.myUserInfo.m_nCastleUpgrade++;
+
+            uiManager.SetTextCastleUpgrade();
         }
     }
     #endregion
@@ -666,11 +716,16 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager.soldierUpgradeConfirmButton.onClick.AddListener(SoldierUpgrade);
         objectManager.nextSoldierButton.onClick.AddListener(SwitchToNextSoldierUpgrade);
         objectManager.soldierUnLockOffButton.onClick.AddListener(SoldierUnLockFrameOff);
-        objectManager.WeaponUpgradeFrameOnButton.onClick.AddListener(WeaponUpgradeFrameOnOff);
-        objectManager.WeaponUpgradeFrameOffButton.onClick.AddListener(WeaponUpgradeFrameOnOff);
-        objectManager.WeaponUpgradeConfirmFrameOnButton.onClick.AddListener(WeaponUpgradeConfirmFrameOnOff);
-        objectManager.WeaponUpgradeConfirmFrameOffButton.onClick.AddListener(WeaponUpgradeConfirmFrameOnOff);
-        objectManager.WeaponUpgradeConfirmButton.onClick.AddListener(WeaponUpgrade);
+        objectManager.weaponUpgradeFrameOnButton.onClick.AddListener(WeaponUpgradeFrameOnOff);
+        objectManager.weaponUpgradeFrameOffButton.onClick.AddListener(WeaponUpgradeFrameOnOff);
+        objectManager.weaponUpgradeConfirmFramesOnButton[(int)DataManager._EWeaponUpgrade_.ewuBallista].onClick.AddListener(WeaponUpgradeConfirmFrameOnOff);
+        objectManager.weaponUpgradeConfirmFrameOffButton.onClick.AddListener(WeaponUpgradeConfirmFrameOnOff);
+        objectManager.weaponUpgradeConfirmButton.onClick.AddListener(WeaponUpgrade);
+        objectManager.nextWeaponButton.onClick.AddListener(SwitchToNextWeaponUpgrade);
+        objectManager.defenceStartButton.onClick.AddListener(DefenceStart);
+        objectManager.castleUpgradeFrameOnButton.onClick.AddListener(CastleUpgradeFrameOnOff);
+        objectManager.castleUpgradeFrameOffButton.onClick.AddListener(CastleUpgradeFrameOnOff);
+        objectManager.castleUpgradeConfirmButton.onClick.AddListener(CastleUpgrade);
     }
 
     // -------------------------------------------- private
