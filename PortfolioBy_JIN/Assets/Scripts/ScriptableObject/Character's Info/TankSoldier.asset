@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db16b1d96d83149459b60d1d45051b5b, type: 3}
   m_Name: TankSoldier
   m_EditorClassIdentifier: 
-  Hp: 20
-  Attack: 3
+  MaxHp: 15
+  Attack: 1
   Defence: 3
   Speed: 1
   myClass: 2

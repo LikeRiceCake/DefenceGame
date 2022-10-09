@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class Enemy : Character
 {
+    #region //constant//
+    public const int EnemyIncreaseHp = 6;
+    public const int EnemyIncreaseAttack = 5;
+    public const int EnemyIncreaseDefence = 12;
+    #endregion
+
     #region //class//
     EnemyManager _enemyManager;
     #endregion
@@ -48,11 +54,11 @@ public class Enemy : Character
         switch (select)
         {
             case _ECharacterStat_.ecsHp:
-                return (int)(dataManager.myUserInfo.m_nWave / 5 * 1.2f);
+                return dataManager.myUserInfo.m_nWave / EnemyIncreaseHp;
             case _ECharacterStat_.ecsAttack:
-                return dataManager.myUserInfo.m_nWave / 5;
+                return dataManager.myUserInfo.m_nWave / EnemyIncreaseAttack;
             case _ECharacterStat_.ecsDefence:
-                return dataManager.myUserInfo.m_nWave / 15;
+                return dataManager.myUserInfo.m_nWave / EnemyIncreaseDefence;
             default:
                 return 0;
         }
@@ -72,7 +78,6 @@ public class Enemy : Character
         }
         else if (myCurrentCharacterState == _ECharacterState_.ecsMove && collision.transform.CompareTag("Castle"))
         {
-            print("º¯°æ");
             SetCharacterState(_ECharacterState_.ecsFight);
             SetAnimation("isC_Attack");
             target = collision.GetComponent<Castle>();

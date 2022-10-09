@@ -36,9 +36,7 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     #endregion
 
     #region //constant//
-    public static readonly float[] SoldierIncreaseHp =      { 1f,   1.1f, 2f,   1.3f, 0.5f, 1.7f};
-    public static readonly float[] SoldierIncreaseAttack =  { 1f,   1.1f, 0.5f, 1.3f, 2f,   1.7f};
-    public static readonly float[] SoldierIncreaseDefence = { 0.1f, 0.2f, 0.7f, 0.4f, 0.1f, 0.5f};
+    
     #endregion
 
     #region //struct//
@@ -59,9 +57,9 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     //-------------------------------------------- protected
     protected CharacterInfo characterStat;
 
-    protected Animator animator;
-
     protected DataManager dataManager;
+
+    protected Animator animator;
 
     protected IAttacked target;
     //-------------------------------------------- private
@@ -112,10 +110,11 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     {
         _damage = _damage <= stat.Defence ? 0 : _damage - stat.Defence;
         stat.CurrentHp -= _damage;
+        print(this.name + "Hp : " + stat.CurrentHp);
         if(stat.CurrentHp <= 0)
         {
             SetCharacterState(_ECharacterState_.ecsDie);
-            SetAnimation("isDIe");
+            SetAnimation("isDie");
         }
     }
 
@@ -157,6 +156,11 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
             default:
                 return 0;
         }
+    }
+
+    public void Die()
+    {
+        gameObject.SetActive(false);
     }
 
     public abstract int UpgradeStat(_ECharacterStat_ select); // 병사, 적이 강화된 게 있으면 적용

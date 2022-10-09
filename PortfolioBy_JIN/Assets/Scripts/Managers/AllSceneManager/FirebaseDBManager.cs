@@ -124,9 +124,16 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
 
                     index = 0;
 
-                    foreach (var value in testSnapShot.Child(_path).Child("m_nSoldierLock").Children)
+                    foreach (var value in testSnapShot.Child(_path).Child("m_bSoldierLock").Children)
                     {
-                        dataManager.myUserInfo.m_nSoldierLock[index++] = Convert.ToBoolean(value.Value);
+                        dataManager.myUserInfo.m_bSoldierLock[index++] = Convert.ToBoolean(value.Value);
+                    }
+
+                    index = 0;
+
+                    foreach (var value in testSnapShot.Child(_path).Child("m_bWeaponLock").Children)
+                    {
+                        dataManager.myUserInfo.m_bWeaponLock[index++] = Convert.ToBoolean(value.Value);
                     }
 
                     index = 0;

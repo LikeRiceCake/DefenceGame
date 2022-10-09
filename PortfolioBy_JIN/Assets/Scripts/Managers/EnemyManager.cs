@@ -36,6 +36,8 @@ public class EnemyManager : Singleton<EnemyManager>
     GameObject enemyObject;
 
     Transform enemyPos;
+
+    CharacterFactory<EnemyFactory._EEnemyClass_> enemyFactory;
     #endregion
 
     #region //property//
@@ -62,9 +64,11 @@ public class EnemyManager : Singleton<EnemyManager>
         resourceManager = ResourceManager.instance;
         dataManager = DataManager.instance;
 
-        enemyPos = GameObject.Find("EnemyPos").transform;
+        enemyPos = GameObject.Find("Canvas").transform.Find("BattleFrame").transform.Find("EnemyPos").transform;
 
         enemyObject = resourceManager.LoadCharacterResource("Prefabs/Enemy");
+
+        enemyFactory = gameObject.AddComponent<EnemyFactory>();
 
         MaximumEnemy();
 
@@ -77,7 +81,8 @@ public class EnemyManager : Singleton<EnemyManager>
         hierarchyEnemyList.name = "EnemyList";
         for (int i = 0; i < maxEnemyCnt; i++)
         {
-            GameObject enemy = Instantiate(enemyObject, hierarchyEnemyList.transform);
+            GameObject enemy = enemyFactory.Create(EnemyFactory._EEnemyClass_.eecEnemy);
+            enemy.transform.SetParent(hierarchyEnemyList.transform);
             enemy.name = "Enemy_" + i.ToString("00");
             enemy.GetComponent<Enemy>().enemyManager = this;
             enemy.SetActive(false);

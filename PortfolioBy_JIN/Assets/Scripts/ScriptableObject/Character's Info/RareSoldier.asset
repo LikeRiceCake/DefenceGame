@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db16b1d96d83149459b60d1d45051b5b, type: 3}
   m_Name: RareSoldier
   m_EditorClassIdentifier: 
-  Hp: 8
+  MaxHp: 7
   Attack: 3
   Defence: 1
   Speed: 2

@@ -29,11 +29,9 @@ public abstract class Weapon : MonoBehaviour
 
     #region //constant//
     //-------------------------------------------- public
-    public const int EnemyLayerMask = 6;
-
     public static readonly float[] WeaponIncreaseAttack = { 1.5f };
 
-    public const float EyeSight = 10f;
+    public const float EyeSight = 55f;
     //-------------------------------------------- private
 
     #endregion
@@ -56,8 +54,6 @@ public abstract class Weapon : MonoBehaviour
 
     protected Collider2D opponent;
 
-    protected GameObject projectile;
-
     protected LayerMask layerMask;
 
     protected ButtonManager buttonManager;
@@ -65,6 +61,8 @@ public abstract class Weapon : MonoBehaviour
     protected ResourceManager resourceManager;
 
     protected DataManager dataManager;
+
+    protected ProjectileFactory projectileFactory;
     #endregion
 
     #region //property//
@@ -83,6 +81,8 @@ public abstract class Weapon : MonoBehaviour
     {
         DataInit();
     }
+
+    public abstract void Update();
     #endregion
 
     #region //function//
@@ -93,7 +93,7 @@ public abstract class Weapon : MonoBehaviour
 
         coroutine = ShootTheWeapon();
 
-        layerMask = EnemyLayerMask;
+        layerMask = LayerMask.NameToLayer("Enemy");
 
         StatInit();
     }
@@ -109,12 +109,18 @@ public abstract class Weapon : MonoBehaviour
     {
         if (opponent == null)
         {
-            opponent = Physics2D.OverlapCircle(transform.position, EyeSight, layerMask);
+            opponent = Physics2D.OverlapCircle(transform.position, EyeSight, 1 << layerMask);
             if (opponent != null)
             {
+                print("코루틴 시작");
                 StartCoroutine(coroutine);
             }
         }
+    }
+
+    public void OpponentRemove()
+    {
+        opponent = null;
     }
 
     public abstract int UpgradeStat(_EWeaponStat_ select);

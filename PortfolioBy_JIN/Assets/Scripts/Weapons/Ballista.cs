@@ -35,7 +35,7 @@ public class Ballista : Weapon
         DataInit();
     }
 
-    void Update()
+    public override void Update()
     {
         FindOpponent();
 
@@ -52,7 +52,7 @@ public class Ballista : Weapon
     //-------------------------------------------- public
     public override void DataInit()
     {
-        projectile = resourceManager.LoadProjectileResource("Prefabs/Arrow");
+        projectileFactory = gameObject.AddComponent<BallistaArrowFactory>();
         base.DataInit();
     }
 
@@ -69,13 +69,19 @@ public class Ballista : Weapon
 
     public override IEnumerator ShootTheWeapon()
     {
-        if (opponent == null)
-            StopCoroutine(coroutine);
-        GameObject projectileObj = Instantiate(projectile, transform.position, Quaternion.identity);
-        projectileObj.GetComponent<BallistaArrow>().target = opponent.GetComponent<Enemy>();
-        projectileObj.GetComponent<BallistaArrow>().sAttack = stat.Attack;
-        projectileObj.GetComponent<BallistaArrow>().sSpeed = stat.Speed;
-        yield return new WaitForSeconds(stat.RateOfFire);
+        print("코루틴 진입");
+        while (opponent.gameObject.activeSelf)
+        {
+            GameObject projectileObj = projectileFactory.Create(ProjectileFactory._EProjectileClass_.epcBallistaArrow);
+            projectileObj.transform.position = transform.position;
+            projectileObj.GetComponent<BallistaArrow>().target = opponent.GetComponent<Enemy>();
+            projectileObj.GetComponent<BallistaArrow>().sAttack = stat.Attack;
+            projectileObj.GetComponent<BallistaArrow>().sSpeed = stat.Speed;
+            yield return new WaitForSeconds(stat.RateOfFire);
+        }
+
+        OpponentRemove();
+        print("코루틴 퇴출");
     }
     //-------------------------------------------- private
 

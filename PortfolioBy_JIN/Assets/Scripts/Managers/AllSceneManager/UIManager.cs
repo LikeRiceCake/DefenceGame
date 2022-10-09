@@ -230,9 +230,9 @@ public class UIManager : Singleton<UIManager>
             "현재 업그레이드 : " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState].ToString();
 
         objectManager.soldierUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat].text =
-            "추가 공격력 / 체력 / 방어력 : " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Character.SoldierIncreaseAttack[(int)dataManager.currentSoldierUpgradeState] +
-            " / " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Character.SoldierIncreaseHp[(int)dataManager.currentSoldierUpgradeState] +
-            " / " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Character.SoldierIncreaseDefence[(int)dataManager.currentSoldierUpgradeState];
+            "추가 공격력 / 체력 / 방어력 : " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Soldier.SoldierIncreaseAttack[(int)dataManager.currentSoldierUpgradeState] +
+            " / " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Soldier.SoldierIncreaseHp[(int)dataManager.currentSoldierUpgradeState] +
+            " / " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Soldier.SoldierIncreaseDefence[(int)dataManager.currentSoldierUpgradeState];
     }
 
     public void SetTextSoldierUnLock() // 솔져 언락 Text 세팅

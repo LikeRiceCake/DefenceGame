@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db16b1d96d83149459b60d1d45051b5b, type: 3}
   m_Name: UnknownSoldier
   m_EditorClassIdentifier: 
-  Hp: 18
+  MaxHp: 20
   Attack: 12
   Defence: 4
   Speed: 2.5

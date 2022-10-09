@@ -42,7 +42,6 @@ public class BallistaArrow : MonoBehaviour, IAttack
     #endregion
 
     #region //unityLifeCycle//
-
     void Update()
     {
         TrackDownEnemy();

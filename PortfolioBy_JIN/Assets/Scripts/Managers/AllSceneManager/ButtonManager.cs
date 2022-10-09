@@ -37,10 +37,27 @@ public class ButtonManager : Singleton<ButtonManager>
 
     #endregion
 
+    #region //struct//
+    struct _summonInfo
+    {
+        public GameObject soldierObj;
+        public Vector3 soldierPos;
+    }
+    _summonInfo soldier;
+
+    struct _deployInfo
+    {
+        public GameObject weaponObj;
+        public Vector3 weaponPos;
+    }
+    _deployInfo weapon;
+    #endregion
+
     #region //class//
     //-------------------------------------------- public
 
     //-------------------------------------------- private
+
     #region ///AllScene///
 
     #endregion
@@ -70,6 +87,12 @@ public class ButtonManager : Singleton<ButtonManager>
     TimeManager timeManager;
 
     UIManager uiManager;
+
+    ResourceManager resourceManager;
+
+    CharacterFactory<SoldierFactory._ESoldierClass_> soldierFactory;
+
+    WeaponFactory weaponFactory;
     #endregion
 
     #region //property//
@@ -95,6 +118,7 @@ public class ButtonManager : Singleton<ButtonManager>
         firebaseDBManager = FirebaseDBManager.instance;
         timeManager = TimeManager.instance;
         uiManager = UIManager.instance;
+        resourceManager = ResourceManager.instance;
     }
 
     private void Start()
@@ -123,6 +147,9 @@ public class ButtonManager : Singleton<ButtonManager>
     //-------------------------------------------- public
     public void DataInit()
     {
+        soldierFactory = gameObject.AddComponent<SoldierFactory>();
+        weaponFactory = gameObject.AddComponent<BallistaFactory>();
+
         _isSoldierUpgraded = false;
         _isBallistaUpgraded = false;
         _isCastleUpgraded = false;
@@ -431,14 +458,14 @@ public class ButtonManager : Singleton<ButtonManager>
     {
         if (objectManager.soldierUpgradeConfirmFrame.activeSelf)
         {
-            if(dataManager.myUserInfo.m_nSoldierLock[(int)dataManager.currentSoldierUpgradeState])
+            if(dataManager.myUserInfo.m_bSoldierLock[(int)dataManager.currentSoldierUpgradeState])
                 objectManager.soldierUpgradeConfirmFrame.SetActive(false);
             else
                 objectManager.soldierUnLockFrame.SetActive(false);
         }
         else
         {
-            if (dataManager.myUserInfo.m_nSoldierLock[(int)dataManager.currentSoldierUpgradeState])
+            if (dataManager.myUserInfo.m_bSoldierLock[(int)dataManager.currentSoldierUpgradeState])
                 objectManager.soldierUpgradeConfirmFrame.SetActive(true);
             else
             {
@@ -519,7 +546,7 @@ public class ButtonManager : Singleton<ButtonManager>
     {
         if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.SoldierUnLockPrice[(int)dataManager.currentSoldierUpgradeState])
         {
-            dataManager.myUserInfo.m_nSoldierLock[(int)dataManager.currentSoldierUpgradeState] = true;
+            dataManager.myUserInfo.m_bSoldierLock[(int)dataManager.currentSoldierUpgradeState] = true;
             SoldierUnLockFrameOff();
         }
     }
@@ -633,6 +660,52 @@ public class ButtonManager : Singleton<ButtonManager>
             uiManager.SetTextCastleUpgrade();
         }
     }
+
+    public void SoldierSummonSelectFrameOnOff() // 병사 소환 선택 프레임 On,Off
+    {
+        if (objectManager.soldierSummonSelectFrame.activeSelf)
+            objectManager.soldierSummonSelectFrame.SetActive(false);
+        else
+        {
+            objectManager.soldierSummonSelectFrame.SetActive(true);
+            soldier.soldierPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            soldier.soldierPos -= new Vector3(0, 0, Camera.main.transform.position.z);
+        }
+    }
+
+    public void SoldierSummoning(SoldierFactory._ESoldierClass_ select) // 병사 소환
+    {
+        if (dataManager.myUserInfo.m_bSoldierLock[(int)select])
+        {
+            soldier.soldierObj = soldierFactory.Create(select);
+            soldier.soldierObj.transform.position = soldier.soldierPos;
+        }
+        else
+            return;
+    }
+
+    public void WeaponDeploySelectFrameOnOff() // 무기 배치 선택 프레임 On,Off
+    {
+        if (objectManager.weaponDeploySelectFrame.activeSelf)
+            objectManager.weaponDeploySelectFrame.SetActive(false);
+        else
+        {
+            objectManager.weaponDeploySelectFrame.SetActive(true);
+            weapon.weaponPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            weapon.weaponPos -= new Vector3(0, 0, Camera.main.transform.position.z);
+        }
+    }
+
+    public void WeaponDeploy(WeaponFactory._EWeaponClass_ select) // 무기 배치
+    {
+        if (dataManager.myUserInfo.m_bWeaponLock[(int)select])
+        {
+            weapon.weaponObj = weaponFactory.Create(select);
+            weapon.weaponObj.transform.position = weapon.weaponPos;
+        }
+        else
+            return;
+    }
     #endregion
 
     public void SceneLoadedButtons() // 씬이 로드될 때마다 버튼들 이벤트 할당
@@ -726,6 +799,17 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager.castleUpgradeFrameOnButton.onClick.AddListener(CastleUpgradeFrameOnOff);
         objectManager.castleUpgradeFrameOffButton.onClick.AddListener(CastleUpgradeFrameOnOff);
         objectManager.castleUpgradeConfirmButton.onClick.AddListener(CastleUpgrade);
+        objectManager.soldierSummonSelectFrameOnButton.onClick.AddListener(SoldierSummonSelectFrameOnOff);
+        objectManager.soldierSummonSelectFrameOffButton.onClick.AddListener(SoldierSummonSelectFrameOnOff);
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummoning(SoldierFactory._ESoldierClass_.escNormal));
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummoning(SoldierFactory._ESoldierClass_.escRare));
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummoning(SoldierFactory._ESoldierClass_.escTank));
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummoning(SoldierFactory._ESoldierClass_.escUniversal));
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummoning(SoldierFactory._ESoldierClass_.escAssassin));
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummoning(SoldierFactory._ESoldierClass_.escUnknown));
+        objectManager.weaponDeploySelectFrameOnButton.onClick.AddListener(WeaponDeploySelectFrameOnOff);
+        objectManager.weaponDeploySelectFrameOffButton.onClick.AddListener(WeaponDeploySelectFrameOnOff);
+        objectManager.weaponDeploysButton[(int)DataManager._EWeaponLock_.ewlBallista].onClick.AddListener(() => WeaponDeploy(WeaponFactory._EWeaponClass_.ewcBallista));
     }
 
     // -------------------------------------------- private

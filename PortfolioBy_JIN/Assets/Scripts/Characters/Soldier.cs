@@ -6,9 +6,11 @@ public class Soldier : Character
 {
     #region //constant//
     //-------------------------------------------- public
-    public const int EnemyLayerMask = 6;
+    public const float EyeSight = 35f;
 
-    public const float EyeSight = 4f;
+    public static readonly float[] SoldierIncreaseHp = { 1f, 1.1f, 2f, 1.3f, 0.5f, 1.7f };
+    public static readonly float[] SoldierIncreaseAttack = { 1f, 1.1f, 0.5f, 1.3f, 2f, 1.7f };
+    public static readonly float[] SoldierIncreaseDefence = { 0.1f, 0.2f, 0.7f, 0.4f, 0.1f, 0.5f };
     //-------------------------------------------- private
 
     #endregion
@@ -17,11 +19,11 @@ public class Soldier : Character
     //-------------------------------------------- public
 
     //-------------------------------------------- private
+    ButtonManager buttonManager;
+
     Collider2D opponent;
 
     LayerMask layerMask;
-
-    ButtonManager buttonManager;
     #endregion
 
     #region //unityLifeCycle//
@@ -56,7 +58,7 @@ public class Soldier : Character
     //-------------------------------------------- public
     public override void DataInit()
     {
-        layerMask = EnemyLayerMask;
+        layerMask = LayerMask.NameToLayer("Enemy");
         base.DataInit();
     }
 
@@ -64,7 +66,7 @@ public class Soldier : Character
     {
         if(opponent == null)
         {
-            opponent = Physics2D.OverlapCircle(transform.position, EyeSight, layerMask);
+            opponent = Physics2D.OverlapCircle(transform.position, EyeSight, 1 << layerMask);
             if (opponent != null)
             {
                 SetCharacterState(_ECharacterState_.ecsMove);
@@ -93,11 +95,11 @@ public class Soldier : Character
         switch (select)
         {
             case _ECharacterStat_.ecsHp:
-                return (int)(dataManager.myUserInfo.m_nSoldierUpgrade[(int)characterStat.myClass] * SoldierIncreaseHp[(int)characterStat.myClass]);
+                return (int)(DataManager.instance.myUserInfo.m_nSoldierUpgrade[(int)characterStat.myClass] * SoldierIncreaseHp[(int)characterStat.myClass]);
             case _ECharacterStat_.ecsAttack:
-                return (int)(dataManager.myUserInfo.m_nSoldierUpgrade[(int)characterStat.myClass] * SoldierIncreaseAttack[(int)characterStat.myClass]);
+                return (int)(DataManager.instance.myUserInfo.m_nSoldierUpgrade[(int)characterStat.myClass] * SoldierIncreaseAttack[(int)characterStat.myClass]);
             case _ECharacterStat_.ecsDefence:
-                return (int)(dataManager.myUserInfo.m_nSoldierUpgrade[(int)characterStat.myClass] * SoldierIncreaseDefence[(int)characterStat.myClass]);
+                return (int)(DataManager.instance.myUserInfo.m_nSoldierUpgrade[(int)characterStat.myClass] * SoldierIncreaseDefence[(int)characterStat.myClass]);
             default:
                 return 0;
         }

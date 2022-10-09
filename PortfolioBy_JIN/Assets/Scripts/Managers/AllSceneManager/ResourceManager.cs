@@ -24,6 +24,7 @@ public class ResourceManager : Singleton<ResourceManager>
     //-------------------------------------------- private
     Dictionary<string, AudioClip> audioResource = new Dictionary<string, AudioClip>();
     Dictionary<string, GameObject> characterResource = new Dictionary<string, GameObject>();
+    Dictionary<string, GameObject> weaponResource = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> projectileResource = new Dictionary<string, GameObject>();
     #endregion
 
@@ -59,6 +60,17 @@ public class ResourceManager : Singleton<ResourceManager>
         {
             characterResource.Add(_key, Resources.Load<GameObject>(_key));
             return characterResource[_key];
+        }
+    }
+
+    public GameObject LoadWeaponResource(string _key)
+    {
+        if (weaponResource.ContainsKey(_key))
+            return weaponResource[_key];
+        else
+        {
+            weaponResource.Add(_key, Resources.Load<GameObject>(_key));
+            return weaponResource[_key];
         }
     }
 

@@ -63,6 +63,12 @@ public class DataManager : Singleton<DataManager>
         eslMax
     }
 
+    public enum _EWeaponLock_
+    {
+        ewlBallista,
+        ewlMax
+    }
+
     public enum _ELeftTime_
     {
         eltWood,
@@ -130,12 +136,13 @@ public class DataManager : Singleton<DataManager>
     {
         public int m_nWave;
         public int m_nCastleUpgrade;
-        public int[] m_nWeaponUpgrade;
         public string m_sUserName;
+        public int[] m_nWeaponUpgrade;
         public int[] m_nSoldierUpgrade;
         public int[] m_nResource;
         public int[] m_nHired;
-        public bool[] m_nSoldierLock;
+        public bool[] m_bSoldierLock;
+        public bool[] m_bWeaponLock;
         public double[] m_fLeftTime;
         public DateTime m_sQuitTime;
 
@@ -165,11 +172,18 @@ public class DataManager : Singleton<DataManager>
                 m_nSoldierUpgrade[i] = 0;
             }
 
-            m_nSoldierLock = new bool[(int)_ESoldierLock_.eslMax];
-            m_nSoldierLock[0] = true;
+            m_bSoldierLock = new bool[(int)_ESoldierLock_.eslMax];
+            m_bSoldierLock[0] = true;
             for (int i = 1; i < (int)_ESoldierLock_.eslMax; i++)
             {
-                m_nSoldierLock[i] = false;
+                m_bSoldierLock[i] = false;
+            }
+
+            m_bWeaponLock = new bool[(int)_EWeaponLock_.ewlMax];
+            m_bWeaponLock[0] = true;
+            for (int i = 1; i < (int)_EWeaponLock_.ewlMax; i++)
+            {
+                m_bWeaponLock[i] = false;
             }
 
             m_nResource = new int[(int)_EResource_.erMax];
@@ -210,11 +224,18 @@ public class DataManager : Singleton<DataManager>
                 m_nSoldierUpgrade[i] = 0;
             }
 
-            m_nSoldierLock = new bool[(int)_ESoldierLock_.eslMax];
-            m_nSoldierLock[0] = true;
+            m_bSoldierLock = new bool[(int)_ESoldierLock_.eslMax];
+            m_bSoldierLock[0] = true;
             for(int i = 1; i < (int)_ESoldierLock_.eslMax; i++)
             {
-                m_nSoldierLock[i] = false;
+                m_bSoldierLock[i] = false;
+            }
+
+            m_bWeaponLock = new bool[(int)_EWeaponLock_.ewlMax];
+            m_bWeaponLock[0] = true;
+            for (int i = 1; i < (int)_EWeaponLock_.ewlMax; i++)
+            {
+                m_bWeaponLock[i] = false;
             }
 
             m_nResource = new int[(int)_EResource_.erMax];

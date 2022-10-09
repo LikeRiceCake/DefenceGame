@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db16b1d96d83149459b60d1d45051b5b, type: 3}
   m_Name: UniversalSoldier
   m_EditorClassIdentifier: 
-  Hp: 12
+  MaxHp: 12
   Attack: 8
   Defence: 2
   Speed: 1.5
