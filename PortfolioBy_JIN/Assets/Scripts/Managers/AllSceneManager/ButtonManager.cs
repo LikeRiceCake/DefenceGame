@@ -51,6 +51,14 @@ public class ButtonManager : Singleton<ButtonManager>
         public Vector3 weaponPos;
     }
     _deployInfo weapon;
+
+    struct _skillInfo
+    {
+        public GameObject skillObj;
+        public Vector3 skillPos;
+        public int NumberOfObject;
+    }
+    _skillInfo skill;
     #endregion
 
     #region //class//
@@ -90,9 +98,13 @@ public class ButtonManager : Singleton<ButtonManager>
 
     ResourceManager resourceManager;
 
+    PrepareManager prepareManager;
+
     CharacterFactory<SoldierFactory._ESoldierClass_> soldierFactory;
 
     WeaponFactory weaponFactory;
+
+    SkillFactory skillFactroy;
     #endregion
 
     #region //property//
@@ -119,6 +131,7 @@ public class ButtonManager : Singleton<ButtonManager>
         timeManager = TimeManager.instance;
         uiManager = UIManager.instance;
         resourceManager = ResourceManager.instance;
+        prepareManager = PrepareManager.instance;
     }
 
     private void Start()
@@ -149,6 +162,7 @@ public class ButtonManager : Singleton<ButtonManager>
     {
         soldierFactory = gameObject.AddComponent<SoldierFactory>();
         weaponFactory = gameObject.AddComponent<BallistaFactory>();
+        skillFactroy = gameObject.AddComponent<MeteorFactory>();
 
         _isSoldierUpgraded = false;
         _isBallistaUpgraded = false;
@@ -675,10 +689,12 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void SoldierSummoning(SoldierFactory._ESoldierClass_ select) // 병사 소환
     {
-        if (dataManager.myUserInfo.m_bSoldierLock[(int)select])
+        if (dataManager.myUserInfo.m_bSoldierLock[(int)select] && prepareManager.summonedSoldierMax > prepareManager.currentSummonedSoldier)
         {
             soldier.soldierObj = soldierFactory.Create(select);
             soldier.soldierObj.transform.position = soldier.soldierPos;
+            prepareManager.currentSummonedSoldier++;
+            uiManager.SetTextSoldierAndWeaponCnt();
         }
         else
             return;
@@ -698,13 +714,34 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void WeaponDeploy(WeaponFactory._EWeaponClass_ select) // 무기 배치
     {
-        if (dataManager.myUserInfo.m_bWeaponLock[(int)select])
+        if (dataManager.myUserInfo.m_bWeaponLock[(int)select] && prepareManager.deployedWeaponMax > prepareManager.currentDeployedWeapon)
         {
             weapon.weaponObj = weaponFactory.Create(select);
             weapon.weaponObj.transform.position = weapon.weaponPos;
+            prepareManager.currentDeployedWeapon++;
+            uiManager.SetTextSoldierAndWeaponCnt();
         }
         else
             return;
+    }
+
+    public void BackToPreviousRound() // 이전 라운드로 이동
+    {
+        if(dataManager.myUserInfo.m_nWave > 1 && !prepareManager.isPreviousRound)
+        {
+            prepareManager.PreviousRoundSet();
+            SceneManager.LoadScene("Defence");
+        }
+    }
+
+    public void MeteorSkill() // 메테오 스킬 사용
+    {
+        if(gameManager.currentBattleState == GameManager._EBattleState_.egBattle && objectManager.useMeteorButtonImage.fillAmount == 0)
+        {
+            objectManager.useMeteorButtonImage.fillAmount = 1f;
+            _coroutineManager = UseSkill();
+            StartCoroutine(coroutineManager);
+        }
     }
     #endregion
 
@@ -810,8 +847,22 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager.weaponDeploySelectFrameOnButton.onClick.AddListener(WeaponDeploySelectFrameOnOff);
         objectManager.weaponDeploySelectFrameOffButton.onClick.AddListener(WeaponDeploySelectFrameOnOff);
         objectManager.weaponDeploysButton[(int)DataManager._EWeaponLock_.ewlBallista].onClick.AddListener(() => WeaponDeploy(WeaponFactory._EWeaponClass_.ewcBallista));
+        objectManager.previousRoundButton.onClick.AddListener(BackToPreviousRound);
+        objectManager.useMeteorButton.onClick.AddListener(MeteorSkill);
     }
 
+    public IEnumerator UseSkill()
+    {
+        SkillInfo skillInfo = resourceManager.LoadSkillResource("Prefabs/Meteor").GetComponent<SkillInfoPocket>().skillStat;
+
+        for (int i = 0; i < skillInfo.NumberOfObject; i++)
+        {
+            skill.skillObj = skillFactroy.Create(SkillFactory._ESkillClass_.escMeteor);
+            skill.skillPos = new Vector2(UnityEngine.Random.Range(Meteor.XStartPos, Meteor.XEndPos), Meteor.YPos);
+            skill.skillObj.transform.position = skill.skillPos;
+            yield return new WaitForSeconds(skillInfo.RateOfFire);
+        }
+    }
     // -------------------------------------------- private
 
     #endregion

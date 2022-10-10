@@ -113,9 +113,11 @@ public class ObjectManager : Singleton<ObjectManager>
     Button _weaponDeploySelectFrameOnButton;
     Button _weaponDeploySelectFrameOffButton;
     Button[] _weaponDeploysButton;
+    Button _previousRoundButton;
+    Button _useMeteorButton;
 
     Text _waveText;
-    Text _placedSoldierText;
+    Text _soldierAndWeaponCntText;
     Text[] _soldierUpgradeInformationsText;
     Text _soldierUpgradePriceText;
     Text _soldierUnLockPriceText;
@@ -124,6 +126,11 @@ public class ObjectManager : Singleton<ObjectManager>
     Text[] _weaponUpgradeResourcesText;
     Text[] _castleUpgradeInformationsText;
     Text _castleUpgradePriceText;
+
+    Image _castleHpFrontImage;
+    Image _useMeteorButtonImage;
+
+    Castle _castle;
     #endregion
 
     GameManager gameManager;
@@ -219,9 +226,11 @@ public class ObjectManager : Singleton<ObjectManager>
     public Button weaponDeploySelectFrameOnButton { get { return _weaponDeploySelectFrameOnButton; } }
     public Button weaponDeploySelectFrameOffButton { get { return _weaponDeploySelectFrameOffButton; } }
     public Button[] weaponDeploysButton { get { return _weaponDeploysButton; } }
+    public Button previousRoundButton { get { return _previousRoundButton; } }
+    public Button useMeteorButton { get { return _useMeteorButton; } }
 
     public Text waveText { get { return _waveText; } }
-    public Text placedSoldierText { get { return _placedSoldierText; } }
+    public Text soldierAndWeaponCntText { get { return _soldierAndWeaponCntText; } }
     public Text[] soldierUpgradeInformationsText { get { return _soldierUpgradeInformationsText; } }
     public Text soldierUpgradePriceText { get { return _soldierUpgradePriceText; } }
     public Text soldierUnLockPriceText { get { return _soldierUnLockPriceText; } }
@@ -230,6 +239,11 @@ public class ObjectManager : Singleton<ObjectManager>
     public Text[] weaponUpgradeResourcesText { get { return _weaponUpgradeResourcesText; } }
     public Text[] castleUpgradeInformationsText { get { return _castleUpgradeInformationsText; } }
     public Text castleUpgradePriceText { get { return _castleUpgradePriceText; } }
+
+    public Image castleHpFrontImage { get { return _castleHpFrontImage; } }
+    public Image useMeteorButtonImage { get { return _useMeteorButtonImage; } }
+
+    public Castle castle { get { return _castle; } }
     #endregion
     #endregion
 
@@ -435,10 +449,12 @@ public class ObjectManager : Singleton<ObjectManager>
         _weaponDeploySelectFrameOnButton = GameObject.Find("WeaponDeploySelectFrameOn_Button").GetComponent<Button>();
         _weaponDeploySelectFrameOffButton = _weaponDeploySelectFrame.transform.Find("WeaponDeploySelectFrameOff_Button").GetComponent<Button>();
         _weaponDeploysButton[(int)DataManager._EWeaponLock_.ewlBallista] = _weaponDeploySelectFrame.transform.Find("SelectButtons").transform.Find("BallistaFrame").transform.Find("BallistaDeploy_Button").GetComponent<Button>();
+        _previousRoundButton = GameObject.Find("PreviousRound_Button").GetComponent<Button>();
+        _useMeteorButton = _battleFrame.transform.Find("Skill").transform.Find("Meteor").transform.Find("UseMeteor_Button").GetComponent<Button>();
 
         _resourcesText[(int)DataManager._EResource_.erMoney] = GameObject.Find("Money_Text").GetComponent<Text>();
         _waveText = GameObject.Find("Wave_Text").GetComponent<Text>();
-        _placedSoldierText = GameObject.Find("PlacedSoldier_Text").GetComponent<Text>();
+        _soldierAndWeaponCntText = GameObject.Find("SoldierAndWeaponCnt_Text").GetComponent<Text>();
         _soldierUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade] = _soldierUpgradeConfirmFrame.transform.Find("CurrentSoldierUpgrade_Text").GetComponent<Text>();
         _soldierUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat] = _soldierUpgradeConfirmFrame.transform.Find("AdditionalStat_Text").GetComponent<Text>();
         _soldierUpgradePriceText = _soldierUpgradeConfirmButton.gameObject.transform.Find("SoldierUpgradePrice_Text").GetComponent<Text>();
@@ -454,6 +470,11 @@ public class ObjectManager : Singleton<ObjectManager>
         _castleUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade] = _castleUpgradeFrame.transform.Find("CurrentCastleUpgrade_Text").GetComponent<Text>();
         _castleUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat] = _castleUpgradeFrame.transform.Find("AdditionalStat_Text").GetComponent<Text>();
         _castleUpgradePriceText = _castleUpgradeConfirmButton.gameObject.transform.Find("CastleUpgradePrice_Text").GetComponent<Text>();
+
+        _castleHpFrontImage = _battleFrame.transform.Find("CastleHpFrame").transform.Find("CastleHpFront_Image").GetComponent<Image>();
+        _useMeteorButtonImage = _useMeteorButton.GetComponent<Image>();
+
+        _castle = _battleFrame.transform.Find("CastleCollider").GetComponent<Castle>();
     }
     //-------------------------------------------- private
 

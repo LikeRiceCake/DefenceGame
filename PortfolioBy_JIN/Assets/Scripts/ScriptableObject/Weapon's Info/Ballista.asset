@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Ballista
   m_EditorClassIdentifier: 
   Attack: 10
-  Speed: 2
+  Speed: 5
   RateOfFire: 5
   myClass: 0

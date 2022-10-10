@@ -24,7 +24,7 @@ public abstract class Weapon : MonoBehaviour
     //-------------------------------------------- public
 
     //-------------------------------------------- private
-
+    protected bool isDieEenmy;
     #endregion
 
     #region //constant//
@@ -63,6 +63,8 @@ public abstract class Weapon : MonoBehaviour
     protected DataManager dataManager;
 
     protected ProjectileFactory projectileFactory;
+
+    protected GameObject projectileObj;
     #endregion
 
     #region //property//

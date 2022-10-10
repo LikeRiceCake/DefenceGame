@@ -39,6 +39,13 @@ public class Ballista : Weapon
     {
         FindOpponent();
 
+        if (opponent != null && !opponent.gameObject.activeSelf)
+        {
+            Destroy(projectileObj);
+            OpponentRemove();
+            StopCoroutine(coroutine);
+        }
+
         if (buttonManager.isBallistaUpgraded)
         {
             buttonManager.isBallistaUpgraded = false;
@@ -69,19 +76,16 @@ public class Ballista : Weapon
 
     public override IEnumerator ShootTheWeapon()
     {
-        print("코루틴 진입");
-        while (opponent.gameObject.activeSelf)
+        while (true)
         {
-            GameObject projectileObj = projectileFactory.Create(ProjectileFactory._EProjectileClass_.epcBallistaArrow);
-            projectileObj.transform.position = transform.position;
+            print("코루틴 진입");
+            projectileObj = projectileFactory.Create(ProjectileFactory._EProjectileClass_.epcBallistaArrow);
+            projectileObj.transform.position = transform.GetChild(0).transform.position;
             projectileObj.GetComponent<BallistaArrow>().target = opponent.GetComponent<Enemy>();
             projectileObj.GetComponent<BallistaArrow>().sAttack = stat.Attack;
             projectileObj.GetComponent<BallistaArrow>().sSpeed = stat.Speed;
             yield return new WaitForSeconds(stat.RateOfFire);
         }
-
-        OpponentRemove();
-        print("코루틴 퇴출");
     }
     //-------------------------------------------- private
 

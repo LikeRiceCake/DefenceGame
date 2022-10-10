@@ -111,10 +111,20 @@ public class Soldier : Character
     #region //collision//
     public override void OnTriggerEnter2D(Collider2D collision)
     {
-        if (myCurrentCharacterState == _ECharacterState_.ecsMove && collision.transform.CompareTag("Enemy"))
+        if (myCurrentCharacterState == _ECharacterState_.ecsMove && collision.transform.CompareTag("Enemy") && opponent.transform.name == collision.transform.name)
         {
             SetCharacterState(_ECharacterState_.ecsFight);
-            SetAnimation("isAttack");
+            SetAnimation("isAttack", true);
+            target = collision.GetComponent<Enemy>();
+        }
+    }
+
+    public override void OnTriggerStay2D(Collider2D collision)
+    {
+        if(myCurrentCharacterState == _ECharacterState_.ecsMove && collision.transform.CompareTag("Enemy") && opponent.transform.name == collision.transform.name)
+        {
+            SetCharacterState(_ECharacterState_.ecsFight);
+            SetAnimation("isAttack", true);
             target = collision.GetComponent<Enemy>();
         }
     }
@@ -125,6 +135,7 @@ public class Soldier : Character
         {
             SetCharacterState(_ECharacterState_.ecsIdle);
             SetAnimation("isIdle");
+            SetAnimation("isAttack", false);
             TargetRemove();
             OpponentRemove();
         }

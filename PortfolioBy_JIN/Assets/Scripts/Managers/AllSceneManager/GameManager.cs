@@ -68,6 +68,10 @@ public class GameManager : Singleton<GameManager>
     SoundManager soundManager;
 
     UIManager uiManager;
+
+    DataManager dataManager;
+
+    PrepareManager prepareManager;
     #endregion
 
     #region //property//
@@ -100,6 +104,8 @@ public class GameManager : Singleton<GameManager>
         buttonManager = ButtonManager.instance;
         uiManager = UIManager.instance;
         soundManager = SoundManager.instance;
+        dataManager = DataManager.instance;
+        prepareManager = PrepareManager.instance;
 
         sceneLoadedManager += objectManager.SceneLoadedObjects;
         sceneLoadedManager += buttonManager.SceneLoadedButtons;
@@ -152,6 +158,9 @@ public class GameManager : Singleton<GameManager>
                 SetSceneState(_ESceneState_.esMain);
                 break;
             case "InCastle":
+                if (prepareManager.isPreviousRound)
+                    prepareManager.PreviousRoundReturnSet();
+
                 SetSceneState(_ESceneState_.esInCastle);
                 GameObject.Find("Managers").transform.Find("PrepareManager").gameObject.SetActive(false);
                 GameObject.Find("Managers").transform.Find("BattleManager").gameObject.SetActive(false);

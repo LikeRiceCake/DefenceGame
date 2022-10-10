@@ -7,7 +7,8 @@ public class Castle : MonoBehaviour, IAttacked
     #region //enumeration//
     public enum _ECastleStat_
     {
-        ecsHp,
+        ecsMaxHp,
+        ecsCurrentHp,
         ecsDefence,
         ecsMax
     }
@@ -45,6 +46,8 @@ public class Castle : MonoBehaviour, IAttacked
     CastleInfo castleStat;
 
     ButtonManager buttonManager;
+
+    UIManager uiManager;
     #endregion
 
     #region //property//
@@ -55,6 +58,7 @@ public class Castle : MonoBehaviour, IAttacked
     private void OnEnable()
     {
         buttonManager = ButtonManager.instance;
+        uiManager = UIManager.instance;
     }
 
     void Start()
@@ -83,7 +87,7 @@ public class Castle : MonoBehaviour, IAttacked
 
     public void StatInit()
     {
-        stat.MaxHp = castleStat.MaxHp + UpgradeStat(_ECastleStat_.ecsHp);
+        stat.MaxHp = castleStat.MaxHp + UpgradeStat(_ECastleStat_.ecsMaxHp);
         stat.CurrentHp = stat.MaxHp;
         stat.Defence = castleStat.Defence + UpgradeStat(_ECastleStat_.ecsDefence);
     }
@@ -92,7 +96,7 @@ public class Castle : MonoBehaviour, IAttacked
     {
         switch (select)
         {
-            case _ECastleStat_.ecsHp:
+            case _ECastleStat_.ecsMaxHp:
                 return (int)(stat.MaxHp * CastleIncreaseHp);
             case _ECastleStat_.ecsDefence:
                 return (int)(stat.Defence * CastleIncreaseDefence);
@@ -105,7 +109,9 @@ public class Castle : MonoBehaviour, IAttacked
     {
         switch (select)
         {
-            case _ECastleStat_.ecsHp:
+            case _ECastleStat_.ecsMaxHp:
+                return stat.MaxHp;
+            case _ECastleStat_.ecsCurrentHp:
                 return stat.CurrentHp;
             case _ECastleStat_.ecsDefence:
                 return stat.Defence;
@@ -123,7 +129,7 @@ public class Castle : MonoBehaviour, IAttacked
     {
         _damage = _damage <= stat.Defence ? 0 : _damage - stat.Defence;
         stat.CurrentHp -= _damage;
-        print(stat.CurrentHp);
+        uiManager.SetImageCastleHp(stat.CurrentHp, stat.MaxHp);
         if (stat.CurrentHp <= 0)
         {
             // 게임 오버

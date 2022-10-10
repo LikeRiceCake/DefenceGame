@@ -41,6 +41,8 @@ public class TimeManager : Singleton<TimeManager>
     GameManager gameManager;
 
     UIManager uiManager;
+
+    ObjectManager objectManager;
     #endregion
 
     #region //property//
@@ -57,11 +59,14 @@ public class TimeManager : Singleton<TimeManager>
         dataManager = DataManager.instance;
         gameManager = GameManager.instance;
         uiManager = UIManager.instance;
+        objectManager = ObjectManager.instance;
     }
 
     void Update()
     {
         WorkingResource();
+
+        SkillCoolDown();
     }
     #endregion
 
@@ -145,7 +150,7 @@ public class TimeManager : Singleton<TimeManager>
     }
 
     public void MiningGold() // ±Ý Ã¤±¤
-{
+    {
         dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltGold] -= Time.deltaTime;
 
         if (dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltGold] <= 0f)
@@ -157,7 +162,7 @@ public class TimeManager : Singleton<TimeManager>
     }
 
     public void MiningDiamond() // ´ÙÀÌ¾Æ Ã¤±¤
-{
+    {
         dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltDiamond] -= Time.deltaTime;
 
         if (dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltDiamond] <= 0f)
@@ -168,7 +173,13 @@ public class TimeManager : Singleton<TimeManager>
         }
     }
 
-    public void TimeControl(_ETimeFast_ select)
+    public void SkillCoolDown()
+    {
+        if (gameManager.currentBattleState == GameManager._EBattleState_.egBattle && objectManager.useMeteorButtonImage.fillAmount > 0)
+            objectManager.useMeteorButtonImage.fillAmount -= (Time.deltaTime / Meteor.SkillDelay);
+    }
+
+    public void TimeControl(_ETimeFast_ select) // ¼Óµµ Á¶Àý(¸ØÃã, ÀÏ¹Ý, ºü¸§ µîµî)
     {
         Time.timeScale = TimeFast[(int)select];
     }

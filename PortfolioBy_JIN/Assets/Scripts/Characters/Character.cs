@@ -103,15 +103,15 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     
     public void Attack() // 상대를 공격
     {
-        target.Attacked(stat.Attack);
+        if(target != null)
+            target.Attacked(stat.Attack);
     }
 
     public void Attacked(int _damage) // 데미지 만큼 내 Hp 감소 (Attack애니메이션에서 사용)
     {
         _damage = _damage <= stat.Defence ? 0 : _damage - stat.Defence;
         stat.CurrentHp -= _damage;
-        print(this.name + "Hp : " + stat.CurrentHp);
-        if(stat.CurrentHp <= 0)
+        if(stat.CurrentHp <= 0 && myCurrentCharacterState != _ECharacterState_.ecsDie)
         {
             SetCharacterState(_ECharacterState_.ecsDie);
             SetAnimation("isDie");
@@ -131,6 +131,11 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     public void SetAnimation(string _animation) // 애니메이션 변경
     {
         animator.SetTrigger(_animation);
+    }
+
+    public void SetAnimation(string _animation, bool _state) // 애니메이션 변경
+    {
+        animator.SetBool(_animation, _state);
     }
 
     public void ObjectOnOff(bool value) // 오브젝트 비활성, 활성화 (Die애니메이션에서 사용)
@@ -169,8 +174,10 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     #endregion
 
     #region //collision//
-    public abstract void OnTriggerEnter2D(Collider2D collision);
+    public abstract void OnTriggerEnter2D(Collider2D collision); // 상대를 만났을 때
 
-    public abstract void OnTriggerExit2D(Collider2D collision); // 상대를 만났을 때
+    public abstract void OnTriggerStay2D(Collider2D collision); // 상대와 싸울 때, 다른 상대와 겹쳤을 경우를 대비
+
+    public abstract void OnTriggerExit2D(Collider2D collision); // 상대를 떠났을 때
     #endregion
 }

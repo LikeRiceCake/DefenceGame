@@ -84,12 +84,22 @@ public class Enemy : Character
         }
     }
 
+    public override void OnTriggerStay2D(Collider2D collision)
+    {
+        if (myCurrentCharacterState == _ECharacterState_.ecsMove && collision.transform.CompareTag("Soldier") && target == null)
+        {
+            SetCharacterState(_ECharacterState_.ecsFight);
+            SetAnimation("isAttack");
+            target = collision.GetComponent<Soldier>();
+        }
+    }
+
     public override void OnTriggerExit2D(Collider2D collision)
     {
         if (myCurrentCharacterState == _ECharacterState_.ecsFight && collision.transform.CompareTag("Soldier"))
         {
-            SetCharacterState(_ECharacterState_.ecsIdle);
-            SetAnimation("isIdle");
+            SetCharacterState(_ECharacterState_.ecsMove);
+            SetAnimation("isMove");
             TargetRemove();
         }
     }

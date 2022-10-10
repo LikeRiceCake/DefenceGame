@@ -211,9 +211,12 @@ public class UIManager : Singleton<UIManager>
         }
     }
     
-    public void SetTextPlacedSoldier() // 배치된 병사 수 세팅
+    public void SetTextSoldierAndWeaponCnt() // 배치된 병사, 무기 수 세팅
     {
-        objectManager.placedSoldierText.text = prepareManager.placedSoldier + " / " + prepareManager.placedSoldierMax; ;
+        objectManager.soldierAndWeaponCntText.text =
+            "병사 " + prepareManager.currentSummonedSoldier + " / " + prepareManager.summonedSoldierMax +
+            "\n" +
+            "무기 " + prepareManager.currentDeployedWeapon + " / " + prepareManager.deployedWeaponMax;
     }
 
     public void SetTextWave()
@@ -287,6 +290,11 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    public void SetImageCastleHp(int _current, int _max) // 성 체력 설정
+    {
+        objectManager.castleHpFrontImage.fillAmount = (float)_current / _max;
+    }
+
     // ~~~UIsRef : ~~~씬 UI오브젝트 참조
 
     public void InCastleUIsRef()
@@ -305,7 +313,7 @@ public class UIManager : Singleton<UIManager>
     {
         SetTextResourceUI(DataManager._EResource_.erMoney);
         SetTextWave();
-        SetTextPlacedSoldier();
+        SetTextSoldierAndWeaponCnt();
     }
     //-------------------------------------------- private
 

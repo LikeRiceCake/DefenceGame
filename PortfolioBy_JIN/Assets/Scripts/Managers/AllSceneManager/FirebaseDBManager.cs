@@ -72,8 +72,6 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
         string jsonData = JsonUtility.ToJson(userData);
 
         DBRef.Child("users").Child(dataManager.myUserInfo.m_sUserName).SetRawJsonValueAsync(jsonData);
-        print("완료");
-        print(jsonData);
     }
 
     public void WriteUpdateData() // 데이터 덮어쓰기(업데이트) 서버에 저장(만들어야함)
@@ -84,8 +82,6 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
             return;
 
         DBRef.Child("users").Child(dataManager.myUserInfo.m_sUserName).SetRawJsonValueAsync(jsonData);
-        print("완료");
-        print(jsonData);
     }
 
     public void ReadData(string _path) // 서버에서 데이터 읽어오기
@@ -185,7 +181,10 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
 
     private void OnApplicationQuit()
     {
-        //WriteUpdateData();
+        if (PrepareManager.instance.isPreviousRound)
+            dataManager.myUserInfo.m_nWave = PrepareManager.instance.previousRound;
+
+        WriteUpdateData();
     }
     //-------------------------------------------- private
 

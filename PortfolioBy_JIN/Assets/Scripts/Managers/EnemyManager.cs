@@ -64,7 +64,7 @@ public class EnemyManager : Singleton<EnemyManager>
         resourceManager = ResourceManager.instance;
         dataManager = DataManager.instance;
 
-        enemyPos = GameObject.Find("Canvas").transform.Find("BattleFrame").transform.Find("EnemyPos").transform;
+        enemyPos = GameObject.Find("Canvas").transform.Find("BattleFrame").transform.Find("EnemySummonPos").transform;
 
         enemyObject = resourceManager.LoadCharacterResource("Prefabs/Enemy");
 

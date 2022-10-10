@@ -9,11 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db16b1d96d83149459b60d1d45051b5b, type: 3}
-  m_Name: Enemy
+  m_Script: {fileID: 11500000, guid: 18dffde95bc7d6244b82d8ee7b88cf4b, type: 3}
+  m_Name: Meteor
   m_EditorClassIdentifier: 
-  MaxHp: 6
-  Attack: 3
-  Defence: 1
-  Speed: 3
-  myClass: 6
+  NumberOfObject: 7
+  Speed: 7
+  RateOfFire: 1
+  myClass: 0

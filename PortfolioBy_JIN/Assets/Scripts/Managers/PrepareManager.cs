@@ -7,14 +7,21 @@ public class PrepareManager : Singleton<PrepareManager>
     #region //variable//
     //-------------------------------------------- public
     //-------------------------------------------- private
-    int _placedSoldier;
-    int _placedSoldierMax;
+    int _currentSummonedSoldier;
+    int _summonedSoldierMax;
+    int _currentDeployedWeapon;
+    int _deployedWeaponMax;
+    int _previousRound;
+
+    bool _isPreviousRound;
     #endregion
 
     #region //constant//
     //-------------------------------------------- public
-    public const int PlacedSoldierMaxDefault = 4;
-    public const int PlacedSoldierMaxIncreased = 5;
+    public const int SummonedSoldierMaxDefault = 4;
+    public const int SummonedSoldierMaxIncreased = 5;
+    public const int DeployedWeaponMaxDefault = 1;
+    public const int DeployedWeaponMaxIncreased = 15;
     //-------------------------------------------- private
 
     #endregion
@@ -24,17 +31,26 @@ public class PrepareManager : Singleton<PrepareManager>
 
     //-------------------------------------------- private
     DataManager dataManager;
+
+    EnemyManager enemyManager;
     #endregion
 
     #region //property//
-    public int placedSoldier { get { return _placedSoldier; } set { _placedSoldier = value; } }
-    public int placedSoldierMax { get { return _placedSoldierMax; } }
+    public int currentSummonedSoldier { get { return _currentSummonedSoldier; } set { _currentSummonedSoldier = value; } }
+    public int summonedSoldierMax { get { return _summonedSoldierMax; } }
+    public int currentDeployedWeapon { get { return _currentDeployedWeapon; } set { _currentDeployedWeapon = value ; } }
+    public int deployedWeaponMax { get { return _deployedWeaponMax; } }
+    public int previousRound { get { return _previousRound; } set { _previousRound = value; } }
+
+    public bool isPreviousRound { get { return _isPreviousRound; } set { _isPreviousRound = value; } }
     #endregion
 
     #region //unityLifeCycle//
     private void OnEnable()
     {
         dataManager = DataManager.instance;
+
+        enemyManager = EnemyManager.instance;
 
         DataInit();
     }
@@ -54,8 +70,41 @@ public class PrepareManager : Singleton<PrepareManager>
     //-------------------------------------------- public
     public void DataInit()
     {
-        _placedSoldier = 0;
-        _placedSoldierMax = PlacedSoldierMaxDefault + dataManager.myUserInfo.m_nWave / PlacedSoldierMaxIncreased;
+        _currentSummonedSoldier = 0;
+        _previousRound = dataManager.myUserInfo.m_nWave;
+
+        _isPreviousRound = false;
+
+        PlacedSoldierMaxSet();
+        DeployedWeaponMaxSet();
+    }
+
+    public void PlacedSoldierMaxSet()
+    {
+        _summonedSoldierMax = SummonedSoldierMaxDefault + dataManager.myUserInfo.m_nWave / SummonedSoldierMaxIncreased;
+    }
+
+    public void DeployedWeaponMaxSet()
+    {
+        _deployedWeaponMax = DeployedWeaponMaxDefault + dataManager.myUserInfo.m_nWave / DeployedWeaponMaxIncreased;
+    }
+
+    public void PreviousRoundSet()
+    {
+        _previousRound = dataManager.myUserInfo.m_nWave--;
+        PlacedSoldierMaxSet();
+        DeployedWeaponMaxSet();
+        enemyManager.MaximumEnemy();
+        isPreviousRound = true;
+    }
+
+    public void PreviousRoundReturnSet()
+    {
+        dataManager.myUserInfo.m_nWave = _previousRound;
+        PlacedSoldierMaxSet();
+        DeployedWeaponMaxSet();
+        enemyManager.MaximumEnemy();
+        isPreviousRound = false;
     }
     //-------------------------------------------- private
 

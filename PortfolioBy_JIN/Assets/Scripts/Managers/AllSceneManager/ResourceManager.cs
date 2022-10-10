@@ -26,6 +26,7 @@ public class ResourceManager : Singleton<ResourceManager>
     Dictionary<string, GameObject> characterResource = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> weaponResource = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> projectileResource = new Dictionary<string, GameObject>();
+    Dictionary<string, GameObject> skillResource = new Dictionary<string, GameObject>();
     #endregion
 
     #region //property//
@@ -82,6 +83,17 @@ public class ResourceManager : Singleton<ResourceManager>
         {
             projectileResource.Add(_key, Resources.Load<GameObject>(_key));
             return projectileResource[_key];
+        }
+    }
+
+    public GameObject LoadSkillResource(string _key)
+    {
+        if (skillResource.ContainsKey(_key))
+            return skillResource[_key];
+        else
+        {
+            skillResource.Add(_key, Resources.Load<GameObject>(_key));
+            return skillResource[_key];
         }
     }
     //-------------------------------------------- private
