@@ -38,6 +38,14 @@ public class UIManager : Singleton<UIManager>
     DataManager dataManager;
 
     PrepareManager prepareManager;
+
+    EnemyManager enemyManager;
+
+    ButtonManager buttonManager;
+
+    ResourceManager resourceManager;
+
+    TimeManager timeManager;
     #endregion
 
     #region //property//
@@ -66,6 +74,10 @@ public class UIManager : Singleton<UIManager>
         objectManager = ObjectManager.instance;
         dataManager = DataManager.instance;
         prepareManager = PrepareManager.instance;
+        enemyManager = EnemyManager.instance;
+        buttonManager = ButtonManager.instance;
+        resourceManager = ResourceManager.instance;
+        timeManager = TimeManager.instance;
     }
 
     private void Update()
@@ -101,13 +113,13 @@ public class UIManager : Singleton<UIManager>
     {
         if (objectManager.quitFrame.activeSelf)
         {
-            Time.timeScale = 1f;
             objectManager.quitFrame.gameObject.SetActive(false);
+            buttonManager.GamePause();
         }
         else
         {
-            Time.timeScale = 0f;
             objectManager.quitFrame.gameObject.SetActive(true);
+            buttonManager.GamePause();
         }
     }
 
@@ -270,6 +282,42 @@ public class UIManager : Singleton<UIManager>
         objectManager.castleUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat].text =
             "추가 체력 / 방어력 : " + dataManager.myUserInfo.m_nCastleUpgrade * Castle.CastleIncreaseHp +
             " / " + dataManager.myUserInfo.m_nCastleUpgrade * Castle.CastleIncreaseDefence;
+    }
+
+    public void SetImageGameSpeed(Sprite newSprite) // 게임 속도 버튼 이미지 변경
+    {
+        objectManager.gameSpeedControlButtonImage.sprite = newSprite;
+    }
+
+    public void SetTextEnemyCount() // 적 수 세팅
+    {
+        objectManager.enemyCntText.text = enemyManager.currentEnemyCnt.ToString();
+    }
+
+    public void SetFrameEndDefence(BattleManager._EDefenceResult_ select) // EndDefenceFrame UI세팅
+    {
+        switch (select)
+        {
+            case BattleManager._EDefenceResult_.edrVictory:
+                objectManager.endDefenceImage.sprite = resourceManager.LoadSpriteResource("Image/SuccessDefenceStar");
+                objectManager.endDefenceText.text = "방어에 성공했습니다!";
+                break;
+            case BattleManager._EDefenceResult_.edrDefeat:
+                objectManager.endDefenceImage.sprite = resourceManager.LoadSpriteResource("Image/FailedDefenceCrown");
+                objectManager.endDefenceText.text = "방어에 실패했습니다...";
+                break;
+            default:
+                break;
+        }
+
+        EndDefenceFrameOn();
+    }
+
+    public void EndDefenceFrameOn() // EndDefenceFrame On
+    {
+        objectManager.endDefenceFrame.SetActive(true);
+        gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsStop);
+        timeManager.TimeControl(gameManager.currentGameSpeed);
     }
 
     public void SceneLoadedUIs() // 씬이 로드될 때마다 필요한 UI의 세팅

@@ -8,8 +8,6 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
     //-------------------------------------------- public
 
     //-------------------------------------------- private
-    int firstPlayed;
-
     string isAlreadyPlayedKey;
     string myNameKey;
     string _myName;
@@ -58,7 +56,6 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
         isAlreadyPlayedKey = "Played";
         myNameKey = "Name";
         _myName = null;
-        firstPlayed = 0;
     }
 
     public void GetPlayerPrefsName() // PlayerPrefs로 저장된 로컬네임 불러오기

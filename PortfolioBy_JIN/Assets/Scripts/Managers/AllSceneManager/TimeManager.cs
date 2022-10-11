@@ -5,17 +5,6 @@ using System;
 
 public class TimeManager : Singleton<TimeManager>
 {
-    #region //enumeration//
-    public enum _ETimeFast_
-    {
-        etfStop,
-        etfNormal,
-        etfFast,
-        etfVeryFast,
-        etfMax
-    }
-    #endregion
-
     #region //variable//
     //-------------------------------------------- public
 
@@ -179,7 +168,7 @@ public class TimeManager : Singleton<TimeManager>
             objectManager.useMeteorButtonImage.fillAmount -= (Time.deltaTime / Meteor.SkillDelay);
     }
 
-    public void TimeControl(_ETimeFast_ select) // 속도 조절(멈춤, 일반, 빠름 등등)
+    public void TimeControl(GameManager._EGameSpeed_ select) // 속도 조절(멈춤, 일반, 빠름 등등)
     {
         Time.timeScale = TimeFast[(int)select];
     }

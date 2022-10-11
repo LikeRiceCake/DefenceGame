@@ -114,7 +114,6 @@ public abstract class Weapon : MonoBehaviour
             opponent = Physics2D.OverlapCircle(transform.position, EyeSight, 1 << layerMask);
             if (opponent != null)
             {
-                print("코루틴 시작");
                 StartCoroutine(coroutine);
             }
         }

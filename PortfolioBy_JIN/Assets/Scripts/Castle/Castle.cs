@@ -132,7 +132,7 @@ public class Castle : MonoBehaviour, IAttacked
         uiManager.SetImageCastleHp(stat.CurrentHp, stat.MaxHp);
         if (stat.CurrentHp <= 0)
         {
-            // 게임 오버
+            uiManager.SetFrameEndDefence(BattleManager._EDefenceResult_.edrDefeat);
         }
     }
     //-------------------------------------------- private

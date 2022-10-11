@@ -5,15 +5,15 @@ using UnityEngine;
 public class EnemyManager : Singleton<EnemyManager>
 {
     #region //enumeration//
-    IEnumerator _coroutineManager;
+    Coroutine _coroutineManager;
     #endregion
 
     #region //variable//
     //-------------------------------------------- public
 
     //-------------------------------------------- private
-    int maxEnemyCnt;
-    int currentEnemyCnt;
+    int _maxEnemyCnt;
+    int _currentEnemyCnt;
     #endregion
 
     #region //constant//
@@ -33,6 +33,8 @@ public class EnemyManager : Singleton<EnemyManager>
 
     DataManager dataManager;
 
+    UIManager uiManager;
+
     GameObject enemyObject;
 
     Transform enemyPos;
@@ -41,19 +43,19 @@ public class EnemyManager : Singleton<EnemyManager>
     #endregion
 
     #region //property//
-    public IEnumerator coroutineManager { get { return _coroutineManager; } }
+    public Coroutine coroutineManager { get { return _coroutineManager; } set { _coroutineManager = value; } }
+    public int currentEnemyCnt { get { return _currentEnemyCnt; } set { _currentEnemyCnt = value; } }
     #endregion
 
     #region //unityLifeCycle//
     private void OnEnable()
     {
-        
+        DataInit();
     }
 
     private void Start()
     {
-        DataInit();
-        CreateEnemy();
+       
     }
     #endregion
 
@@ -63,23 +65,21 @@ public class EnemyManager : Singleton<EnemyManager>
     {
         resourceManager = ResourceManager.instance;
         dataManager = DataManager.instance;
-
-        enemyPos = GameObject.Find("Canvas").transform.Find("BattleFrame").transform.Find("EnemySummonPos").transform;
+        uiManager = UIManager.instance;
 
         enemyObject = resourceManager.LoadCharacterResource("Prefabs/Enemy");
 
         enemyFactory = gameObject.AddComponent<EnemyFactory>();
 
         MaximumEnemy();
-
-        _coroutineManager = ActivateEnemy();
     }
 
     public void CreateEnemy() // 적 생성
     {
+        enemyList.RemoveRange(0, enemyList.Count);
         GameObject hierarchyEnemyList = new GameObject();
         hierarchyEnemyList.name = "EnemyList";
-        for (int i = 0; i < maxEnemyCnt; i++)
+        for (int i = 0; i < _maxEnemyCnt; i++)
         {
             GameObject enemy = enemyFactory.Create(EnemyFactory._EEnemyClass_.eecEnemy);
             enemy.transform.SetParent(hierarchyEnemyList.transform);
@@ -93,22 +93,35 @@ public class EnemyManager : Singleton<EnemyManager>
 
     public void MaximumEnemy() // 적의 최대 갯수 설정
     {
-        maxEnemyCnt = DefaultMaxEnemyCnt + (dataManager.myUserInfo.m_nWave / 2);
+        _maxEnemyCnt = DefaultMaxEnemyCnt + (dataManager.myUserInfo.m_nWave / 2);
         CurrentEnemySetting();
     }
 
     public void CurrentEnemySetting() // 적의 현재 갯수 설정
     {
-        currentEnemyCnt = maxEnemyCnt;
+        _currentEnemyCnt = _maxEnemyCnt;
     }
 
     public void CurrentEnemyDecrease() // 적의 현재 갯수 감소
     {
-        currentEnemyCnt--;
-        if(currentEnemyCnt <= 0)
+        _currentEnemyCnt--;
+        uiManager.SetTextEnemyCount();
+        if (currentEnemyCnt <= 0)
         {
-            // 디펜스 승리
+            dataManager.myUserInfo.m_nWave++;
+            uiManager.SetFrameEndDefence(BattleManager._EDefenceResult_.edrVictory);
         }
+    }
+
+    public void ResetEnemyManager() // RedoButton같이 디펜스를 재시작하거나 할 때 리셋
+    {
+        if(_coroutineManager != null)
+            StopCoroutine(_coroutineManager);
+    }
+
+    public void CoroutineStart()
+    {
+        _coroutineManager = StartCoroutine(ActivateEnemy());
     }
 
     public IEnumerator ActivateEnemy() // 적 소환
@@ -118,7 +131,14 @@ public class EnemyManager : Singleton<EnemyManager>
             yield return new WaitForSeconds(1f);
             enemyList[i].SetActive(true);
         }
-        StopCoroutine(_coroutineManager);
+    }
+
+    public void SceneLoadedEnemys()
+    {
+        ResetEnemyManager();
+        enemyPos = GameObject.Find("Canvas").transform.Find("BattleFrame").transform.Find("EnemySummonPos").transform;
+        MaximumEnemy();
+        CreateEnemy();
     }
     //-------------------------------------------- private
 

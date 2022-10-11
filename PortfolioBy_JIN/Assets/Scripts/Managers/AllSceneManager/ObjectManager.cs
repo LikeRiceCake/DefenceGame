@@ -85,6 +85,7 @@ public class ObjectManager : Singleton<ObjectManager>
     GameObject _castleUpgradeFrame;
     GameObject _soldierSummonSelectFrame;
     GameObject _weaponDeploySelectFrame;
+    GameObject _endDefenceFrame;
 
     Button _defenceToInCastleButton;
     Button _optionFrameOnButton;
@@ -115,6 +116,9 @@ public class ObjectManager : Singleton<ObjectManager>
     Button[] _weaponDeploysButton;
     Button _previousRoundButton;
     Button _useMeteorButton;
+    Button _gameSpeedControlButton;
+    Button _endDefenceBackInCastleButton;
+    Button _endDefenceRePrepareButton;
 
     Text _waveText;
     Text _soldierAndWeaponCntText;
@@ -126,9 +130,13 @@ public class ObjectManager : Singleton<ObjectManager>
     Text[] _weaponUpgradeResourcesText;
     Text[] _castleUpgradeInformationsText;
     Text _castleUpgradePriceText;
+    Text _enemyCntText;
+    Text _endDefenceText;
 
     Image _castleHpFrontImage;
     Image _useMeteorButtonImage;
+    Image _gameSpeedControlButtonImage;
+    Image _endDefenceImage;
 
     Castle _castle;
     #endregion
@@ -198,6 +206,7 @@ public class ObjectManager : Singleton<ObjectManager>
     public GameObject castleUpgradeFrame { get { return _castleUpgradeFrame; } }
     public GameObject soldierSummonSelectFrame { get { return _soldierSummonSelectFrame; } }
     public GameObject weaponDeploySelectFrame { get { return _weaponDeploySelectFrame; } }
+    public GameObject endDefenceFrame { get { return _endDefenceFrame; } }
 
     public Button defenceToInCastleButton { get { return _defenceToInCastleButton; } }
     public Button optionFrameOnButton { get { return _optionFrameOnButton; } }
@@ -228,6 +237,9 @@ public class ObjectManager : Singleton<ObjectManager>
     public Button[] weaponDeploysButton { get { return _weaponDeploysButton; } }
     public Button previousRoundButton { get { return _previousRoundButton; } }
     public Button useMeteorButton { get { return _useMeteorButton; } }
+    public Button gameSpeedControlButton { get { return _gameSpeedControlButton; } }
+    public Button endDefenceBackInCastleButton { get { return _endDefenceBackInCastleButton; } }
+    public Button endDefenceRePrepareButton { get { return _endDefenceRePrepareButton; } }
 
     public Text waveText { get { return _waveText; } }
     public Text soldierAndWeaponCntText { get { return _soldierAndWeaponCntText; } }
@@ -239,9 +251,13 @@ public class ObjectManager : Singleton<ObjectManager>
     public Text[] weaponUpgradeResourcesText { get { return _weaponUpgradeResourcesText; } }
     public Text[] castleUpgradeInformationsText { get { return _castleUpgradeInformationsText; } }
     public Text castleUpgradePriceText { get { return _castleUpgradePriceText; } }
+    public Text enemyCntText { get { return _enemyCntText; } }
+    public Text endDefenceText { get { return _endDefenceText; } }
 
     public Image castleHpFrontImage { get { return _castleHpFrontImage; } }
     public Image useMeteorButtonImage { get { return _useMeteorButtonImage; } }
+    public Image gameSpeedControlButtonImage { get { return _gameSpeedControlButtonImage; } }
+    public Image endDefenceImage { get { return _endDefenceImage; } }
 
     public Castle castle { get { return _castle; } }
     #endregion
@@ -409,6 +425,7 @@ public class ObjectManager : Singleton<ObjectManager>
         _castleUpgradeFrame = _prepareFrame.transform.Find("CastleUpgradeFrame").gameObject;
         _soldierSummonSelectFrame = _prepareFrame.transform.Find("SoldierSummonSelectFrame").gameObject;
         _weaponDeploySelectFrame = _prepareFrame.transform.Find("WeaponDeploySelectFrame").gameObject;
+        _endDefenceFrame = _battleFrame.transform.Find("EndDefenceFrame").gameObject;
 
         _defenceToInCastleButton = GameObject.Find("DefenceToInCastle_Button").GetComponent<Button>();
         _optionFrameOnButton = GameObject.Find("OptionFrameOn_Button").GetComponent<Button>();
@@ -451,6 +468,9 @@ public class ObjectManager : Singleton<ObjectManager>
         _weaponDeploysButton[(int)DataManager._EWeaponLock_.ewlBallista] = _weaponDeploySelectFrame.transform.Find("SelectButtons").transform.Find("BallistaFrame").transform.Find("BallistaDeploy_Button").GetComponent<Button>();
         _previousRoundButton = GameObject.Find("PreviousRound_Button").GetComponent<Button>();
         _useMeteorButton = _battleFrame.transform.Find("Skill").transform.Find("Meteor").transform.Find("UseMeteor_Button").GetComponent<Button>();
+        _gameSpeedControlButton = _battleFrame.transform.Find("GameSpeed").transform.Find("GameSpeedControl_Button").GetComponent<Button>();
+        _endDefenceBackInCastleButton = _endDefenceFrame.transform.Find("EndDefenceBackToInCastle_Button").GetComponent<Button>();
+        _endDefenceRePrepareButton = _endDefenceFrame.transform.Find("EndDefenceRePrepare_Button").GetComponent<Button>();
 
         _resourcesText[(int)DataManager._EResource_.erMoney] = GameObject.Find("Money_Text").GetComponent<Text>();
         _waveText = GameObject.Find("Wave_Text").GetComponent<Text>();
@@ -470,9 +490,13 @@ public class ObjectManager : Singleton<ObjectManager>
         _castleUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade] = _castleUpgradeFrame.transform.Find("CurrentCastleUpgrade_Text").GetComponent<Text>();
         _castleUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat] = _castleUpgradeFrame.transform.Find("AdditionalStat_Text").GetComponent<Text>();
         _castleUpgradePriceText = _castleUpgradeConfirmButton.gameObject.transform.Find("CastleUpgradePrice_Text").GetComponent<Text>();
+        _enemyCntText = _battleFrame.transform.Find("EnemyCount").transform.Find("EnemyCount_Text").GetComponent<Text>();
+        _endDefenceText = _endDefenceFrame.transform.Find("EndDefence_Text").GetComponent<Text>();
 
         _castleHpFrontImage = _battleFrame.transform.Find("CastleHpFrame").transform.Find("CastleHpFront_Image").GetComponent<Image>();
         _useMeteorButtonImage = _useMeteorButton.GetComponent<Image>();
+        _gameSpeedControlButtonImage = _gameSpeedControlButton.GetComponent<Image>();
+        _endDefenceImage = _endDefenceFrame.transform.Find("EndDefence_Image").GetComponent<Image>();
 
         _castle = _battleFrame.transform.Find("CastleCollider").GetComponent<Castle>();
     }

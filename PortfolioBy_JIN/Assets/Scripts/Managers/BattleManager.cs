@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class BattleManager : Singleton<BattleManager>
 {
+    #region //enumeration//
+    public enum _EDefenceResult_
+    {
+        edrVictory,
+        edrDefeat,
+        edrMax
+    }
+    #endregion
+
     #region //variable//
     //-------------------------------------------- public
 

@@ -8,10 +8,6 @@ using UnityEngine.UI;
 public class ButtonManager : Singleton<ButtonManager>
 {
     #region //enumeration//
-    IEnumerator _coroutineManager;
-    #endregion
-
-    #region //enumeration//
     public enum _EOptionButton_
     {
         eobToInCastle,
@@ -19,6 +15,8 @@ public class ButtonManager : Singleton<ButtonManager>
         eobContinue,
         eobMax
     }
+
+    Coroutine _coroutineManager;
     #endregion
 
     #region //variable//
@@ -56,7 +54,6 @@ public class ButtonManager : Singleton<ButtonManager>
     {
         public GameObject skillObj;
         public Vector3 skillPos;
-        public int NumberOfObject;
     }
     _skillInfo skill;
     #endregion
@@ -108,7 +105,7 @@ public class ButtonManager : Singleton<ButtonManager>
     #endregion
 
     #region //property//
-    public IEnumerator coroutineManager { get { return _coroutineManager; } }
+    public Coroutine coroutineManager { get { return _coroutineManager; } }
 
     public bool isSoldierUpgraded { get { return _isSoldierUpgraded; } set { _isSoldierUpgraded = value; } }
     public bool isBallistaUpgraded { get { return _isBallistaUpgraded; } set { _isBallistaUpgraded = value; } }
@@ -435,6 +432,10 @@ public class ButtonManager : Singleton<ButtonManager>
     public void DefenceToInCastle() // Defence씬에서 InCastle씬으로
     {
         gameManager.SetBattleState(GameManager._EBattleState_.egNotBattle);
+        gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsNoraml);
+        timeManager.TimeControl(gameManager.currentGameSpeed);
+        StopCoroutine(_coroutineManager);
+        EnemyManager.instance.ResetEnemyManager();
         SceneManager.LoadScene("InCastle");
     }
 
@@ -443,21 +444,26 @@ public class ButtonManager : Singleton<ButtonManager>
         if(objectManager.optionFrame.activeSelf)
         {
             objectManager.optionFrame.SetActive(false);
-            timeManager.TimeControl(TimeManager._ETimeFast_.etfNormal);
+            GamePause();
         }
         else
         {
             objectManager.optionFrame.SetActive(true);
-            timeManager.TimeControl(TimeManager._ETimeFast_.etfStop);
+            GamePause();
         }
     }
 
     public void RePrepare() // Prepare로 돌아감
     {
+        gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsNoraml);
+        timeManager.TimeControl(gameManager.currentGameSpeed);
         gameManager.SetBattleState(GameManager._EBattleState_.egNotBattle);
         objectManager.prepareFrame.SetActive(true);
         objectManager.battleFrame.SetActive(false);
-        // EnemyManager를 리셋하는 코드
+        if(_coroutineManager != null)
+            StopCoroutine(_coroutineManager);
+        EnemyManager.instance.ResetEnemyManager();
+        InCastleToDefence();
     }
 
     public void SoldierUpgradeFrameOnOff() // 병사 강화 프레임 On, Off
@@ -578,7 +584,7 @@ public class ButtonManager : Singleton<ButtonManager>
         switch (dataManager.currentWeaponUpgradeState)
         {
             case DataManager._EWeaponUpgrade_.ewuBallista:
-                // dataManager.currentWeaponUpgradeState = DataManager._EWeaponUpgrade_.ewuBallista;
+                dataManager.currentWeaponUpgradeState = DataManager._EWeaponUpgrade_.ewuBallista;
                 break;
             default:
                 dataManager.currentWeaponUpgradeState = DataManager._EWeaponUpgrade_.ewuBallista;
@@ -642,9 +648,10 @@ public class ButtonManager : Singleton<ButtonManager>
     public void DefenceStart() // 디펜스 웨이브 시작
     {
         gameManager.SetBattleState(GameManager._EBattleState_.egBattle);
+        uiManager.SetTextEnemyCount();
         objectManager.prepareFrame.SetActive(false);
         objectManager.battleFrame.SetActive(true);
-        StartCoroutine(EnemyManager.instance.coroutineManager);
+        EnemyManager.instance.CoroutineStart();
     }
 
     public void DefenceEnd() // 디펜스 웨이브 종료
@@ -739,10 +746,57 @@ public class ButtonManager : Singleton<ButtonManager>
         if(gameManager.currentBattleState == GameManager._EBattleState_.egBattle && objectManager.useMeteorButtonImage.fillAmount == 0)
         {
             objectManager.useMeteorButtonImage.fillAmount = 1f;
-            _coroutineManager = UseSkill();
-            StartCoroutine(coroutineManager);
+            _coroutineManager = StartCoroutine(UseSkill());
         }
     }
+
+    public void GameSpeedChange() // 게임 속도 변경
+    {
+        switch (gameManager.currentGameSpeed)
+        {
+            case GameManager._EGameSpeed_.egsNoraml:
+                gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsDouble);
+                ChangeImage("Image/Arrow_Double");
+                break;
+            case GameManager._EGameSpeed_.egsDouble:
+                gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsTriple);
+                ChangeImage("Image/Arrow_Triple");
+                break;
+            case GameManager._EGameSpeed_.egsTriple:
+                gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsNoraml);
+                ChangeImage("Image/Arrow_Normal");
+                break;
+            default:
+                gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsNoraml);
+                ChangeImage("Image/Arrow_Normal");
+                break;
+        }
+
+        timeManager.TimeControl(gameManager.currentGameSpeed);
+    }
+
+    public void ChangeImage(string _path)
+    {
+        Sprite changeImage;
+        changeImage = resourceManager.LoadSpriteResource(_path);
+        uiManager.SetImageGameSpeed(changeImage);
+    }
+
+    public void GamePause() // 게임 정지, 플레이
+    {
+        if (gameManager.currentGameSpeed != GameManager._EGameSpeed_.egsStop)
+        {
+            gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsStop);
+            timeManager.TimeControl(gameManager.currentGameSpeed);
+        }
+        else
+        {
+            gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsNoraml);
+            ChangeImage("Image/Arrow_Normal");
+            timeManager.TimeControl(gameManager.currentGameSpeed);
+        }
+    }
+    
     #endregion
 
     public void SceneLoadedButtons() // 씬이 로드될 때마다 버튼들 이벤트 할당
@@ -849,6 +903,9 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager.weaponDeploysButton[(int)DataManager._EWeaponLock_.ewlBallista].onClick.AddListener(() => WeaponDeploy(WeaponFactory._EWeaponClass_.ewcBallista));
         objectManager.previousRoundButton.onClick.AddListener(BackToPreviousRound);
         objectManager.useMeteorButton.onClick.AddListener(MeteorSkill);
+        objectManager.gameSpeedControlButton.onClick.AddListener(GameSpeedChange);
+        objectManager.endDefenceBackInCastleButton.onClick.AddListener(DefenceToInCastle);
+        objectManager.endDefenceRePrepareButton.onClick.AddListener(RePrepare);
     }
 
     public IEnumerator UseSkill()

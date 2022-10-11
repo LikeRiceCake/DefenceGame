@@ -106,6 +106,12 @@ public class PrepareManager : Singleton<PrepareManager>
         enemyManager.MaximumEnemy();
         isPreviousRound = false;
     }
+
+    public void ResetCnt()
+    {
+        _currentDeployedWeapon = 0;
+        _currentSummonedSoldier = 0;
+    }
     //-------------------------------------------- private
 
     #endregion

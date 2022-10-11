@@ -78,7 +78,6 @@ public class Ballista : Weapon
     {
         while (true)
         {
-            print("코루틴 진입");
             projectileObj = projectileFactory.Create(ProjectileFactory._EProjectileClass_.epcBallistaArrow);
             projectileObj.transform.position = transform.GetChild(0).transform.position;
             projectileObj.GetComponent<BallistaArrow>().target = opponent.GetComponent<Enemy>();

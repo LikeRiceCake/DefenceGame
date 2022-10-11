@@ -163,7 +163,7 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
         }
     }
 
-    public void Die()
+    public virtual void Die()
     {
         gameObject.SetActive(false);
     }

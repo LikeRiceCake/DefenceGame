@@ -29,6 +29,16 @@ public class GameManager : Singleton<GameManager>
         egBattle,
         eqMax
     } _EBattleState_ _currentBattleState;
+
+    public enum _EGameSpeed_
+    {
+        egsStop,
+        egsNoraml,
+        egsDouble,
+        egsTriple,
+        egsMax
+    } _EGameSpeed_ _currentGaemSpeed;
+
     #endregion
 
     #region delegate
@@ -81,6 +91,8 @@ public class GameManager : Singleton<GameManager>
 
     public _EBattleState_ currentBattleState { get { return _currentBattleState; } }
 
+    public _EGameSpeed_ currentGameSpeed { get { return _currentGaemSpeed; } }
+
     public bool isAlreadyInCastle { get { return _isAlreadyInCastle; } set { _isAlreadyInCastle = value; } }
     public bool isAlreadyOutCastle { get { return _isAlreadyOutCastle; } set { _isAlreadyOutCastle = value; } }
     public bool isAlreadyDefence { get { return _isAlreadyDefence; } set { _isAlreadyDefence = value; } }
@@ -126,6 +138,7 @@ public class GameManager : Singleton<GameManager>
         SetGameState(_EGameState_.egInGame);
         SetSceneState(_ESceneState_.esMain);
         SetBattleState(_EBattleState_.egNotBattle);
+        SetGameSpeed(_EGameSpeed_.egsNoraml);
 
         _isCompletedCheck = false;
 
@@ -147,6 +160,11 @@ public class GameManager : Singleton<GameManager>
     public void SetBattleState(_EBattleState_ newBattleState) // 현재 배틀 상태 변경
     {
         _currentBattleState = newBattleState;
+    }
+
+    public void SetGameSpeed(_EGameSpeed_ newGameSpeed) // 현재 게임 속도 변경
+    {
+        _currentGaemSpeed = newGameSpeed;
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode) // 씬이 로드될 때마다 호출되는 함수
@@ -174,6 +192,8 @@ public class GameManager : Singleton<GameManager>
                 GameObject.Find("Managers").transform.Find("PrepareManager").gameObject.SetActive(true);
                 GameObject.Find("Managers").transform.Find("BattleManager").gameObject.SetActive(true);
                 GameObject.Find("Managers").transform.Find("EnemyManager").gameObject.SetActive(true);
+                EnemyManager.instance.SceneLoadedEnemys();
+                prepareManager.ResetCnt();
                 break;
             default:
                 break;

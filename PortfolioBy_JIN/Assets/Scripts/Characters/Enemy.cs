@@ -32,11 +32,6 @@ public class Enemy : Character
             SetAnimation("isMove");
         }
     }
-
-    void OnDisable()
-    {
-        _enemyManager.CurrentEnemyDecrease();
-    }
     #endregion
 
     #region //function//
@@ -62,6 +57,12 @@ public class Enemy : Character
             default:
                 return 0;
         }
+    }
+
+    public override void Die()
+    {
+        _enemyManager.CurrentEnemyDecrease();
+        base.Die();
     }
     //-------------------------------------------- private
 
