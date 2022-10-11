@@ -27,7 +27,8 @@ public class SoundManager : Singleton<SoundManager>
 
     ResourceManager resourceManager;
 
-    AudioClip currentAudioClip;
+    AudioClip audioClipBGM;
+    AudioClip[] audioClipSFX;
 
     AudioSource audioSource;
     #endregion
@@ -54,36 +55,62 @@ public class SoundManager : Singleton<SoundManager>
     //-------------------------------------------- public
     public void SceneLoadedSounds()
     {
+        SetAudioBGM();
+        PlayAudioBGM();
+    }
+
+    public void SetAudioSFX()
+    {
         switch (gameManager.currentSceneState)
         {
             case GameManager._ESceneState_.esMain:
                 audioSource = GetComponent<AudioSource>();
-                currentAudioClip = resourceManager.LoadAudioResource("Audios/Main");
+                audioClipBGM = resourceManager.LoadAudioResource("Audios/BGM/Main");
                 break;
             case GameManager._ESceneState_.esInCastle:
-                currentAudioClip = resourceManager.LoadAudioResource("Audios/InCastle");
+                audioClipBGM = resourceManager.LoadAudioResource("Audios/BGM/InCastle");
                 break;
             case GameManager._ESceneState_.esOutCastle:
-                currentAudioClip = resourceManager.LoadAudioResource("Audios/OutCastle");
+                audioClipBGM = resourceManager.LoadAudioResource("Audios/BGM/OutCastle");
                 break;
             case GameManager._ESceneState_.esDefence:
-                currentAudioClip = resourceManager.LoadAudioResource("Audios/Defence");
+                audioClipBGM = resourceManager.LoadAudioResource("Audios/BGM/Defence");
                 break;
             default:
                 break;
         }
-        SetAudio();
-        PlayAudio();
     }
 
-    public void SetAudio()
+    public void PlayAudioSFX()
     {
-        audioSource.clip = currentAudioClip;
+        
     }
 
-    public void PlayAudio()
+    public void SetAudioBGM()
     {
-        audioSource.Play();
+        switch (gameManager.currentSceneState)
+        {
+            case GameManager._ESceneState_.esMain:
+                audioSource = GetComponent<AudioSource>();
+                audioClipBGM = resourceManager.LoadAudioResource("Audios/BGM/Main");
+                break;
+            case GameManager._ESceneState_.esInCastle:
+                audioClipBGM = resourceManager.LoadAudioResource("Audios/BGM/InCastle");
+                break;
+            case GameManager._ESceneState_.esOutCastle:
+                audioClipBGM = resourceManager.LoadAudioResource("Audios/BGM/OutCastle");
+                break;
+            case GameManager._ESceneState_.esDefence:
+                audioClipBGM = resourceManager.LoadAudioResource("Audios/BGM/Defence");
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void PlayAudioBGM()
+    {
+        audioSource.PlayOneShot(audioClipBGM);
     }
     //-------------------------------------------- private
 

@@ -171,6 +171,11 @@ public class ButtonManager : Singleton<ButtonManager>
     {
         Application.Quit();
     }
+
+    public void ButtonSound() // 버튼 클릭음
+    {
+        
+    }
     #endregion
 
     #region ///MainScene///
@@ -827,6 +832,7 @@ public class ButtonManager : Singleton<ButtonManager>
     public void AllSceneButtonsEvent()
     {
         objectManager.quitButton.onClick.AddListener(Aplication_Quit);
+        objectManager.quitButton.onClick.AddListener(ButtonSound);
     }
 
     public void MainButtonsEvent()
