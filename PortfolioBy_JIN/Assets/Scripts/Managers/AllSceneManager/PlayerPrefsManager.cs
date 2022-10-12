@@ -69,12 +69,18 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
         PlayerPrefs.SetString(myNameKey, _name);
     }
 
+    public int GetPlayerPrefsPlayed()
+    {
+        return PlayerPrefs.GetInt(isAlreadyPlayedKey);
+    }
+
     public bool CheckFirstPlay() // 최초 플레이인지 확인
     {
-        if (PlayerPrefs.GetInt(isAlreadyPlayedKey) == 0)
+        if (GetPlayerPrefsPlayed() == 0)
             return true;
         else
             return false;
+        
     }
     //-------------------------------------------- private
 
