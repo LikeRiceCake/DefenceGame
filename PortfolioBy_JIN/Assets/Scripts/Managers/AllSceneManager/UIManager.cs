@@ -65,7 +65,7 @@ public class UIManager : Singleton<UIManager>
     #region //unityLifeCycle//
     protected override void Awake()
     {
-        base.Awake(); 
+        base.Awake();
     }
 
     private void OnEnable()
@@ -82,105 +82,21 @@ public class UIManager : Singleton<UIManager>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) // esc키를 누르면 종료할 수 있는 UI가 뜸
-        {
-            QuitFrameOnOff();
-        }
-
-        if (gameManager.currentSceneState == GameManager._ESceneState_.esOutCastle) // OutCastle에서만 호출
-        {
-            CutDownTreeLeftTime();
-            MiningStoneLeftTime();
-            MiningIronLeftTime();
-            MiningGoldLeftTime();
-            MiningDiamondLeftTime();
-        }
+        GatherResource();
     }
     #endregion
 
     #region //function//
     //-------------------------------------------- public
-    public void SetTextHirePrice() // 인력 고용 가격 설정
-    {
-        objectManager.treeHirePriceText.text = DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehWood].ToString();
-        for (int i = 0; i < (int)DataManager._EMineral_.emMax; i++)
-        {
-            objectManager.mineralsHirePriceText[i].text = DataManager.ResourceHirePrice[i + 1].ToString();
-        }
-    }
-
-    public void QuitFrameOnOff() // 종료 화면 온 오프
+    #region //AllScene//
+    public bool QuitFrameOnOff() // 종료 화면 온 오프
     {
         if (objectManager.quitFrame.activeSelf)
-        {
             objectManager.quitFrame.gameObject.SetActive(false);
-            buttonManager.GamePause();
-        }
         else
-        {
             objectManager.quitFrame.gameObject.SetActive(true);
-            buttonManager.GamePause();
-        }
-    }
 
-    public void CutDownTreeLeftTime() // 벌목의 남은 시간
-    {
-        if (dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltWood] >= 360f)
-        {
-            objectManager.treeLeftTimeText.text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltWood] / 60) + "분";
-        }
-        else
-        {
-            objectManager.treeLeftTimeText.text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltWood] + "초";
-        }
-    }
-
-    public void MiningStoneLeftTime() // 돌 채광의 남은 시간
-    {
-        if (dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltStone] >= 360f)
-        {
-            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emStone].text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltStone] / 60) + "분";
-        }
-        else
-        {
-            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emStone].text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltStone] + "초";
-        }
-    }
-
-    public void MiningIronLeftTime() // 철 채광의 남은 시간
-    {
-        if (dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltIron] >= 360f)
-        {
-            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emIron].text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltIron] / 60) + "분";
-        }
-        else
-        {
-            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emIron].text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltIron] + "초";
-        }
-    }
-
-    public void MiningGoldLeftTime() // 금 채광의 남은 시간
-    {
-        if (dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltGold] >= 360f)
-        {
-            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emGold].text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltGold] / 60) + "분";
-        }
-        else
-        {
-            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emGold].text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltGold] + "초";
-        }
-    }
-
-    public void MiningDiamondLeftTime() // 다이아 채광의 남은 시간
-    {
-        if (dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltDiamond] >= 360f)
-        {
-            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emDiamond].text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltDiamond] / 60) + "분";
-        }
-        else
-        {
-            objectManager.mineralsLeftTimeText[(int)DataManager._EMineral_.emDiamond].text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltDiamond] + "초";
-        }
+        return objectManager.quitFrame.gameObject.activeSelf;
     }
 
     public void SetTextResourceUI() // 자원UI 세팅
@@ -195,59 +111,199 @@ public class UIManager : Singleton<UIManager>
     {
         objectManager.resourceText[(int)select].text = dataManager.myUserInfo.m_nResource[(int)select].ToString();
     }
+    #endregion
+
+    #region //MainScene//
+    public void CreateUserFrameOn() // 유저 생성 창 On
+    {
+        objectManager.createUserFrame.SetActive(true);
+    }
+    #endregion
+
+    #region //OutCastle//
+    public void GatherResource()
+    {
+        if (gameManager.currentSceneState == GameManager._ESceneState_.esOutCastle) // OutCastle에서만 호출
+        {
+            SetTextCutDownTreeLeftTime();
+            SetTextMiningMineralLeftTime();
+        }
+    }
+
+    public void SetTextCutDownTreeLeftTime() // 벌목의 남은 시간
+    {
+        if (dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltWood] >= 360f)
+            objectManager.treeLeftTimeText.text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltWood] / 60) + "분";
+        else
+            objectManager.treeLeftTimeText.text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)DataManager._ELeftTime_.eltWood] + "초";
+    }
+
+    public void SetTextMiningMineralLeftTime() // 광물 채광의 남은 시간
+    {
+        if (dataManager.myUserInfo.m_fLeftTime[(int)dataManager.currentMineralState + 1] >= 360f)
+            objectManager.mineralLeftTimeText.text = "남은 시간 : " + (int)(dataManager.myUserInfo.m_fLeftTime[(int)dataManager.currentMineralState + 1] / 60) + "분";
+        else
+            objectManager.mineralLeftTimeText.text = "남은 시간 : " + (int)dataManager.myUserInfo.m_fLeftTime[(int)dataManager.currentMineralState + 1] + "초";
+    }
+
+    public void ForestFrameOnOff()
+    {
+        if (objectManager.forestFrame.activeSelf)
+            objectManager.forestFrame.SetActive(false);
+        else
+            objectManager.forestFrame.SetActive(true);
+    }
+
+    public void MineFrameOnOff()
+    {
+        if (objectManager.mineFrame.activeSelf)
+            objectManager.mineFrame.SetActive(false);
+        else
+            objectManager.mineFrame.SetActive(true);
+    }
+
+    public void TreeWorkFrameOn()
+    {
+        objectManager.treeWorkFrame.SetActive(true);
+    }
+
+    public void TreeWorkFrameOff()
+    {
+        objectManager.treeWorkFrame.SetActive(false);
+    }
+
+    public void MineralImageChange()
+    {
+        string path;
+
+        switch (dataManager.currentMineralState)
+        {
+            case DataManager._EMineral_.emStone:
+                path = "Image/Stone";
+                break;
+            case DataManager._EMineral_.emIron:
+                path = "Image/Iron";
+                break;
+            case DataManager._EMineral_.emGold:
+                path = "Image/Gold";
+                break;
+            case DataManager._EMineral_.emDiamond:
+                path = "Image/Diamond";
+                break;
+            default:
+                path = "Image/Stone";
+                break;
+        }
+
+        objectManager.mineralWorkFrameOnButtonImage.sprite = resourceManager.LoadSpriteResource(path);
+    }
+
+    public void SetTextHirePrice() // 인력 고용 가격 설정
+    {
+        objectManager.treeHirePriceText.text = DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehWood].ToString();
+        objectManager.mineralHirePriceText.text = DataManager.ResourceHirePrice[(int)dataManager.currentMineralState + 1].ToString();
+    }
 
     public void SetTextHireCnt() // 고용된 인력 숫자 세팅
     {
         objectManager.treeHiredCntText.text = dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood].ToString();
-        for (int i = 0; i < (int)DataManager._EMineral_.emMax; i++)
+        objectManager.mineralHiredCntText.text = dataManager.myUserInfo.m_nHired[(int)dataManager.currentMineralState + 1].ToString();
+    }
+
+    public void MineralWorkFrameOnOff(bool _active)
+    {
+        objectManager.mineralWorkFrame.SetActive(_active);
+    }
+    #endregion
+
+    #region //DefenceScene//
+    public void SetImageGameSpeed(string _key) // 게임 속도 버튼 이미지 변경
+    {
+        objectManager.gameSpeedControlButtonImage.sprite = resourceManager.LoadSpriteResource(_key);
+    }
+
+    public void SoldierUpgradeFrameOnOff() // 병사 강화 프레임 OnOff
+    {
+        if (objectManager.soldierUpgradeFrame.activeSelf)
+            objectManager.soldierUpgradeFrame.SetActive(false);
+        else
+            objectManager.soldierUpgradeFrame.SetActive(true);
+    }
+
+    public void SoldierUpgradeAndUnLcokConfirmFrameOnOff() // 병사 강화 확인 프레임 온 오프
+    {
+        if (objectManager.soldierUpgradeConfirmFrame.activeSelf)
+            SoldierUpgradeAndUnLcokConfirmFrameOff();
+        else
+            SoldierUpgradeAndUnLcokConfirmFrameOn();
+    }
+
+    public void SoldierUpgradeAndUnLcokConfirmFrameOn()
+    {
+        if (dataManager.myUserInfo.m_bSoldierLock[(int)dataManager.currentSoldierUpgradeState])
         {
-            objectManager.mineralsHiredCntText[i].text = dataManager.myUserInfo.m_nHired[i + 1].ToString();
+            objectManager.soldierUpgradeConfirmFrame.SetActive(true);
+            SetTextSoldierUpgrade();
+        }
+        else
+        {
+            objectManager.soldierUnLockFrame.SetActive(true);
+            SetTextSoldierUnLock();
         }
     }
 
-    public void SetTextHireCnt(DataManager._EHired_ select) // 고용된 인력 숫자 선택 세팅
+    public void SoldierUpgradeAndUnLcokConfirmFrameOff()
     {
-        switch (select)
+        if (dataManager.myUserInfo.m_bSoldierLock[(int)dataManager.currentSoldierUpgradeState])
+            objectManager.soldierUpgradeConfirmFrame.SetActive(false);
+        else
+            objectManager.soldierUnLockFrame.SetActive(false);
+    }
+
+    public void SoldierImageChange()
+    {
+        string path;
+
+        switch (dataManager.currentSoldierUpgradeState)
         {
-            case DataManager._EHired_.ehWood:
-                objectManager.treeHiredCntText.text = dataManager.myUserInfo.m_nHired[(int)select].ToString();
+            case DataManager._ESoldierUpgrade_.esuNormalSoldier:
+                path = "Image/NormalSoldier";
                 break;
-            case DataManager._EHired_.ehStone:
-            case DataManager._EHired_.ehIron:
-            case DataManager._EHired_.ehGold:
-            case DataManager._EHired_.ehDiamond:
-                objectManager.mineralsHiredCntText[(int)select].text = dataManager.myUserInfo.m_nHired[(int)select].ToString();
+            case DataManager._ESoldierUpgrade_.esuRareSoldier:
+                path = "Image/RareSoldier";
+                break;
+            case DataManager._ESoldierUpgrade_.esuTankSoldier:
+                path = "Image/TankSoldier";
+                break;
+            case DataManager._ESoldierUpgrade_.esuUniversalSoldier:
+                path = "Image/UniversalSoldier";
+                break;
+            case DataManager._ESoldierUpgrade_.esuAssassinSoldier:
+                path = "Image/AssassinSoldier";
+                break;
+            case DataManager._ESoldierUpgrade_.esuUnknownSoldier:
+                path = "Image/UnknownSoldier";
                 break;
             default:
+                path = "Image/NormalSoldier";
                 break;
         }
-    }
-    
-    public void SetTextSoldierAndWeaponCnt() // 배치된 병사, 무기 수 세팅
-    {
-        objectManager.soldierAndWeaponCntText.text =
-            "병사 " + prepareManager.currentSummonedSoldier + " / " + prepareManager.summonedSoldierMax +
-            "\n" +
-            "무기 " + prepareManager.currentDeployedWeapon + " / " + prepareManager.deployedWeaponMax;
-    }
 
-    public void SetTextWave()
-    {
-        objectManager.waveText.text = dataManager.myUserInfo.m_nWave.ToString();
+        objectManager.soldierUpgradeConfirmFrameOnButtonImage.sprite = resourceManager.LoadSpriteResource(path);
     }
 
     public void SetTextSoldierUpgrade() // 솔져 업그레이드 Text 세팅
     {
-        objectManager.soldierUpgradePriceText.text = 
+        objectManager.soldierUpgradePriceText.text =
             DataManager.SoldierUpgradePrice[(int)dataManager.currentSoldierUpgradeState, dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] / (DataManager.SoldierUpgradePriceCnt - 1)].ToString();
 
         objectManager.soldierUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade].text =
             "현재 업그레이드 : " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState].ToString();
 
         objectManager.soldierUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat].text =
-            "추가 공격력 / 체력 / 방어력 : " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Soldier.SoldierIncreaseAttack[(int)dataManager.currentSoldierUpgradeState] +
-            " / " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Soldier.SoldierIncreaseHp[(int)dataManager.currentSoldierUpgradeState] +
-            " / " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Soldier.SoldierIncreaseDefence[(int)dataManager.currentSoldierUpgradeState];
+            "추가 공격력 / 체력 / 방어력 : " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Soldier.SoldierIncreaseAttack[(int)dataManager.currentSoldierUpgradeState]
+            + " / " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Soldier.SoldierIncreaseHp[(int)dataManager.currentSoldierUpgradeState]
+            + " / " + dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] * Soldier.SoldierIncreaseDefence[(int)dataManager.currentSoldierUpgradeState];
     }
 
     public void SetTextSoldierUnLock() // 솔져 언락 Text 세팅
@@ -258,7 +314,7 @@ public class UIManager : Singleton<UIManager>
     public void SetTextWeaponUpgrade() // 무기 업그레이드 Text 세팅
     {
         objectManager.weaponUpgradePriceText.text =
-            DataManager.BallistaUpgradePrice[dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.SoldierUpgradePriceCnt - 1)].ToString();
+            DataManager.BallistaUpgradePrice[dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.WeaponUpgradePriceCnt - 1)].ToString();
 
         objectManager.weaponUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiCurrentUpgrade].text =
             "현재 업그레이드 : " + dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState].ToString();
@@ -266,10 +322,74 @@ public class UIManager : Singleton<UIManager>
         objectManager.weaponUpgradeInformationsText[(int)DataManager._EUpgradeInfo_.euiAdditionalStat].text =
             "추가 공격력 : " + dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] * Weapon.WeaponIncreaseAttack[(int)Weapon._EWeaponClass_.ewcBallista];
 
-        int i = dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.MaxBallistaUpgrade - 1);
-
         for (int j = 0; j < (int)DataManager._EWeaponResource_.ebrMax; j++)
-            objectManager.weaponUpgradeResourcesText[j].text = DataManager.BallistaUpgradeResource[j, i].ToString();
+            objectManager.weaponUpgradeResourcesText[j].text =
+                DataManager.BallistaUpgradeResource[j, dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.WeaponUpgradeResourceCnt - 1)].ToString();
+    }
+
+    public bool OptionFrameOnOff() // 옵션 프레임 OnOff
+    {
+        if (objectManager.optionFrame.activeSelf)
+            objectManager.optionFrame.SetActive(false);
+        else
+            objectManager.optionFrame.SetActive(true);
+
+        return objectManager.optionFrame.activeSelf;
+    }
+
+    public void SoldierUnLockFrameOff() // 병사 언락 프레임 Off
+    {
+        objectManager.soldierUnLockFrame.SetActive(false);
+    }
+
+    public void WeaponUpgradeConfirmFrameOnOff() // 무기 업그레이드 확인 프레임 OnOff
+    {
+        if (objectManager.weaponUpgradeConfirmFrame.activeSelf)
+            objectManager.weaponUpgradeConfirmFrame.SetActive(false);
+        else
+        {
+            objectManager.weaponUpgradeConfirmFrame.SetActive(true);
+            SetTextWeaponUpgrade();
+        }
+    }
+
+    public void WeaponImageChange() // 업그레이드 무기 이미지 변경
+    {
+        string path;
+
+        switch (dataManager.currentWeaponUpgradeState)
+        {
+            case DataManager._EWeaponUpgrade_.ewuBallista:
+                path = "Image/Ballista";
+                break;
+            default:
+                path = "Image/Ballista";
+                break;
+        }
+
+        objectManager.weaponUpgradeConfirmFrameOnButtonImage.sprite = resourceManager.LoadSpriteResource(path);
+    }
+
+    public void WeaponUpgradeConfirmFrameOff() // 무기 업그레이드 확인 프레임 Off
+    {
+        objectManager.weaponUpgradeConfirmFrame.SetActive(false);
+    }
+
+    public void DefenceStartFrameSet() // 디펜스 시작시 Frame On, Off
+    {
+        objectManager.prepareFrame.SetActive(false);
+        objectManager.battleFrame.SetActive(true);
+    }
+
+    public void CastleUpgradeFrameOnOff()
+    {
+        if (objectManager.castleUpgradeFrame.activeSelf)
+            objectManager.castleUpgradeFrame.SetActive(false);
+        else
+        {
+            objectManager.castleUpgradeFrame.SetActive(true);
+            SetTextCastleUpgrade();
+        }
     }
 
     public void SetTextCastleUpgrade() // 성 업그레이드 Text 세팅
@@ -284,10 +404,40 @@ public class UIManager : Singleton<UIManager>
             " / " + dataManager.myUserInfo.m_nCastleUpgrade * Castle.CastleIncreaseDefence;
     }
 
-    public void SetImageGameSpeed(Sprite newSprite) // 게임 속도 버튼 이미지 변경
+    public bool SoldierSummonSelectFrameOnOff()
     {
-        objectManager.gameSpeedControlButtonImage.sprite = newSprite;
+        if (objectManager.soldierSummonSelectFrame.activeSelf)
+            objectManager.soldierSummonSelectFrame.SetActive(false);
+        else
+            objectManager.soldierSummonSelectFrame.SetActive(true);
+
+        return objectManager.soldierSummonSelectFrame.activeSelf;
     }
+
+    public void SetTextSoldierAndWeaponCnt() // 배치된 병사, 무기 수 세팅
+    {
+        objectManager.soldierAndWeaponCntText.text =
+            "병사 " + prepareManager.currentSummonedSoldier + " / " + prepareManager.summonedSoldierMax
+            + "\n"
+            + "무기 " + prepareManager.currentDeployedWeapon + " / " + prepareManager.deployedWeaponMax;
+    }
+
+    public bool WeaponDeploySelectFrameOnOff()
+    {
+        if (objectManager.weaponDeploySelectFrame.activeSelf)
+            objectManager.weaponDeploySelectFrame.SetActive(false);
+        else
+            objectManager.weaponDeploySelectFrame.SetActive(true);
+
+        return objectManager.weaponDeploySelectFrame.activeSelf;
+    }
+
+    public void SetTextWave() // Wave 세팅
+    {
+        objectManager.waveText.text = dataManager.myUserInfo.m_nWave.ToString();
+    }
+
+    
 
     public void SetTextEnemyCount() // 적 수 세팅
     {
@@ -309,16 +459,31 @@ public class UIManager : Singleton<UIManager>
             default:
                 break;
         }
+    }
 
-        EndDefenceFrameOn();
+    public void SetSFXEndDefence(BattleManager._EDefenceResult_ select) // 디펜스가 끝났을 때 SFX 설정
+    {
+        switch (select)
+        {
+            case BattleManager._EDefenceResult_.edrVictory:
+                SoundManager.instance.SetAudioSFX("Audios/SFX/Victory");
+                break;
+            case BattleManager._EDefenceResult_.edrDefeat:
+                SoundManager.instance.SetAudioSFX("Audios/SFX/Defeat");
+                break;
+            default:
+                break;
+        }
     }
 
     public void EndDefenceFrameOn() // EndDefenceFrame On
     {
         objectManager.endDefenceFrame.SetActive(true);
-        gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsStop);
-        timeManager.TimeControl(gameManager.currentGameSpeed);
+        timeManager.SetGameSpeed(TimeManager._EGameSpeed_.egsStop);
+        timeManager.TimeControl(timeManager.currentGameSpeed);
     }
+    #endregion
+
 
     public void SceneLoadedUIs() // 씬이 로드될 때마다 필요한 UI의 세팅
     {
@@ -361,6 +526,7 @@ public class UIManager : Singleton<UIManager>
     {
         SetTextResourceUI(DataManager._EResource_.erMoney);
         SetTextWave();
+        SetTextEnemyCount();
         SetTextSoldierAndWeaponCnt();
     }
     //-------------------------------------------- private

@@ -15,8 +15,6 @@ public class ButtonManager : Singleton<ButtonManager>
         eobContinue,
         eobMax
     }
-
-    Coroutine _coroutineManager;
     #endregion
 
     #region //variable//
@@ -97,6 +95,8 @@ public class ButtonManager : Singleton<ButtonManager>
 
     PrepareManager prepareManager;
 
+    SoundManager soundManager;
+
     CharacterFactory<SoldierFactory._ESoldierClass_> soldierFactory;
 
     WeaponFactory weaponFactory;
@@ -105,8 +105,6 @@ public class ButtonManager : Singleton<ButtonManager>
     #endregion
 
     #region //property//
-    public Coroutine coroutineManager { get { return _coroutineManager; } }
-
     public bool isSoldierUpgraded { get { return _isSoldierUpgraded; } set { _isSoldierUpgraded = value; } }
     public bool isBallistaUpgraded { get { return _isBallistaUpgraded; } set { _isBallistaUpgraded = value; } }
     public bool isCastleUpgraded { get { return _isCastleUpgraded; } set { _isCastleUpgraded = value; } }
@@ -129,6 +127,7 @@ public class ButtonManager : Singleton<ButtonManager>
         uiManager = UIManager.instance;
         resourceManager = ResourceManager.instance;
         prepareManager = PrepareManager.instance;
+        soundManager = SoundManager.instance;
     }
 
     private void Start()
@@ -138,17 +137,9 @@ public class ButtonManager : Singleton<ButtonManager>
 
     void Update()
     {
-        if (gameManager.isCompletedCheck) // 닉네임의 중복 체크가 완료되었고 문제가 없다면
+        if (Input.GetKeyDown(KeyCode.Escape)) // esc키를 누르면 종료할 수 있는 UI가 뜸
         {
-            CreateUserData();
-        }
-
-        if (gameManager.isCompletedRead) // 데이터 불러오기가 완료됐다면
-        {
-            gameManager.isCompletedRead = false;
-            timeManager.IdleTimeCalculation();
-            timeManager.IdleTimeForLeftTime();
-            MainToInCastle();
+            timeManager.GamePause(uiManager.QuitFrameOnOff());
         }
     }
     #endregion
@@ -166,25 +157,26 @@ public class ButtonManager : Singleton<ButtonManager>
         _isCastleUpgraded = false;
     }
 
+    public void ButtonSound() // 버튼 클릭음
+    {
+        soundManager.SetAudioSFX("Audios/SFX/Button");
+        soundManager.PlayAudioSFX();
+    }
+
     #region ///AllScene///
     public void Aplication_Quit() // 게임 종료 버튼
     {
-        Application.Quit();
-    }
-
-    public void ButtonSound() // 버튼 클릭음
-    {
-        
+        gameManager.QuitGame();
     }
     #endregion
 
     #region ///MainScene///
     public void MainStart() // 게임 스타트(Main)(이미 플레이한 적이 있다면 바로 시작)(아니라면 유저 만들기 창 온)
     {
-        if (gameManager.isAlreadyPlayed)
-            firebaseDBManager.ReadData(playerPrefsManager.myName);
+        if (playerPrefsManager.CheckFirstPlay())
+            uiManager.CreateUserFrameOn();
         else
-            objectManager.createUserFrame.SetActive(true);
+            firebaseDBManager.ReadData(playerPrefsManager.GetPlayerPrefsName());
     }
 
     public void ConfirmName() // 닉네임 확인 버튼
@@ -192,387 +184,206 @@ public class ButtonManager : Singleton<ButtonManager>
         firebaseDBManager.CheckUserName(objectManager.userNameInputText.text);
     }
 
-    public void MainToInCastle() // InCastle씬으로(Main)
+    public void SceneChange(string _scene) // _scene으로 이동
     {
-        SceneManager.LoadScene("InCastle");
+        SceneManager.LoadScene(_scene);
     }
 
-    public void CreateUserData() // 닉네임이 중복이 아니라면 유저 데이터 생성 과정 실행
+    public void CreateUserData(bool _result) // 닉네임이 중복이 아니라면 유저 데이터 생성 과정 실행
     {
+        if (_result)
+            return;
+
         firebaseDBManager.WriteCreateData(dataManager.UserDataInit(objectManager.userNameInputText.text));
-        gameManager.isCompletedCheck = false;
-        playerPrefsManager.SetPlayerPrefsName(objectManager.userNameInputText.text);
+        playerPrefsManager.SetPlayerPrefsName(dataManager.myUserInfo.m_sUserName);
         playerPrefsManager.SetPlayerPrefsPlayed(1);
-        MainToInCastle();
-    }
-    #endregion
-
-    #region ///InCastleScene///
-    public void InCastleToDefence() // Defence씬으로(InCastle)
-    {
-        SceneManager.LoadScene("Defence");
+        SceneChange("InCastle");
     }
 
-    public void InCastleToOutCastle() // Defence씬으로(InCastle)
+    public void CompletedRead() // 데이터 불러오기 완료
     {
-        SceneManager.LoadScene("OutCastle");
+        timeManager.IdleTimeCalculation();
+        timeManager.IdleTimeForLeftTime();
+        SceneChange("InCastle");
     }
     #endregion
 
     #region ///OutCastleScene///
-    public void OutCastleToInCastle() // InCastle씬으로(OutCastle)
+    public void ForestFrameOnOffButton() // 숲 자원 수급 화면 On, Off
     {
-        SceneManager.LoadScene("InCastle");
+        uiManager.ForestFrameOnOff();
     }
 
-    public void ForestFrameOnOff() // 숲 자원 수급 화면 On, Off
+    public void MineFrameOnOffButton() // 광산 자원 수급 화면 On, Off
     {
-        if (objectManager.forestFrame.activeSelf)
-        {
-            objectManager.forestFrame.SetActive(false);
-        }
-        else
-        {
-            objectManager.forestFrame.SetActive(true);
-        }
+        uiManager.MineFrameOnOff();
     }
 
-    public void MineFrameOnOff() // 광산 자원 수급 화면 On, Off
+    public void TreeWorkFrameOnButton() // 나무 워크 프레임 On
     {
-        if (objectManager.mineFrame.activeSelf)
-            objectManager.mineFrame.SetActive(false);
-        else
-            objectManager.mineFrame.SetActive(true);
+        uiManager.TreeWorkFrameOn();
     }
 
-    public void TreeWorkFrameOn() // 나무 워크 프레임 On
+    public void TreeWorkFrameOffButton() // 나무 워크 프레임 Off
     {
-        objectManager.treeWorkFrame.SetActive(true);
-    }
-
-    public void TreeWorkFrameOff() // 나무 워크 프레임 Off
-    {
-        objectManager.treeWorkFrame.SetActive(false);
+        uiManager.TreeWorkFrameOff();
     }
 
     public void TreeHire() // 나무 인력 고용
     {
-        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehWood] && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood])
-        {                                                                                                                             
-            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood]++;                                                      
+        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehWood]
+            && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood])
+        {
+            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood]++;
             dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehWood];
-            uiManager.SetTextHireCnt(DataManager._EHired_.ehWood);
+            uiManager.SetTextHireCnt();
         }
     }
 
-    public void StoneButtonOn() // 돌 버튼 On
+    public void MineralWorkFrameOnOffButton() // 광물 워크 프레임 On
     {
-        objectManager.mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emStone].gameObject.SetActive(true);
+        uiManager.MineralWorkFrameOnOff(true);
+        uiManager.SetTextHireCnt();
+        uiManager.SetTextHirePrice();
     }
 
-    public void StoneButtonOff() // 돌 버튼 Off
-    {
-        objectManager.mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emStone].gameObject.SetActive(false);
-    }
-
-    public void IronButtonOn() // 철 버튼 On
-    {
-        objectManager.mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emIron].gameObject.SetActive(true);
-    }
-
-    public void IronButtonOff() // 철 버튼 Off
-    {
-        objectManager.mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emIron].gameObject.SetActive(false);
-    }
-
-    public void GoldButtonOn() // 금 버튼 On
-    {
-        objectManager.mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emGold].gameObject.SetActive(true);
-    }
-
-    public void GoldButtonOff() // 금 버튼 Off
-    {
-        objectManager.mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emGold].gameObject.SetActive(false);
-    }
-
-    public void DiamondButtonOn() // 다이아 버튼 On
-    {
-        objectManager.mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emDiamond].gameObject.SetActive(true);
-    }
-
-    public void DiamondButtonOff() // 다이아 버튼 Off
-    {
-        objectManager.mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emDiamond].gameObject.SetActive(false);
-    }
-
-    public void StoneWorkFrameOn() // 돌 워크 프레임 On
-    {
-        objectManager.mineralsWorkFrame[(int)DataManager._EMineral_.emStone].SetActive(true);
-    }
-
-    public void StoneWorkFrameOff() // 돌 워크 프레임 Off
-    {
-        objectManager.mineralsWorkFrame[(int)DataManager._EMineral_.emStone].SetActive(false);
-    }
-
-    public void IronWorkFrameOn() // 철 워크 프레임 On
-    {
-        objectManager.mineralsWorkFrame[(int)DataManager._EMineral_.emIron].SetActive(true);
-    }
-
-    public void IronWorkFrameOff() // 철 워크 프레임 Off
-    {
-        objectManager.mineralsWorkFrame[(int)DataManager._EMineral_.emIron].SetActive(false);
-    }
-
-    public void GoldWorkFrameOn() // 금 워크 프레임 On
-    {
-        objectManager.mineralsWorkFrame[(int)DataManager._EMineral_.emGold].SetActive(true);
-    }
-
-    public void GoldWorkFrameOff() // 금 워크 프레임 Off
-    {
-        objectManager.mineralsWorkFrame[(int)DataManager._EMineral_.emGold].SetActive(false);
-    }
-
-    public void DiamondWorkFrameOn() // 다이아 워크 프레임 On
-    {
-        objectManager.mineralsWorkFrame[(int)DataManager._EMineral_.emDiamond].SetActive(true);
-    }
-
-    public void DiamondWorkFrameOff() // 다이아 워크 프레임 Off
-    {
-        objectManager.mineralsWorkFrame[(int)DataManager._EMineral_.emDiamond].SetActive(false);
-    }
-
-    public void SwitchToNextMineral() // 다음 광물로 변경
+    public void SwitchToNextMineralButton() // 다음 광물로 변경
     {
         switch (dataManager.currentMineralState)
         {
             case DataManager._EMineral_.emStone:
-                SetMineralState(DataManager._EMineral_.emIron);
+                dataManager.SetMineralState(DataManager._EMineral_.emIron);
                 break;
             case DataManager._EMineral_.emIron:
-                SetMineralState(DataManager._EMineral_.emGold);
+                dataManager.SetMineralState(DataManager._EMineral_.emGold);
                 break;
             case DataManager._EMineral_.emGold:
-                SetMineralState(DataManager._EMineral_.emDiamond);
+                dataManager.SetMineralState(DataManager._EMineral_.emDiamond);
                 break;
             case DataManager._EMineral_.emDiamond:
-                SetMineralState(DataManager._EMineral_.emStone);
+                dataManager.SetMineralState(DataManager._EMineral_.emStone);
                 break;
             default:
-                SetMineralState(DataManager._EMineral_.emStone);
+                dataManager.SetMineralState(DataManager._EMineral_.emStone);
                 break;
         }
 
-        MineralObjectSelectedOnOff();
+        uiManager.MineralImageChange();
+        uiManager.SetTextHireCnt();
+        uiManager.SetTextHirePrice();
+        uiManager.MineralWorkFrameOnOff(false);
     }
 
-    public void MineralObjectSelectedOnOff() // 현재 광물에 맞는 프레임 및 버튼 On, Off
+    public void MineralHireButton() // 광물 인력 고용
     {
-        for(int i = 0; i < (int)DataManager._EMineral_.emMax; i++)
+        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.ResourceHirePrice[(int)dataManager.currentMineralState + 1]
+            && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)dataManager.currentMineralState + 1])
         {
-            if((int)dataManager.currentMineralState == i)
-            {
-                objectManager.mineralsWorkFrameOnButton[i].gameObject.SetActive(true);
-                objectManager.mineralsWorkFrame[i].SetActive(true);
-                objectManager.mineralsLeftTimeText[i].gameObject.SetActive(true);
-                continue;
-            }
-            objectManager.mineralsWorkFrameOnButton[i].gameObject.SetActive(false);
-            objectManager.mineralsWorkFrame[i].SetActive(false);
-            objectManager.mineralsLeftTimeText[i].gameObject.SetActive(false);
+            dataManager.myUserInfo.m_nHired[(int)dataManager.currentMineralState + 1]++;
+            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.ResourceHirePrice[(int)dataManager.currentMineralState + 1];
+            uiManager.SetTextHireCnt();
         }
     }
-
-    public void SetMineralState(DataManager._EMineral_ newMineralState) // 현재 선택 광물 변경
-    {
-        dataManager.currentMineralState = newMineralState;
-    }
-
-    public void StoneHire() // 돌 인력 고용
-    {
-        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehStone] && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehStone])
-        {
-            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehStone]++;
-            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehStone];
-            uiManager.SetTextHireCnt(DataManager._EHired_.ehStone);
-        }
-    }
-
-    public void IronHire() // 철 인력 고용
-    {
-        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehIron] && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehIron])
-        {
-            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehIron]++;
-            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehIron];
-            uiManager.SetTextHireCnt(DataManager._EHired_.ehIron);
-        }
-    }
-
-    public void GoldHire() // 금 인력 고용
-    {
-        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehGold] && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehGold])
-        {
-            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood]++;
-            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehGold];
-            uiManager.SetTextHireCnt(DataManager._EHired_.ehGold);
-        }
-    }
-
-    public void DiamondHire() // 다이아 인력 고용
-    {
-        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehDiamond] && DataManager.MaxHire > dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehDiamond])
-        {
-            dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehDiamond]++;
-            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.ResourceHirePrice[(int)DataManager._EHired_.ehDiamond];
-            uiManager.SetTextHireCnt(DataManager._EHired_.ehDiamond);
-        }
-    }
-
     #endregion
 
     #region ///DefenceScene///
     public void DefenceToInCastle() // Defence씬에서 InCastle씬으로
     {
         gameManager.SetBattleState(GameManager._EBattleState_.egNotBattle);
-        gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsNoraml);
-        timeManager.TimeControl(gameManager.currentGameSpeed);
-        StopCoroutine(_coroutineManager);
+        timeManager.SetGameSpeed(TimeManager._EGameSpeed_.egsNoraml);
+        if (SkillManager.instance.coroutineManager != null)
+            StopCoroutine(SkillManager.instance.coroutineManager);
+        if (EnemyManager.instance.coroutineManager != null)
+            StopCoroutine(EnemyManager.instance.coroutineManager);
         EnemyManager.instance.ResetEnemyManager();
-        SceneManager.LoadScene("InCastle");
+        SceneChange("InCastle");
     }
 
-    public void OptionFrameOnOff() // 옵션 창 On, Off
+    public void OptionFrameOnOffButton() // 옵션 창 On, Off
     {
-        if(objectManager.optionFrame.activeSelf)
-        {
-            objectManager.optionFrame.SetActive(false);
-            GamePause();
-        }
-        else
-        {
-            objectManager.optionFrame.SetActive(true);
-            GamePause();
-        }
+        timeManager.GamePause(uiManager.OptionFrameOnOff());
     }
 
     public void RePrepare() // Prepare로 돌아감
     {
-        gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsNoraml);
-        timeManager.TimeControl(gameManager.currentGameSpeed);
         gameManager.SetBattleState(GameManager._EBattleState_.egNotBattle);
-        objectManager.prepareFrame.SetActive(true);
-        objectManager.battleFrame.SetActive(false);
-        if(_coroutineManager != null)
-            StopCoroutine(_coroutineManager);
+        timeManager.SetGameSpeed(TimeManager._EGameSpeed_.egsNoraml);
+        if (SkillManager.instance.coroutineManager != null)
+            StopCoroutine(SkillManager.instance.coroutineManager);
+        if (EnemyManager.instance.coroutineManager != null)
+            StopCoroutine(EnemyManager.instance.coroutineManager);
         EnemyManager.instance.ResetEnemyManager();
-        InCastleToDefence();
+        SceneChange("Defence");
     }
 
-    public void SoldierUpgradeFrameOnOff() // 병사 강화 프레임 On, Off
+    public void SoldierUpgradeFrameOnOffButton() // 병사 강화 프레임 On, Off
     {
-        if (objectManager.soldierUpgradeFrame.activeSelf)
-            objectManager.soldierUpgradeFrame.SetActive(false);
-        else
-            objectManager.soldierUpgradeFrame.SetActive(true);
+        uiManager.SoldierUpgradeFrameOnOff();
     }
 
-    public void SoldierUpgradeAndUnLcokConfirmFrameOnOff() // 병사 강화 확인 프레임 온 오프
+    public void SoldierUpgradeAndUnLcokConfirmFrameOnOffButton() // 병사 강화 확인 or 언락 프레임 온 오프
     {
-        if (objectManager.soldierUpgradeConfirmFrame.activeSelf)
-        {
-            if(dataManager.myUserInfo.m_bSoldierLock[(int)dataManager.currentSoldierUpgradeState])
-                objectManager.soldierUpgradeConfirmFrame.SetActive(false);
-            else
-                objectManager.soldierUnLockFrame.SetActive(false);
-        }
-        else
-        {
-            if (dataManager.myUserInfo.m_bSoldierLock[(int)dataManager.currentSoldierUpgradeState])
-                objectManager.soldierUpgradeConfirmFrame.SetActive(true);
-            else
-            {
-                objectManager.soldierUnLockFrame.SetActive(true);
-                uiManager.SetTextSoldierUnLock();
-            }
-        }
+        uiManager.SoldierUpgradeAndUnLcokConfirmFrameOnOff();
     }
 
-    public void SwitchToNextSoldierUpgrade() // 업그레이드 할 다음 병사 선택
+    public void SwitchToNextSoldierUpgradeButton() // 업그레이드 할 다음 병사 선택
     {
         switch (dataManager.currentSoldierUpgradeState)
         {
             case DataManager._ESoldierUpgrade_.esuNormalSoldier:
-                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuRareSoldier;
+                dataManager.SetSoldierUpgradeState(DataManager._ESoldierUpgrade_.esuRareSoldier);
                 break;
             case DataManager._ESoldierUpgrade_.esuRareSoldier:
-                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuTankSoldier;
+                dataManager.SetSoldierUpgradeState(DataManager._ESoldierUpgrade_.esuTankSoldier);
                 break;
             case DataManager._ESoldierUpgrade_.esuTankSoldier:
-                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuUniversalSoldier;
+                dataManager.SetSoldierUpgradeState(DataManager._ESoldierUpgrade_.esuUniversalSoldier);
                 break;
             case DataManager._ESoldierUpgrade_.esuUniversalSoldier:
-                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuAssassinSoldier;
+                dataManager.SetSoldierUpgradeState(DataManager._ESoldierUpgrade_.esuAssassinSoldier);
                 break;
             case DataManager._ESoldierUpgrade_.esuAssassinSoldier:
-                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuUnknownSoldier;
+                dataManager.SetSoldierUpgradeState(DataManager._ESoldierUpgrade_.esuUnknownSoldier);
                 break;
             case DataManager._ESoldierUpgrade_.esuUnknownSoldier:
-                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuNormalSoldier;
+                dataManager.SetSoldierUpgradeState(DataManager._ESoldierUpgrade_.esuNormalSoldier);
                 break;
             default:
-                dataManager.currentSoldierUpgradeState = DataManager._ESoldierUpgrade_.esuNormalSoldier;
+                dataManager.SetSoldierUpgradeState(DataManager._ESoldierUpgrade_.esuNormalSoldier);
                 break;
         }
 
-        SoldierUpgradeObjectSelectedOnOff();
-    }
-
-    public void SoldierUpgradeObjectSelectedOnOff() // 병사 강화 오브젝트 선택 온오프
-    {
-        for(int i = 0; i < (int)DataManager._ESoldierUpgrade_.esuMax; i++)
-        {
-            if((int)dataManager.currentSoldierUpgradeState == i)
-            {
-                objectManager.soldierUpgradeConfirmFramesOnButton[i].gameObject.SetActive(true);
-                continue;
-            }
-
-            objectManager.soldierUpgradeConfirmFramesOnButton[i].gameObject.SetActive(false);
-            objectManager.soldierUpgradeConfirmFrame.SetActive(false);
-            objectManager.soldierUnLockFrame.SetActive(false);
-        }
+        uiManager.SoldierImageChange();
         uiManager.SetTextSoldierUpgrade();
+        uiManager.SetTextSoldierUnLock();
+        uiManager.SoldierUpgradeAndUnLcokConfirmFrameOff();
     }
 
-    public void SoldierUpgrade() // 병사 강화
+    public void SoldierUpgradeButton() // 병사 강화
     {
-        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >=
-            DataManager.SoldierUpgradePrice[(int)dataManager.currentSoldierUpgradeState, dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] / (DataManager.SoldierUpgradePriceCnt - 1)]
+        int shot = dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] / (DataManager.SoldierUpgradePriceCnt - 1);
+
+        if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.SoldierUpgradePrice[(int)dataManager.currentSoldierUpgradeState, shot]
             && DataManager.MaxSoldierUpgrade > dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState])
         {
             dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState]++;
-            dataManager.myUserInfo.m_nSoldierUpgrade[(int)DataManager._EResource_.erMoney] -=
-                DataManager.SoldierUpgradePrice[(int)dataManager.currentSoldierUpgradeState, dataManager.myUserInfo.m_nSoldierUpgrade[(int)dataManager.currentSoldierUpgradeState] / (DataManager.SoldierUpgradePriceCnt - 1)];
+            dataManager.myUserInfo.m_nSoldierUpgrade[(int)DataManager._EResource_.erMoney] -= DataManager.SoldierUpgradePrice[(int)dataManager.currentSoldierUpgradeState, shot];
             uiManager.SetTextSoldierUpgrade();
             _isSoldierUpgraded = true;
         }
     }
 
-    public void SoldierUnLockFrameOff() // 병사 언락 프레임 온오프
+    public void SoldierUnLockFrameOffButton() // 병사 언락 프레임 오프
     {
-        if(objectManager.soldierUnLockFrame.activeSelf)
-            objectManager.soldierUnLockFrame.SetActive(false);
+        uiManager.SoldierUnLockFrameOff();
     }
 
-    public void SoldierUnLcok() // 병사 언락
+    public void SoldierUnLcokButton() // 병사 언락
     {
         if (dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.SoldierUnLockPrice[(int)dataManager.currentSoldierUpgradeState])
         {
             dataManager.myUserInfo.m_bSoldierLock[(int)dataManager.currentSoldierUpgradeState] = true;
-            SoldierUnLockFrameOff();
+            uiManager.SoldierUnLockFrameOff();
         }
     }
 
@@ -589,61 +400,42 @@ public class ButtonManager : Singleton<ButtonManager>
         switch (dataManager.currentWeaponUpgradeState)
         {
             case DataManager._EWeaponUpgrade_.ewuBallista:
-                dataManager.currentWeaponUpgradeState = DataManager._EWeaponUpgrade_.ewuBallista;
+                dataManager.SetWeaponUpgradeState(DataManager._EWeaponUpgrade_.ewuBallista);
                 break;
             default:
-                dataManager.currentWeaponUpgradeState = DataManager._EWeaponUpgrade_.ewuBallista;
+                dataManager.SetWeaponUpgradeState(DataManager._EWeaponUpgrade_.ewuBallista);
                 break;
         }
-        WeaponUpgradeObjectSelectedOnOff();
-    }
 
-    public void WeaponUpgradeObjectSelectedOnOff() // 무기 오브젝트 선택 OnOff
-    {
-        for (int i = 0; i < (int)DataManager._EWeaponUpgrade_.ewuMax; i++)
-        {
-            if ((int)dataManager.currentWeaponUpgradeState == i)
-            {
-                objectManager.weaponUpgradeConfirmFramesOnButton[i].gameObject.SetActive(true);
-                continue;
-            }
-
-            objectManager.weaponUpgradeConfirmFramesOnButton[i].gameObject.SetActive(false);
-            objectManager.weaponUpgradeConfirmFrame.SetActive(false);
-        }
+        uiManager.WeaponImageChange();
         uiManager.SetTextWeaponUpgrade();
+        uiManager.WeaponUpgradeConfirmFrameOff();
     }
 
     public void WeaponUpgradeConfirmFrameOnOff() // 무기 업그레이드 확인 프레임 온오프
     {
-        if (objectManager.weaponUpgradeConfirmFrame.activeSelf)
-            objectManager.weaponUpgradeConfirmFrame.SetActive(false);
-        else
-        {
-            objectManager.weaponUpgradeConfirmFrame.SetActive(true);
-            uiManager.SetTextWeaponUpgrade();
-        }
+        uiManager.WeaponUpgradeConfirmFrameOnOff();
     }
 
     public void WeaponUpgrade() // 무기 업그레이드
     {
-        if(DataManager.MaxBallistaUpgrade > dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState]
-            && dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.BallistaUpgradePrice[dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.MaxBallistaUpgrade - 1)])
-        {
-            int i = dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.MaxBallistaUpgrade - 1);
+        int shot = dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState] / (DataManager.MaxBallistaUpgrade - 1);
 
-            for(int j = 0; j < (int)DataManager._EWeaponResource_.ebrMax; j++)
+        if (DataManager.MaxBallistaUpgrade > dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState]
+            && dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.BallistaUpgradePrice[shot])
+        {
+            for (int j = 0; j < (int)DataManager._EWeaponResource_.ebrMax; j++)
             {
-                if (dataManager.myUserInfo.m_nResource[j + 1] >= DataManager.BallistaUpgradeResource[j, i])
+                if (dataManager.myUserInfo.m_nResource[j + 1] >= DataManager.BallistaUpgradeResource[j, shot])
                     continue;
                 else
                     return;
             }
 
-            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.BallistaUpgradePrice[i];
+            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.BallistaUpgradePrice[shot];
 
             for (int j = 0; j < (int)DataManager._EWeaponResource_.ebrMax; j++)
-                dataManager.myUserInfo.m_nResource[j + 1] -= DataManager.BallistaUpgradeResource[j, i];
+                dataManager.myUserInfo.m_nResource[j + 1] -= DataManager.BallistaUpgradeResource[j, shot];
 
             uiManager.SetTextWeaponUpgrade();
             dataManager.myUserInfo.m_nWeaponUpgrade[(int)dataManager.currentWeaponUpgradeState]++;
@@ -652,54 +444,41 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void DefenceStart() // 디펜스 웨이브 시작
     {
+        soundManager.SetAudioSFX("Audios/SFX/DefenceStart");
         gameManager.SetBattleState(GameManager._EBattleState_.egBattle);
-        uiManager.SetTextEnemyCount();
-        objectManager.prepareFrame.SetActive(false);
-        objectManager.battleFrame.SetActive(true);
-        EnemyManager.instance.CoroutineStart();
+        uiManager.DefenceStartFrameSet();
+        EnemyManager.instance.EnemyActivateCoroutineStart();
     }
 
-    public void DefenceEnd() // 디펜스 웨이브 종료
+    public void CastleUpgradeFrameOnOffButton() // 성 업그레이드 프레임 On, Off
     {
-        gameManager.SetBattleState(GameManager._EBattleState_.egNotBattle);
+        uiManager.CastleUpgradeFrameOnOff();
     }
 
-    public void CastleUpgradeFrameOnOff() // 성 업그레이드 프레임 On, Off
+    public void CastleUpgradeButton() // 성 업그레이드
     {
-        if (objectManager.castleUpgradeFrame.activeSelf)
-            objectManager.castleUpgradeFrame.SetActive(false);
-        else
+        int shot = dataManager.myUserInfo.m_nCastleUpgrade / DataManager.CastleUpgradePriceCnt;
+
+        if (DataManager.MaxCastleUpgrade > dataManager.myUserInfo.m_nCastleUpgrade
+            && dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.CastleUpgradePrice[shot])
         {
-            objectManager.castleUpgradeFrame.SetActive(true);
-            uiManager.SetTextCastleUpgrade();
-        }
-    }
-
-    public void CastleUpgrade() // 성 업그레이드
-    {
-        if(DataManager.MaxCastleUpgrade > dataManager.myUserInfo.m_nCastleUpgrade 
-            && dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] >= DataManager.CastleUpgradePrice[(int)dataManager.myUserInfo.m_nCastleUpgrade / DataManager.CastleUpgradePriceCnt])
-        {
-            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.CastleUpgradePrice[(int)dataManager.myUserInfo.m_nCastleUpgrade / DataManager.CastleUpgradePriceCnt];
+            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] -= DataManager.CastleUpgradePrice[shot];
             dataManager.myUserInfo.m_nCastleUpgrade++;
 
             uiManager.SetTextCastleUpgrade();
         }
     }
 
-    public void SoldierSummonSelectFrameOnOff() // 병사 소환 선택 프레임 On,Off
+    public void SoldierSummonSelectFrameOnOffButton() // 병사 소환 선택 프레임 On,Off
     {
-        if (objectManager.soldierSummonSelectFrame.activeSelf)
-            objectManager.soldierSummonSelectFrame.SetActive(false);
-        else
+        if(uiManager.SoldierSummonSelectFrameOnOff())
         {
-            objectManager.soldierSummonSelectFrame.SetActive(true);
             soldier.soldierPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             soldier.soldierPos -= new Vector3(0, 0, Camera.main.transform.position.z);
         }
     }
 
-    public void SoldierSummoning(SoldierFactory._ESoldierClass_ select) // 병사 소환
+    public void SoldierSummonButton(SoldierFactory._ESoldierClass_ select) // 병사 소환
     {
         if (dataManager.myUserInfo.m_bSoldierLock[(int)select] && prepareManager.summonedSoldierMax > prepareManager.currentSummonedSoldier)
         {
@@ -708,17 +487,12 @@ public class ButtonManager : Singleton<ButtonManager>
             prepareManager.currentSummonedSoldier++;
             uiManager.SetTextSoldierAndWeaponCnt();
         }
-        else
-            return;
     }
 
-    public void WeaponDeploySelectFrameOnOff() // 무기 배치 선택 프레임 On,Off
+    public void WeaponDeploySelectFrameOnOffButton() // 무기 배치 선택 프레임 On,Off
     {
-        if (objectManager.weaponDeploySelectFrame.activeSelf)
-            objectManager.weaponDeploySelectFrame.SetActive(false);
-        else
-        {
-            objectManager.weaponDeploySelectFrame.SetActive(true);
+        if (uiManager.WeaponDeploySelectFrameOnOff())
+        { 
             weapon.weaponPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             weapon.weaponPos -= new Vector3(0, 0, Camera.main.transform.position.z);
         }
@@ -733,75 +507,50 @@ public class ButtonManager : Singleton<ButtonManager>
             prepareManager.currentDeployedWeapon++;
             uiManager.SetTextSoldierAndWeaponCnt();
         }
-        else
-            return;
+    }
+
+    public void MeteorSkill() // 메테오 스킬 사용
+    {
+        if (objectManager.useMeteorButtonImage.fillAmount == 0)
+        {
+            soundManager.SetAudioSFX("Audios/SFX/Meteor");
+            objectManager.useMeteorButtonImage.fillAmount = 1f;
+            SkillManager.instance.SkillActivateCoroutineStart(SkillManager._ESkillClass_.escMeteor);
+        }
     }
 
     public void BackToPreviousRound() // 이전 라운드로 이동
     {
-        if(dataManager.myUserInfo.m_nWave > 1 && !prepareManager.isPreviousRound)
+        if (dataManager.myUserInfo.m_nWave > 1 && !prepareManager.isPreviousRound)
         {
             prepareManager.PreviousRoundSet();
             SceneManager.LoadScene("Defence");
         }
     }
 
-    public void MeteorSkill() // 메테오 스킬 사용
+    public void BattleSpeedChange() // 게임 속도 변경
     {
-        if(gameManager.currentBattleState == GameManager._EBattleState_.egBattle && objectManager.useMeteorButtonImage.fillAmount == 0)
+        switch (timeManager.currentGameSpeed)
         {
-            objectManager.useMeteorButtonImage.fillAmount = 1f;
-            _coroutineManager = StartCoroutine(UseSkill());
-        }
-    }
-
-    public void GameSpeedChange() // 게임 속도 변경
-    {
-        switch (gameManager.currentGameSpeed)
-        {
-            case GameManager._EGameSpeed_.egsNoraml:
-                gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsDouble);
-                ChangeImage("Image/Arrow_Double");
+            case TimeManager._EGameSpeed_.egsNoraml:
+                timeManager.SetGameSpeed(TimeManager._EGameSpeed_.egsDouble);
+                uiManager.SetImageGameSpeed("Image/Arrow_Double");
                 break;
-            case GameManager._EGameSpeed_.egsDouble:
-                gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsTriple);
-                ChangeImage("Image/Arrow_Triple");
+            case TimeManager._EGameSpeed_.egsDouble:
+                timeManager.SetGameSpeed(TimeManager._EGameSpeed_.egsTriple);
+                uiManager.SetImageGameSpeed("Image/Arrow_Triple");
                 break;
-            case GameManager._EGameSpeed_.egsTriple:
-                gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsNoraml);
-                ChangeImage("Image/Arrow_Normal");
+            case TimeManager._EGameSpeed_.egsTriple:
+                timeManager.SetGameSpeed(TimeManager._EGameSpeed_.egsNoraml);
+                uiManager.SetImageGameSpeed("Image/Arrow_Normal");
                 break;
             default:
-                gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsNoraml);
-                ChangeImage("Image/Arrow_Normal");
+                timeManager.SetGameSpeed(TimeManager._EGameSpeed_.egsNoraml);
+                uiManager.SetImageGameSpeed("Image/Arrow_Normal");
                 break;
         }
-
-        timeManager.TimeControl(gameManager.currentGameSpeed);
     }
 
-    public void ChangeImage(string _path)
-    {
-        Sprite changeImage;
-        changeImage = resourceManager.LoadSpriteResource(_path);
-        uiManager.SetImageGameSpeed(changeImage);
-    }
-
-    public void GamePause() // 게임 정지, 플레이
-    {
-        if (gameManager.currentGameSpeed != GameManager._EGameSpeed_.egsStop)
-        {
-            gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsStop);
-            timeManager.TimeControl(gameManager.currentGameSpeed);
-        }
-        else
-        {
-            gameManager.SetGameSpeed(GameManager._EGameSpeed_.egsNoraml);
-            ChangeImage("Image/Arrow_Normal");
-            timeManager.TimeControl(gameManager.currentGameSpeed);
-        }
-    }
-    
     #endregion
 
     public void SceneLoadedButtons() // 씬이 로드될 때마다 버튼들 이벤트 할당
@@ -838,93 +587,121 @@ public class ButtonManager : Singleton<ButtonManager>
     public void MainButtonsEvent()
     {
         objectManager.mainToInCastleButton.onClick.AddListener(MainStart);
+        objectManager.mainToInCastleButton.onClick.AddListener(ButtonSound);
         objectManager.createUserButton.onClick.AddListener(ConfirmName);
+        objectManager.createUserButton.onClick.AddListener(ButtonSound);
     }
 
     public void InCastleButtonsEvent()
     {
-        objectManager.inCastleToDefenceButton.onClick.AddListener(InCastleToDefence);
-        objectManager.inCastleToOutCastleButton.onClick.AddListener(InCastleToOutCastle);
+        objectManager.inCastleToDefenceButton.onClick.AddListener(() => SceneChange("Defence"));
+        objectManager.inCastleToDefenceButton.onClick.AddListener(ButtonSound);
+        objectManager.inCastleToOutCastleButton.onClick.AddListener(() => SceneChange("OutCastle"));
+        objectManager.inCastleToOutCastleButton.onClick.AddListener(ButtonSound);
     }
 
     public void OutCastleButtonsEvent()
     {
-        objectManager.outCastleToInCastleButton.onClick.AddListener(OutCastleToInCastle);
-        objectManager.forestFrameOnButton.onClick.AddListener(ForestFrameOnOff);
-        objectManager.mineFrameOnButton.onClick.AddListener(MineFrameOnOff);
-        objectManager.forestFrameOffButton.onClick.AddListener(ForestFrameOnOff);
-        objectManager.mineFrameOffButton.onClick.AddListener(MineFrameOnOff);
-        objectManager.treeWorkFrameOnButton.onClick.AddListener(TreeWorkFrameOn);
+        objectManager.outCastleToInCastleButton.onClick.AddListener(() => SceneChange("InCastle"));
+        objectManager.outCastleToInCastleButton.onClick.AddListener(ButtonSound);
+        objectManager.forestFrameOnButton.onClick.AddListener(ForestFrameOnOffButton);
+        objectManager.forestFrameOnButton.onClick.AddListener(ButtonSound);
+        objectManager.mineFrameOnButton.onClick.AddListener(MineFrameOnOffButton);
+        objectManager.mineFrameOnButton.onClick.AddListener(ButtonSound);
+        objectManager.forestFrameOffButton.onClick.AddListener(ForestFrameOnOffButton);
+        objectManager.forestFrameOffButton.onClick.AddListener(ButtonSound);
+        objectManager.mineFrameOffButton.onClick.AddListener(MineFrameOnOffButton);
+        objectManager.mineFrameOffButton.onClick.AddListener(ButtonSound);
+        objectManager.treeWorkFrameOnButton.onClick.AddListener(TreeWorkFrameOnButton);
+        objectManager.treeWorkFrameOnButton.onClick.AddListener(ButtonSound);
         objectManager.treeHireButton.onClick.AddListener(TreeHire);
-        objectManager.mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emStone].onClick.AddListener(StoneWorkFrameOn);
-        objectManager.mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emIron].onClick.AddListener(IronWorkFrameOn);
-        objectManager.mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emGold].onClick.AddListener(GoldWorkFrameOn);
-        objectManager.mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emDiamond].onClick.AddListener(DiamondWorkFrameOn);
-        objectManager.nextMineralButton.onClick.AddListener(SwitchToNextMineral);
-        objectManager.mineralsHireButton[(int)DataManager._EMineral_.emStone].onClick.AddListener(StoneHire);
-        objectManager.mineralsHireButton[(int)DataManager._EMineral_.emIron].onClick.AddListener(IronHire);
-        objectManager.mineralsHireButton[(int)DataManager._EMineral_.emGold].onClick.AddListener(GoldHire);
-        objectManager.mineralsHireButton[(int)DataManager._EMineral_.emDiamond].onClick.AddListener(DiamondHire);
+        objectManager.treeHireButton.onClick.AddListener(ButtonSound);
+        objectManager.mineralWorkFrameOnButton.onClick.AddListener(MineralWorkFrameOnOffButton);
+        objectManager.mineralWorkFrameOnButton.onClick.AddListener(ButtonSound);
+        objectManager.nextMineralButton.onClick.AddListener(SwitchToNextMineralButton);
+        objectManager.nextMineralButton.onClick.AddListener(ButtonSound);
+        objectManager.mineralHireButton.onClick.AddListener(MineralHireButton);
+        objectManager.mineralHireButton.onClick.AddListener(ButtonSound);
     }
 
     public void DefenceButtonsEvent()
     {
         objectManager.defenceToInCastleButton.onClick.AddListener(DefenceToInCastle);
-        objectManager.optionFrameOnButton.onClick.AddListener(OptionFrameOnOff);
+        objectManager.defenceToInCastleButton.onClick.AddListener(ButtonSound);
+        objectManager.optionFrameOnButton.onClick.AddListener(OptionFrameOnOffButton);
+        objectManager.optionFrameOnButton.onClick.AddListener(ButtonSound);
         objectManager.optionsButton[(int)_EOptionButton_.eobToInCastle].onClick.AddListener(DefenceToInCastle);
+        objectManager.optionsButton[(int)_EOptionButton_.eobToInCastle].onClick.AddListener(ButtonSound);
         objectManager.optionsButton[(int)_EOptionButton_.eobRePrepare].onClick.AddListener(RePrepare);
-        objectManager.optionsButton[(int)_EOptionButton_.eobContinue].onClick.AddListener(OptionFrameOnOff);
-        objectManager.soldierUpgradeFrameOnButton.onClick.AddListener(SoldierUpgradeFrameOnOff);
-        objectManager.soldierUpgradeFrameOffButton.onClick.AddListener(SoldierUpgradeFrameOnOff);
-        objectManager.soldierUpgradeConfirmFramesOnButton[(int)DataManager._ESoldierUpgrade_.esuNormalSoldier].onClick.AddListener(SoldierUpgradeAndUnLcokConfirmFrameOnOff);
-        objectManager.soldierUpgradeConfirmFramesOnButton[(int)DataManager._ESoldierUpgrade_.esuRareSoldier].onClick.AddListener(SoldierUpgradeAndUnLcokConfirmFrameOnOff);
-        objectManager.soldierUpgradeConfirmFramesOnButton[(int)DataManager._ESoldierUpgrade_.esuTankSoldier].onClick.AddListener(SoldierUpgradeAndUnLcokConfirmFrameOnOff);
-        objectManager.soldierUpgradeConfirmFramesOnButton[(int)DataManager._ESoldierUpgrade_.esuUniversalSoldier].onClick.AddListener(SoldierUpgradeAndUnLcokConfirmFrameOnOff);
-        objectManager.soldierUpgradeConfirmFramesOnButton[(int)DataManager._ESoldierUpgrade_.esuAssassinSoldier].onClick.AddListener(SoldierUpgradeAndUnLcokConfirmFrameOnOff);
-        objectManager.soldierUpgradeConfirmFramesOnButton[(int)DataManager._ESoldierUpgrade_.esuUnknownSoldier].onClick.AddListener(SoldierUpgradeAndUnLcokConfirmFrameOnOff);
-        objectManager.soldierUpgradeConfirmFrameOffButton.onClick.AddListener(SoldierUpgradeAndUnLcokConfirmFrameOnOff);
-        objectManager.soldierUpgradeConfirmButton.onClick.AddListener(SoldierUpgrade);
-        objectManager.nextSoldierButton.onClick.AddListener(SwitchToNextSoldierUpgrade);
-        objectManager.soldierUnLockOffButton.onClick.AddListener(SoldierUnLockFrameOff);
+        objectManager.optionsButton[(int)_EOptionButton_.eobRePrepare].onClick.AddListener(ButtonSound);
+        objectManager.optionsButton[(int)_EOptionButton_.eobContinue].onClick.AddListener(OptionFrameOnOffButton);
+        objectManager.optionsButton[(int)_EOptionButton_.eobContinue].onClick.AddListener(ButtonSound);
+        objectManager.soldierUpgradeFrameOnButton.onClick.AddListener(SoldierUpgradeFrameOnOffButton);
+        objectManager.soldierUpgradeFrameOnButton.onClick.AddListener(ButtonSound);
+        objectManager.soldierUpgradeFrameOffButton.onClick.AddListener(SoldierUpgradeFrameOnOffButton);
+        objectManager.soldierUpgradeFrameOffButton.onClick.AddListener(ButtonSound);
+        objectManager.soldierUpgradeConfirmFrameOnButton.onClick.AddListener(SoldierUpgradeAndUnLcokConfirmFrameOnOffButton);
+        objectManager.soldierUpgradeConfirmFrameOnButton.onClick.AddListener(ButtonSound);
+        objectManager.soldierUpgradeConfirmFrameOffButton.onClick.AddListener(SoldierUpgradeAndUnLcokConfirmFrameOnOffButton);
+        objectManager.soldierUpgradeConfirmFrameOffButton.onClick.AddListener(ButtonSound);
+        objectManager.soldierUpgradeConfirmButton.onClick.AddListener(SoldierUpgradeButton);
+        objectManager.soldierUpgradeConfirmButton.onClick.AddListener(ButtonSound);
+        objectManager.nextSoldierButton.onClick.AddListener(SwitchToNextSoldierUpgradeButton);
+        objectManager.nextSoldierButton.onClick.AddListener(ButtonSound);
+        objectManager.soldierUnLockOffButton.onClick.AddListener(SoldierUnLockFrameOffButton);
+        objectManager.soldierUnLockOffButton.onClick.AddListener(ButtonSound);
         objectManager.weaponUpgradeFrameOnButton.onClick.AddListener(WeaponUpgradeFrameOnOff);
+        objectManager.weaponUpgradeFrameOnButton.onClick.AddListener(ButtonSound);
         objectManager.weaponUpgradeFrameOffButton.onClick.AddListener(WeaponUpgradeFrameOnOff);
-        objectManager.weaponUpgradeConfirmFramesOnButton[(int)DataManager._EWeaponUpgrade_.ewuBallista].onClick.AddListener(WeaponUpgradeConfirmFrameOnOff);
+        objectManager.weaponUpgradeFrameOffButton.onClick.AddListener(ButtonSound);
+        objectManager.weaponUpgradeConfirmFrameOnButton.onClick.AddListener(WeaponUpgradeConfirmFrameOnOff);
+        objectManager.weaponUpgradeConfirmFrameOnButton.onClick.AddListener(ButtonSound);
         objectManager.weaponUpgradeConfirmFrameOffButton.onClick.AddListener(WeaponUpgradeConfirmFrameOnOff);
+        objectManager.weaponUpgradeConfirmFrameOffButton.onClick.AddListener(ButtonSound);
         objectManager.weaponUpgradeConfirmButton.onClick.AddListener(WeaponUpgrade);
+        objectManager.weaponUpgradeConfirmButton.onClick.AddListener(ButtonSound);
         objectManager.nextWeaponButton.onClick.AddListener(SwitchToNextWeaponUpgrade);
+        objectManager.nextWeaponButton.onClick.AddListener(ButtonSound);
         objectManager.defenceStartButton.onClick.AddListener(DefenceStart);
-        objectManager.castleUpgradeFrameOnButton.onClick.AddListener(CastleUpgradeFrameOnOff);
-        objectManager.castleUpgradeFrameOffButton.onClick.AddListener(CastleUpgradeFrameOnOff);
-        objectManager.castleUpgradeConfirmButton.onClick.AddListener(CastleUpgrade);
-        objectManager.soldierSummonSelectFrameOnButton.onClick.AddListener(SoldierSummonSelectFrameOnOff);
-        objectManager.soldierSummonSelectFrameOffButton.onClick.AddListener(SoldierSummonSelectFrameOnOff);
-        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummoning(SoldierFactory._ESoldierClass_.escNormal));
-        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummoning(SoldierFactory._ESoldierClass_.escRare));
-        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummoning(SoldierFactory._ESoldierClass_.escTank));
-        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummoning(SoldierFactory._ESoldierClass_.escUniversal));
-        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummoning(SoldierFactory._ESoldierClass_.escAssassin));
-        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummoning(SoldierFactory._ESoldierClass_.escUnknown));
-        objectManager.weaponDeploySelectFrameOnButton.onClick.AddListener(WeaponDeploySelectFrameOnOff);
-        objectManager.weaponDeploySelectFrameOffButton.onClick.AddListener(WeaponDeploySelectFrameOnOff);
+        objectManager.defenceStartButton.onClick.AddListener(ButtonSound);
+        objectManager.castleUpgradeFrameOnButton.onClick.AddListener(CastleUpgradeFrameOnOffButton);
+        objectManager.castleUpgradeFrameOnButton.onClick.AddListener(ButtonSound);
+        objectManager.castleUpgradeFrameOffButton.onClick.AddListener(CastleUpgradeFrameOnOffButton);
+        objectManager.castleUpgradeFrameOffButton.onClick.AddListener(ButtonSound);
+        objectManager.castleUpgradeConfirmButton.onClick.AddListener(CastleUpgradeButton);
+        objectManager.castleUpgradeConfirmButton.onClick.AddListener(ButtonSound);
+        objectManager.soldierSummonSelectFrameOnButton.onClick.AddListener(SoldierSummonSelectFrameOnOffButton);
+        objectManager.soldierSummonSelectFrameOnButton.onClick.AddListener(ButtonSound);
+        objectManager.soldierSummonSelectFrameOffButton.onClick.AddListener(SoldierSummonSelectFrameOnOffButton);
+        objectManager.soldierSummonSelectFrameOffButton.onClick.AddListener(ButtonSound);
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(() => SoldierSummonButton(SoldierFactory._ESoldierClass_.escNormal));
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslNoramlSoldier].onClick.AddListener(ButtonSound);
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslRareSoldier].onClick.AddListener(() => SoldierSummonButton(SoldierFactory._ESoldierClass_.escRare));
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslRareSoldier].onClick.AddListener(ButtonSound);
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslTankSoldier].onClick.AddListener(() => SoldierSummonButton(SoldierFactory._ESoldierClass_.escTank));
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslTankSoldier].onClick.AddListener(ButtonSound);
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslUniversalSoldier].onClick.AddListener(() => SoldierSummonButton(SoldierFactory._ESoldierClass_.escUniversal));
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslUniversalSoldier].onClick.AddListener(ButtonSound);
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslAssassinSoldier].onClick.AddListener(() => SoldierSummonButton(SoldierFactory._ESoldierClass_.escAssassin));
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslAssassinSoldier].onClick.AddListener(ButtonSound);
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslUnknownSoldier].onClick.AddListener(() => SoldierSummonButton(SoldierFactory._ESoldierClass_.escUnknown));
+        objectManager.soldierSummonsButton[(int)DataManager._ESoldierLock_.eslUnknownSoldier].onClick.AddListener(ButtonSound);
+        objectManager.weaponDeploySelectFrameOnButton.onClick.AddListener(WeaponDeploySelectFrameOnOffButton);
+        objectManager.weaponDeploySelectFrameOnButton.onClick.AddListener(ButtonSound);
+        objectManager.weaponDeploySelectFrameOffButton.onClick.AddListener(WeaponDeploySelectFrameOnOffButton);
+        objectManager.weaponDeploySelectFrameOffButton.onClick.AddListener(ButtonSound);
         objectManager.weaponDeploysButton[(int)DataManager._EWeaponLock_.ewlBallista].onClick.AddListener(() => WeaponDeploy(WeaponFactory._EWeaponClass_.ewcBallista));
+        objectManager.weaponDeploysButton[(int)DataManager._EWeaponLock_.ewlBallista].onClick.AddListener(ButtonSound);
         objectManager.previousRoundButton.onClick.AddListener(BackToPreviousRound);
+        objectManager.previousRoundButton.onClick.AddListener(ButtonSound);
         objectManager.useMeteorButton.onClick.AddListener(MeteorSkill);
-        objectManager.gameSpeedControlButton.onClick.AddListener(GameSpeedChange);
+        objectManager.useMeteorButton.onClick.AddListener(ButtonSound);
+        objectManager.battleSpeedControlButton.onClick.AddListener(BattleSpeedChange);
+        objectManager.battleSpeedControlButton.onClick.AddListener(ButtonSound);
         objectManager.endDefenceBackInCastleButton.onClick.AddListener(DefenceToInCastle);
+        objectManager.endDefenceBackInCastleButton.onClick.AddListener(ButtonSound);
         objectManager.endDefenceRePrepareButton.onClick.AddListener(RePrepare);
-    }
-
-    public IEnumerator UseSkill()
-    {
-        SkillInfo skillInfo = resourceManager.LoadSkillResource("Prefabs/Meteor").GetComponent<SkillInfoPocket>().skillStat;
-
-        for (int i = 0; i < skillInfo.NumberOfObject; i++)
-        {
-            skill.skillObj = skillFactroy.Create(SkillFactory._ESkillClass_.escMeteor);
-            skill.skillPos = new Vector2(UnityEngine.Random.Range(Meteor.XStartPos, Meteor.XEndPos), Meteor.YPos);
-            skill.skillObj.transform.position = skill.skillPos;
-            yield return new WaitForSeconds(skillInfo.RateOfFire);
-        }
+        objectManager.endDefenceRePrepareButton.onClick.AddListener(ButtonSound);
     }
     // -------------------------------------------- private
 

@@ -51,7 +51,7 @@ public abstract class SkillFactory : MonoBehaviour
 
     #region //function//
     //-------------------------------------------- public
-    public abstract GameObject Create(_ESkillClass_ select);
+    public abstract GameObject Create();
     //-------------------------------------------- private
 
     #endregion

@@ -78,6 +78,7 @@ public class Ballista : Weapon
     {
         while (true)
         {
+            SoundManager.instance.SetAudioSFX("Audios/SFX/Arrow");
             projectileObj = projectileFactory.Create(ProjectileFactory._EProjectileClass_.epcBallistaArrow);
             projectileObj.transform.position = transform.GetChild(0).transform.position;
             projectileObj.GetComponent<BallistaArrow>().target = opponent.GetComponent<Enemy>();

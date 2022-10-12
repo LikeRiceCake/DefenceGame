@@ -52,7 +52,7 @@ public class ObjectManager : Singleton<ObjectManager>
     GameObject _forestFrame;
     GameObject _mineFrame;
     GameObject _treeWorkFrame;
-    GameObject[] _mineralsWorkFrame;
+    GameObject _mineralWorkFrame;
 
     Button _outCastleToInCastleButton;
     Button _forestFrameOnButton;
@@ -61,16 +61,18 @@ public class ObjectManager : Singleton<ObjectManager>
     Button _mineFrameOffButton;
     Button _treeWorkFrameOnButton;
     Button _treeHireButton;
-    Button[] _mineralsWorkFrameOnButton;
+    Button _mineralWorkFrameOnButton;
     Button _nextMineralButton;
-    Button[] _mineralsHireButton;
+    Button _mineralHireButton;
 
     Text _treeHiredCntText;
     Text _treeLeftTimeText;
     Text _treeHirePriceText;
-    Text[] _mineralsHiredCntText;
-    Text[] _mineralsLeftTimeText;
-    Text[] _mineralsHirePriceText;
+    Text _mineralHiredCntText;
+    Text _mineralLeftTimeText;
+    Text _mineralHirePriceText;
+
+    Image _mineralWorkFrameOnButtonImage;
     #endregion
 
     #region ///DefenceScene///
@@ -92,7 +94,7 @@ public class ObjectManager : Singleton<ObjectManager>
     Button[] _optionsButton;
     Button _soldierUpgradeFrameOnButton;
     Button _soldierUpgradeFrameOffButton;
-    Button[] _soldierUpgradeConfirmFramesOnButton;
+    Button _soldierUpgradeConfirmFrameOnButton;
     Button _soldierUpgradeConfirmFrameOffButton;
     Button _soldierUpgradeConfirmButton;
     Button _nextSoldierButton;
@@ -100,7 +102,7 @@ public class ObjectManager : Singleton<ObjectManager>
     Button _soldierUnLockConfirmButton;
     Button _weaponUpgradeFrameOnButton;
     Button _weaponUpgradeFrameOffButton;
-    Button[] _weaponUpgradeConfirmFramesOnButton;
+    Button _weaponUpgradeConfirmFrameOnButton;
     Button _weaponUpgradeConfirmFrameOffButton;
     Button _weaponUpgradeConfirmButton;
     Button _nextWeaponButton;
@@ -116,7 +118,7 @@ public class ObjectManager : Singleton<ObjectManager>
     Button[] _weaponDeploysButton;
     Button _previousRoundButton;
     Button _useMeteorButton;
-    Button _gameSpeedControlButton;
+    Button _battleSpeedControlButton;
     Button _endDefenceBackInCastleButton;
     Button _endDefenceRePrepareButton;
 
@@ -133,6 +135,8 @@ public class ObjectManager : Singleton<ObjectManager>
     Text _enemyCntText;
     Text _endDefenceText;
 
+    Image _soldierUpgradeConfirmFrameOnButtonImage;
+    Image _weaponUpgradeConfirmFrameOnButtonImage;
     Image _castleHpFrontImage;
     Image _useMeteorButtonImage;
     Image _gameSpeedControlButtonImage;
@@ -173,7 +177,7 @@ public class ObjectManager : Singleton<ObjectManager>
     public GameObject forestFrame { get { return _forestFrame; } }
     public GameObject mineFrame { get { return _mineFrame; } }
     public GameObject treeWorkFrame { get { return _treeWorkFrame; } }
-    public GameObject[] mineralsWorkFrame { get { return _mineralsWorkFrame; } }
+    public GameObject mineralWorkFrame { get { return _mineralWorkFrame; } }
 
     public Button outCastleToInCastleButton { get { return _outCastleToInCastleButton; } }
     public Button forestFrameOnButton { get { return _forestFrameOnButton; } }
@@ -182,16 +186,18 @@ public class ObjectManager : Singleton<ObjectManager>
     public Button mineFrameOffButton { get { return _mineFrameOffButton; } }
     public Button treeWorkFrameOnButton { get { return _treeWorkFrameOnButton; } }
     public Button treeHireButton { get { return _treeHireButton; } }
-    public Button[] mineralsWorkFrameOnButton { get { return _mineralsWorkFrameOnButton; } }
+    public Button mineralWorkFrameOnButton { get { return _mineralWorkFrameOnButton; } }
     public Button nextMineralButton { get { return _nextMineralButton; } }
-    public Button[] mineralsHireButton { get { return _mineralsHireButton; } }
+    public Button mineralHireButton { get { return _mineralHireButton; } }
 
     public Text treeHiredCntText { get { return _treeHiredCntText; } }
     public Text treeLeftTimeText { get { return _treeLeftTimeText; } }
     public Text treeHirePriceText { get { return _treeHirePriceText; } }
-    public Text[] mineralsHiredCntText { get { return _mineralsHiredCntText; } }
-    public Text[] mineralsLeftTimeText { get { return _mineralsLeftTimeText; } }
-    public Text[] mineralsHirePriceText { get { return _mineralsHirePriceText; } }
+    public Text mineralHiredCntText { get { return _mineralHiredCntText; } }
+    public Text mineralLeftTimeText { get { return _mineralLeftTimeText; } }
+    public Text mineralHirePriceText { get { return _mineralHirePriceText; } }
+
+    public Image mineralWorkFrameOnButtonImage { get { return _mineralWorkFrameOnButtonImage; } }
     #endregion
 
     #region ///DefenceScene///
@@ -213,7 +219,7 @@ public class ObjectManager : Singleton<ObjectManager>
     public Button[] optionsButton { get { return _optionsButton; } }
     public Button soldierUpgradeFrameOnButton { get { return _soldierUpgradeFrameOnButton; } }
     public Button soldierUpgradeFrameOffButton { get { return _soldierUpgradeFrameOffButton; } }
-    public Button[] soldierUpgradeConfirmFramesOnButton { get { return _soldierUpgradeConfirmFramesOnButton; } }
+    public Button soldierUpgradeConfirmFrameOnButton { get { return _soldierUpgradeConfirmFrameOnButton; } }
     public Button soldierUpgradeConfirmFrameOffButton { get { return _soldierUpgradeConfirmFrameOffButton; } }
     public Button soldierUpgradeConfirmButton { get { return _soldierUpgradeConfirmButton; } }
     public Button nextSoldierButton { get { return _nextSoldierButton; } }
@@ -221,7 +227,7 @@ public class ObjectManager : Singleton<ObjectManager>
     public Button soldierUnLockConfirmButton { get { return _soldierUnLockConfirmButton; } }
     public Button weaponUpgradeFrameOnButton { get { return _weaponUpgradeFrameOnButton; } }
     public Button weaponUpgradeFrameOffButton { get { return _weaponUpgradeFrameOffButton; } }
-    public Button[] weaponUpgradeConfirmFramesOnButton { get { return _weaponUpgradeConfirmFramesOnButton; } }
+    public Button weaponUpgradeConfirmFrameOnButton { get { return _weaponUpgradeConfirmFrameOnButton; } }
     public Button weaponUpgradeConfirmFrameOffButton { get { return _weaponUpgradeConfirmFrameOffButton; } }
     public Button weaponUpgradeConfirmButton { get { return _weaponUpgradeConfirmButton; } }
     public Button nextWeaponButton { get { return _nextWeaponButton; } }
@@ -237,7 +243,7 @@ public class ObjectManager : Singleton<ObjectManager>
     public Button[] weaponDeploysButton { get { return _weaponDeploysButton; } }
     public Button previousRoundButton { get { return _previousRoundButton; } }
     public Button useMeteorButton { get { return _useMeteorButton; } }
-    public Button gameSpeedControlButton { get { return _gameSpeedControlButton; } }
+    public Button battleSpeedControlButton { get { return _battleSpeedControlButton; } }
     public Button endDefenceBackInCastleButton { get { return _endDefenceBackInCastleButton; } }
     public Button endDefenceRePrepareButton { get { return _endDefenceRePrepareButton; } }
 
@@ -254,6 +260,8 @@ public class ObjectManager : Singleton<ObjectManager>
     public Text enemyCntText { get { return _enemyCntText; } }
     public Text endDefenceText { get { return _endDefenceText; } }
 
+    public Image soldierUpgradeConfirmFrameOnButtonImage { get { return _soldierUpgradeConfirmFrameOnButtonImage; } }
+    public Image weaponUpgradeConfirmFrameOnButtonImage { get { return _weaponUpgradeConfirmFrameOnButtonImage; } }
     public Image castleHpFrontImage { get { return _castleHpFrontImage; } }
     public Image useMeteorButtonImage { get { return _useMeteorButtonImage; } }
     public Image gameSpeedControlButtonImage { get { return _gameSpeedControlButtonImage; } }
@@ -285,20 +293,11 @@ public class ObjectManager : Singleton<ObjectManager>
     //-------------------------------------------- public
     public void DataInit()
     {
-        _mineralsWorkFrame = new GameObject[(int)DataManager._EMineral_.emMax];
-
-        _mineralsWorkFrameOnButton = new Button[(int)DataManager._EMineral_.emMax];
-        _mineralsHireButton = new Button[(int)DataManager._EMineral_.emMax];
         _optionsButton = new Button[(int)ButtonManager._EOptionButton_.eobMax];
-        _soldierUpgradeConfirmFramesOnButton = new Button[(int)DataManager._ESoldierUpgrade_.esuMax];
-        _weaponUpgradeConfirmFramesOnButton = new Button[(int)DataManager._EWeaponUpgrade_.ewuMax];
         _soldierSummonsButton = new Button[(int)DataManager._ESoldierLock_.eslMax];
         _weaponDeploysButton = new Button[(int)DataManager._EWeaponLock_.ewlMax];
 
         _resourcesText = new Text[(int)DataManager._EResource_.erMax];
-        _mineralsHiredCntText = new Text[(int)DataManager._EMineral_.emMax];
-        _mineralsLeftTimeText = new Text[(int)DataManager._EMineral_.emMax];
-        _mineralsHirePriceText = new Text[(int)DataManager._EMineral_.emMax];
         _soldierUpgradeInformationsText = new Text[(int)DataManager._EUpgradeInfo_.euiMax];
         _weaponUpgradeInformationsText = new Text[(int)DataManager._EUpgradeInfo_.euiMax];
         _weaponUpgradeResourcesText = new Text[(int)DataManager._EWeaponResource_.ebrMax];
@@ -367,10 +366,7 @@ public class ObjectManager : Singleton<ObjectManager>
         _forestFrame = GameObject.Find("ForestResource").transform.Find("ForestFrame").gameObject;
         _mineFrame = GameObject.Find("MineResource").transform.Find("MineFrame").gameObject;
         _treeWorkFrame = forestFrame.transform.Find("TreeWorkFrame").gameObject;
-        _mineralsWorkFrame[(int)DataManager._EMineral_.emStone] = _mineFrame.transform.Find("MineralWorkFrame").transform.Find("StoneWorkFrame").gameObject;
-        _mineralsWorkFrame[(int)DataManager._EMineral_.emIron] = _mineFrame.transform.Find("MineralWorkFrame").transform.Find("IronWorkFrame").gameObject;
-        _mineralsWorkFrame[(int)DataManager._EMineral_.emGold] = _mineFrame.transform.Find("MineralWorkFrame").transform.Find("GoldWorkFrame").gameObject;
-        _mineralsWorkFrame[(int)DataManager._EMineral_.emDiamond] = _mineFrame.transform.Find("MineralWorkFrame").transform.Find("DiamondWorkFrame").gameObject;
+        _mineralWorkFrame = _mineFrame.transform.Find("MineralWorkFrame").gameObject;
 
         _outCastleToInCastleButton = GameObject.Find("OutCastleToInCastle_Button").GetComponent<Button>();
         _forestFrameOnButton = GameObject.Find("ForestFrameOn_Button").GetComponent<Button>();
@@ -379,15 +375,9 @@ public class ObjectManager : Singleton<ObjectManager>
         _mineFrameOffButton = _mineFrame.transform.Find("MineFrameOff_Button").gameObject.GetComponent<Button>();
         _treeWorkFrameOnButton = forestFrame.transform.Find("TreeFrame").transform.Find("TreeWorkFrameOn_Button").gameObject.GetComponent<Button>();
         _treeHireButton = _treeWorkFrame.transform.Find("TreeHire_Button").gameObject.GetComponent<Button>();
-        _mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emStone] = _mineFrame.transform.Find("MineralFrame").transform.Find("StoneWorkFrameOn_Button").GetComponent<Button>();
-        _mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emIron] = _mineFrame.transform.Find("MineralFrame").transform.Find("IronWorkFrameOn_Button").GetComponent<Button>();
-        _mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emGold] = _mineFrame.transform.Find("MineralFrame").transform.Find("GoldWorkFrameOn_Button").GetComponent<Button>();
-        _mineralsWorkFrameOnButton[(int)DataManager._EMineral_.emDiamond] = _mineFrame.transform.Find("MineralFrame").transform.Find("DiamondWorkFrameOn_Button").GetComponent<Button>();
+        _mineralWorkFrameOnButton = _mineFrame.transform.Find("MineralFrame").transform.Find("MineralWorkFrameOn_Button").GetComponent<Button>();
         _nextMineralButton = mineFrame.transform.Find("NextMineral_Button").GetComponent<Button>();
-        _mineralsHireButton[(int)DataManager._EMineral_.emStone] = _mineralsWorkFrame[(int)DataManager._EMineral_.emStone].transform.Find("StoneHire_Button").GetComponent<Button>();
-        _mineralsHireButton[(int)DataManager._EMineral_.emIron] = _mineralsWorkFrame[(int)DataManager._EMineral_.emIron].transform.Find("IronHire_Button").GetComponent<Button>();
-        _mineralsHireButton[(int)DataManager._EMineral_.emGold] = _mineralsWorkFrame[(int)DataManager._EMineral_.emGold].transform.Find("GoldHire_Button").GetComponent<Button>();
-        _mineralsHireButton[(int)DataManager._EMineral_.emDiamond] = _mineralsWorkFrame[(int)DataManager._EMineral_.emDiamond].transform.Find("DiamondHire_Button").GetComponent<Button>();
+        _mineralHireButton = _mineralWorkFrame.transform.Find("MineralHire_Button").GetComponent<Button>();
 
         _resourcesText[(int)DataManager._EResource_.erMoney] = GameObject.Find("Money_Text").GetComponent<Text>();
         _resourcesText[(int)DataManager._EResource_.erWood] = GameObject.Find("Wood_Text").GetComponent<Text>();
@@ -398,18 +388,11 @@ public class ObjectManager : Singleton<ObjectManager>
         _treeHiredCntText = _treeWorkFrame.transform.Find("AlreadyArrangemented").transform.Find("HiredNumber_Text").GetComponent<Text>();
         _treeLeftTimeText = _forestFrame.transform.Find("TreeLeftTime_Text").GetComponent<Text>();
         _treeHirePriceText = _treeHireButton.gameObject.transform.Find("Price_Text").GetComponent<Text>();
-        _mineralsHiredCntText[(int)DataManager._EMineral_.emStone] = _mineralsWorkFrame[(int)DataManager._EMineral_.emStone].transform.Find("AlreadyArrangemented").transform.Find("HiredNumber_Text").GetComponent<Text>();
-        _mineralsHiredCntText[(int)DataManager._EMineral_.emIron] = _mineralsWorkFrame[(int)DataManager._EMineral_.emIron].transform.Find("AlreadyArrangemented").transform.Find("HiredNumber_Text").GetComponent<Text>();
-        _mineralsHiredCntText[(int)DataManager._EMineral_.emGold] = _mineralsWorkFrame[(int)DataManager._EMineral_.emGold].transform.Find("AlreadyArrangemented").transform.Find("HiredNumber_Text").GetComponent<Text>();
-        _mineralsHiredCntText[(int)DataManager._EMineral_.emDiamond] = _mineralsWorkFrame[(int)DataManager._EMineral_.emDiamond].transform.Find("AlreadyArrangemented").transform.Find("HiredNumber_Text").GetComponent<Text>();
-        _mineralsLeftTimeText[(int)DataManager._EMineral_.emStone] = _mineFrame.transform.Find("MineralLeftText").transform.Find("StoneLeftTime_Text").GetComponent<Text>();
-        _mineralsLeftTimeText[(int)DataManager._EMineral_.emIron] = _mineFrame.transform.Find("MineralLeftText").transform.Find("IronLeftTime_Text").GetComponent<Text>();
-        _mineralsLeftTimeText[(int)DataManager._EMineral_.emGold] = _mineFrame.transform.Find("MineralLeftText").transform.Find("GoldLeftTime_Text").GetComponent<Text>();
-        _mineralsLeftTimeText[(int)DataManager._EMineral_.emDiamond] = _mineFrame.transform.Find("MineralLeftText").transform.Find("DiamondLeftTime_Text").GetComponent<Text>();
-        _mineralsHirePriceText[(int)DataManager._EMineral_.emStone] = _mineralsHireButton[(int)DataManager._EMineral_.emStone].gameObject.transform.Find("Price_Text").GetComponent<Text>();
-        _mineralsHirePriceText[(int)DataManager._EMineral_.emIron] = _mineralsHireButton[(int)DataManager._EMineral_.emIron].gameObject.transform.Find("Price_Text").GetComponent<Text>();
-        _mineralsHirePriceText[(int)DataManager._EMineral_.emGold] = _mineralsHireButton[(int)DataManager._EMineral_.emGold].gameObject.transform.Find("Price_Text").GetComponent<Text>();
-        _mineralsHirePriceText[(int)DataManager._EMineral_.emDiamond] = _mineralsHireButton[(int)DataManager._EMineral_.emDiamond].gameObject.transform.Find("Price_Text").GetComponent<Text>();
+        _mineralHiredCntText = _mineralWorkFrame.transform.Find("AlreadyArrangemented").transform.Find("HiredNumber_Text").GetComponent<Text>();
+        _mineralLeftTimeText = _mineFrame.transform.Find("MineralLeftTime_Text").GetComponent<Text>();
+        _mineralHirePriceText = _mineralHireButton.gameObject.transform.Find("Price_Text").GetComponent<Text>();
+
+        _mineralWorkFrameOnButtonImage = _mineralWorkFrameOnButton.GetComponent<Image>();
     }
 
     public void DefenceObjectsRef()
@@ -434,12 +417,7 @@ public class ObjectManager : Singleton<ObjectManager>
         _optionsButton[(int)ButtonManager._EOptionButton_.eobContinue] = _optionFrame.transform.Find("Continue_Button").GetComponent<Button>();
         _soldierUpgradeFrameOnButton = GameObject.Find("SoldierUpgradeFrameOn_Button").GetComponent<Button>();
         _soldierUpgradeFrameOffButton = _soldierUpgradeFrame.transform.Find("SoldierUpgradeFrameOff_Button").GetComponent<Button>();
-        _soldierUpgradeConfirmFramesOnButton[(int)DataManager._ESoldierUpgrade_.esuNormalSoldier] = _soldierUpgradeFrame.transform.Find("NormalSoldierUpgradeConfirmFrameOn_Button").GetComponent<Button>();
-        _soldierUpgradeConfirmFramesOnButton[(int)DataManager._ESoldierUpgrade_.esuRareSoldier] = _soldierUpgradeFrame.transform.Find("RareSoldierUpgradeConfirmFrameOn_Button").GetComponent<Button>();
-        _soldierUpgradeConfirmFramesOnButton[(int)DataManager._ESoldierUpgrade_.esuTankSoldier] = _soldierUpgradeFrame.transform.Find("TankSoldierUpgradeConfirmFrameOn_Button").GetComponent<Button>();
-        _soldierUpgradeConfirmFramesOnButton[(int)DataManager._ESoldierUpgrade_.esuUniversalSoldier] = _soldierUpgradeFrame.transform.Find("UniversalSoldierUpgradeConfirmFrameOn_Button").GetComponent<Button>();
-        _soldierUpgradeConfirmFramesOnButton[(int)DataManager._ESoldierUpgrade_.esuAssassinSoldier] = _soldierUpgradeFrame.transform.Find("AssassinSoldierUpgradeConfirmFrameOn_Button").GetComponent<Button>();
-        _soldierUpgradeConfirmFramesOnButton[(int)DataManager._ESoldierUpgrade_.esuUnknownSoldier] = _soldierUpgradeFrame.transform.Find("UnknownSoldierUpgradeConfirmFrameOn_Button").GetComponent<Button>();
+        _soldierUpgradeConfirmFrameOnButton = _soldierUpgradeFrame.transform.Find("SoldierUpgradeConfirmFrameOn_Button").GetComponent<Button>();
         _soldierUpgradeConfirmFrameOffButton = _soldierUpgradeConfirmFrame.transform.Find("SoldierUpgradeConfirmFrameOff_Button").GetComponent<Button>();
         _soldierUpgradeConfirmButton = _soldierUpgradeConfirmFrame.transform.Find("SoldierUpgradeConfirm_Button").GetComponent<Button>();
         _nextSoldierButton = _soldierUpgradeFrame.transform.Find("NextSoldier_Button").GetComponent<Button>();
@@ -447,7 +425,7 @@ public class ObjectManager : Singleton<ObjectManager>
         _soldierUnLockConfirmButton = _soldierUnLockFrame.transform.Find("SoldierUnLockConfirm_Button").GetComponent<Button>();
         _weaponUpgradeFrameOnButton = GameObject.Find("WeaponUpgradeFrameOn_Button").GetComponent<Button>();
         _weaponUpgradeFrameOffButton = _weaponUpgradeFrame.transform.Find("WeaponUpgradeFrameOff_Button").GetComponent<Button>();
-        _weaponUpgradeConfirmFramesOnButton[(int)DataManager._EWeaponUpgrade_.ewuBallista] = _weaponUpgradeFrame.transform.Find("BallistaUpgradeConfirmFrameOn_Button").GetComponent<Button>();
+        _weaponUpgradeConfirmFrameOnButton = _weaponUpgradeFrame.transform.Find("WeaponUpgradeConfirmFrameOn_Button").GetComponent<Button>();
         _weaponUpgradeConfirmFrameOffButton = _weaponUpgradeConfirmFrame.transform.Find("WeaponUpgradeConfirmFrameOff_Button").GetComponent<Button>();
         _weaponUpgradeConfirmButton = _weaponUpgradeConfirmFrame.transform.Find("WeaponUpgradeConfirm_Button").GetComponent<Button>();
         _nextWeaponButton = _weaponUpgradeFrame.transform.Find("NextWeapon_Button").GetComponent<Button>();
@@ -468,7 +446,7 @@ public class ObjectManager : Singleton<ObjectManager>
         _weaponDeploysButton[(int)DataManager._EWeaponLock_.ewlBallista] = _weaponDeploySelectFrame.transform.Find("SelectButtons").transform.Find("BallistaFrame").transform.Find("BallistaDeploy_Button").GetComponent<Button>();
         _previousRoundButton = GameObject.Find("PreviousRound_Button").GetComponent<Button>();
         _useMeteorButton = _battleFrame.transform.Find("Skill").transform.Find("Meteor").transform.Find("UseMeteor_Button").GetComponent<Button>();
-        _gameSpeedControlButton = _battleFrame.transform.Find("GameSpeed").transform.Find("GameSpeedControl_Button").GetComponent<Button>();
+        _battleSpeedControlButton = _battleFrame.transform.Find("GameSpeed").transform.Find("GameSpeedControl_Button").GetComponent<Button>();
         _endDefenceBackInCastleButton = _endDefenceFrame.transform.Find("EndDefenceBackToInCastle_Button").GetComponent<Button>();
         _endDefenceRePrepareButton = _endDefenceFrame.transform.Find("EndDefenceRePrepare_Button").GetComponent<Button>();
 
@@ -493,9 +471,11 @@ public class ObjectManager : Singleton<ObjectManager>
         _enemyCntText = _battleFrame.transform.Find("EnemyCount").transform.Find("EnemyCount_Text").GetComponent<Text>();
         _endDefenceText = _endDefenceFrame.transform.Find("EndDefence_Text").GetComponent<Text>();
 
+        _soldierUpgradeConfirmFrameOnButtonImage = _soldierUpgradeConfirmFrameOnButton.GetComponent<Image>();
+        _weaponUpgradeConfirmFrameOnButtonImage = _weaponUpgradeConfirmFrameOnButton.GetComponent<Image>();
         _castleHpFrontImage = _battleFrame.transform.Find("CastleHpFrame").transform.Find("CastleHpFront_Image").GetComponent<Image>();
         _useMeteorButtonImage = _useMeteorButton.GetComponent<Image>();
-        _gameSpeedControlButtonImage = _gameSpeedControlButton.GetComponent<Image>();
+        _gameSpeedControlButtonImage = _battleSpeedControlButton.GetComponent<Image>();
         _endDefenceImage = _endDefenceFrame.transform.Find("EndDefence_Image").GetComponent<Image>();
 
         _castle = _battleFrame.transform.Find("CastleCollider").GetComponent<Castle>();

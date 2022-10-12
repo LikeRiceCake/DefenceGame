@@ -2,12 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyFactory : CharacterFactory<EnemyManager._EEnemyClass_>
+public class SoldierManager : MonoBehaviour
 {
-    #region //enumeration//
-    
-    #endregion
-
     #region //variable//
     //-------------------------------------------- public
 
@@ -47,20 +43,7 @@ public class EnemyFactory : CharacterFactory<EnemyManager._EEnemyClass_>
 
     #region //function//
     //-------------------------------------------- public
-    public override GameObject Create(EnemyManager._EEnemyClass_ select)
-    {
-        switch (select)
-        {
-            case EnemyManager._EEnemyClass_.eecEnemy:
-                obj = ResourceManager.instance.LoadCharacterResource("Prefabs/Enemy");
-                break;
-            default:
-                obj = ResourceManager.instance.LoadCharacterResource("Prefabs/Enemy");
-                break;
-        }
 
-        return Instantiate(obj);
-    }
     //-------------------------------------------- private
 
     #endregion

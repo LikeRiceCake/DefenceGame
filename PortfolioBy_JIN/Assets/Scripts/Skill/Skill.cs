@@ -4,30 +4,16 @@ using UnityEngine;
 
 public class Skill : MonoBehaviour
 {
-    #region //enumeration//
-    public enum _ESkillClass_
-    {
-        escMeteor,
-        escMax
-    }
+    #region //variable//
+    float speed;
     #endregion
 
     #region //constant//
-    public const float DestroyTime = 3.5f;
+    public const float DeActivateTime = 3.5f;
     public const float XStartPos = -12f;
     public const float XEndPos = 4f;
     public const float YPos = 6f;
     public const float SkillDelay = 30f;
-    #endregion
-
-    #region //struct//
-    public struct _stat
-    {
-        public int NumberOfObject;
-        public float Speed;
-        public float RateOfFire;
-    }
-    _stat stat;
     #endregion
 
     #region //class//
@@ -42,7 +28,12 @@ public class Skill : MonoBehaviour
     void Start()
     {
         DataInit();
-        Destroy(gameObject, DestroyTime);
+        Invoke("TimeOut", DeActivateTime);
+    }
+
+    private void OnDisable()
+    {
+        transform.position = new Vector2(Random.Range(XStartPos, XEndPos), YPos);
     }
 
     void Update()
@@ -62,14 +53,17 @@ public class Skill : MonoBehaviour
 
     public void StatInit()
     {
-        stat.NumberOfObject = skillStat.NumberOfObject;
-        stat.Speed = skillStat.Speed;
-        stat.RateOfFire = skillStat.RateOfFire;
+        speed = skillStat.Speed;
     }
 
     public void Move()
     {
-        transform.Translate(Vector3.down * Time.deltaTime * stat.Speed);
+        transform.Translate(Vector3.down * Time.deltaTime * speed);
+    }
+
+    public void TimeOut()
+    {
+        gameObject.SetActive(false);
     }
     //-------------------------------------------- private
 
@@ -81,7 +75,7 @@ public class Skill : MonoBehaviour
         if (collision.transform.CompareTag("Enemy"))
         {
             collision.transform.GetComponent<Enemy>().Attacked(9999);
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
     #endregion

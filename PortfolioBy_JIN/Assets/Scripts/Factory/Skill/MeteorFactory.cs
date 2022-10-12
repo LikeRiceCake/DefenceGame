@@ -43,17 +43,9 @@ public class MeteorFactory : SkillFactory
 
     #region //function//
     //-------------------------------------------- public
-    public override GameObject Create(_ESkillClass_ select)
+    public override GameObject Create()
     {
-        switch (select)
-        {
-            case _ESkillClass_.escMeteor:
-                obj = ResourceManager.instance.LoadSkillResource("Prefabs/Meteor");
-                break;
-            default:
-                obj = ResourceManager.instance.LoadSkillResource("Prefabs/Meteor");
-                break;
-        }
+        obj = ResourceManager.instance.LoadSkillResource("Prefabs/Meteor");
 
         return Instantiate(obj);
     }

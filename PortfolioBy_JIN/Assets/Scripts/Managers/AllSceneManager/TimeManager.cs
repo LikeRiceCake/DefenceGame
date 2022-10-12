@@ -5,6 +5,18 @@ using System;
 
 public class TimeManager : Singleton<TimeManager>
 {
+    #region //enumeration//
+    public enum _EGameSpeed_
+    {
+        egsStop,
+        egsNoraml,
+        egsDouble,
+        egsTriple,
+        egsMax
+    }
+    _EGameSpeed_ _currentGameSpeed;
+    #endregion
+
     #region //variable//
     //-------------------------------------------- public
 
@@ -35,6 +47,7 @@ public class TimeManager : Singleton<TimeManager>
     #endregion
 
     #region //property//
+    public _EGameSpeed_ currentGameSpeed { get { return _currentGameSpeed; } }
     #endregion
 
     #region //unityLifeCycle//
@@ -63,7 +76,7 @@ public class TimeManager : Singleton<TimeManager>
     //-------------------------------------------- public
     public void IdleTimeCalculation() // 최종 종료 시간과 현재 시간을 뺀 결과
     {
-        idleTime = DateTime.Now - dataManager.myUserInfo.m_sQuitTime;
+        idleTime = DateTime.Now - DateTime.Parse(dataManager.myUserInfo.m_sQuitTime);
     }
 
     public void IdleTimeForLeftTime() // 유휴시간에 지나간 시간만큼 작업 시간 감소
@@ -165,18 +178,32 @@ public class TimeManager : Singleton<TimeManager>
     public void SkillCoolDown()
     {
         if (gameManager.currentBattleState == GameManager._EBattleState_.egBattle && objectManager.useMeteorButtonImage.fillAmount > 0)
-            objectManager.useMeteorButtonImage.fillAmount -= (Time.deltaTime / Meteor.SkillDelay);
+            objectManager.useMeteorButtonImage.fillAmount -= (Time.deltaTime / Skill.SkillDelay);
     }
 
-    public void TimeControl(GameManager._EGameSpeed_ select) // 속도 조절(멈춤, 일반, 빠름 등등)
+
+    public void SetGameSpeed(_EGameSpeed_ newGameSpeed) // 현재 게임 속도 변경
+    {
+        _currentGameSpeed = newGameSpeed;
+
+        TimeControl(_currentGameSpeed);
+    }
+
+    public void GamePause(bool _active) // 게임 정지, 플레이
+    {
+        if (_active)
+            SetGameSpeed(_EGameSpeed_.egsStop);
+        else
+        {
+            SetGameSpeed(_EGameSpeed_.egsNoraml);
+            uiManager.SetImageGameSpeed("Image/Arrow_Normal");
+        }
+    }
+
+    public void TimeControl(_EGameSpeed_ select) // 속도 조절(멈춤, 일반, 빠름 등등)
     {
         Time.timeScale = TimeFast[(int)select];
     }
     //-------------------------------------------- private
-    void OnApplicationQuit()
-    {
-        if (gameManager.currentSceneState != GameManager._ESceneState_.esMain)
-            dataManager.myUserInfo.m_sQuitTime = DateTime.Now;
-    }
     #endregion
 }

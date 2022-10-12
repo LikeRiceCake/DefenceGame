@@ -104,7 +104,10 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     public void Attack() // 상대를 공격
     {
         if(target != null)
+        {
+            SoundManager.instance.SetAudioSFX("Audios/SFX/Sword");
             target.Attacked(stat.Attack);
+        }
     }
 
     public void Attacked(int _damage) // 데미지 만큼 내 Hp 감소 (Attack애니메이션에서 사용)

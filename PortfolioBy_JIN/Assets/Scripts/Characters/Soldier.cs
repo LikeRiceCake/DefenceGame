@@ -37,20 +37,11 @@ public class Soldier : Character
         DataInit();
     }
 
-    void FixedUpdate()
-    {
-        Move();
-    }
-
     void Update()
     {
-        FindOpponent();
+        InBattle();
 
-        if (buttonManager.isSoldierUpgraded)
-        {
-            buttonManager.isSoldierUpgraded = false;
-            StatInit();
-        }
+        Upgraded();
     }
     #endregion
 
@@ -60,6 +51,24 @@ public class Soldier : Character
     {
         layerMask = LayerMask.NameToLayer("Enemy");
         base.DataInit();
+    }
+
+    public void InBattle()
+    {
+        if(GameManager.instance.currentBattleState == GameManager._EBattleState_.egBattle)
+        {
+            FindOpponent();
+            Move();
+        }
+    }
+
+    public void Upgraded()
+    {
+        if (GameManager.instance.currentBattleState == GameManager._EBattleState_.egNotBattle && buttonManager.isSoldierUpgraded)
+        {
+            buttonManager.isSoldierUpgraded = false;
+            StatInit();
+        }
     }
 
     public void FindOpponent() // 상대 찾기

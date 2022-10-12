@@ -133,6 +133,8 @@ public class Castle : MonoBehaviour, IAttacked
         if (stat.CurrentHp <= 0)
         {
             uiManager.SetFrameEndDefence(BattleManager._EDefenceResult_.edrDefeat);
+            uiManager.SetSFXEndDefence(BattleManager._EDefenceResult_.edrDefeat);
+            uiManager.EndDefenceFrameOn();
         }
     }
     //-------------------------------------------- private

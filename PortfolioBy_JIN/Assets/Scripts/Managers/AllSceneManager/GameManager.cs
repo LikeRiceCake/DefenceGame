@@ -29,16 +29,6 @@ public class GameManager : Singleton<GameManager>
         egBattle,
         eqMax
     } _EBattleState_ _currentBattleState;
-
-    public enum _EGameSpeed_
-    {
-        egsStop,
-        egsNoraml,
-        egsDouble,
-        egsTriple,
-        egsMax
-    } _EGameSpeed_ _currentGaemSpeed;
-
     #endregion
 
     #region delegate
@@ -55,9 +45,6 @@ public class GameManager : Singleton<GameManager>
     bool _isAlreadyInCastle;
     bool _isAlreadyOutCastle;
     bool _isAlreadyDefence;
-    bool _isAlreadyPlayed;
-    bool _isCompletedCheck;
-    bool _isCompletedRead;
     #endregion
 
     #region //constant//
@@ -91,15 +78,10 @@ public class GameManager : Singleton<GameManager>
 
     public _EBattleState_ currentBattleState { get { return _currentBattleState; } }
 
-    public _EGameSpeed_ currentGameSpeed { get { return _currentGaemSpeed; } }
-
     public bool isAlreadyInCastle { get { return _isAlreadyInCastle; } set { _isAlreadyInCastle = value; } }
     public bool isAlreadyOutCastle { get { return _isAlreadyOutCastle; } set { _isAlreadyOutCastle = value; } }
     public bool isAlreadyDefence { get { return _isAlreadyDefence; } set { _isAlreadyDefence = value; } }
     public bool isAlreadyInMain { get { return _isAlreadyInMain; } set { _isAlreadyInMain = value; } }
-    public bool isAlreadyPlayed { get { return _isAlreadyPlayed; } set { _isAlreadyPlayed = value; } }
-    public bool isCompletedCheck { get { return _isCompletedCheck; } set { _isCompletedCheck = value; } }
-    public bool isCompletedRead { get { return _isCompletedRead; } set { _isCompletedRead = value; } }
     #endregion
 
     #region //unityLifeCycle//
@@ -138,11 +120,6 @@ public class GameManager : Singleton<GameManager>
         SetGameState(_EGameState_.egInGame);
         SetSceneState(_ESceneState_.esMain);
         SetBattleState(_EBattleState_.egNotBattle);
-        SetGameSpeed(_EGameSpeed_.egsNoraml);
-
-        _isCompletedCheck = false;
-
-        _isCompletedRead = false;
 
         _isAlreadyInMain = _isAlreadyInCastle = _isAlreadyOutCastle = _isAlreadyDefence = false;
     }
@@ -162,11 +139,6 @@ public class GameManager : Singleton<GameManager>
         _currentBattleState = newBattleState;
     }
 
-    public void SetGameSpeed(_EGameSpeed_ newGameSpeed) // 현재 게임 속도 변경
-    {
-        _currentGaemSpeed = newGameSpeed;
-    }
-
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode) // 씬이 로드될 때마다 호출되는 함수
     {
         
@@ -183,6 +155,7 @@ public class GameManager : Singleton<GameManager>
                 GameObject.Find("Managers").transform.Find("PrepareManager").gameObject.SetActive(false);
                 GameObject.Find("Managers").transform.Find("BattleManager").gameObject.SetActive(false);
                 GameObject.Find("Managers").transform.Find("EnemyManager").gameObject.SetActive(false);
+                GameObject.Find("Managers").transform.Find("SkillManager").gameObject.SetActive(false);
                 break;
             case "OutCastle":
                 SetSceneState(_ESceneState_.esOutCastle);
@@ -192,6 +165,7 @@ public class GameManager : Singleton<GameManager>
                 GameObject.Find("Managers").transform.Find("PrepareManager").gameObject.SetActive(true);
                 GameObject.Find("Managers").transform.Find("BattleManager").gameObject.SetActive(true);
                 GameObject.Find("Managers").transform.Find("EnemyManager").gameObject.SetActive(true);
+                GameObject.Find("Managers").transform.Find("SkillManager").gameObject.SetActive(true);
                 EnemyManager.instance.SceneLoadedEnemys();
                 prepareManager.ResetCnt();
                 break;
@@ -200,6 +174,11 @@ public class GameManager : Singleton<GameManager>
         }
 
         sceneLoadedManager(); // 씬 변경 시 호출되어야 할 함수들을 전부 호출
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
     //-------------------------------------------- private
 

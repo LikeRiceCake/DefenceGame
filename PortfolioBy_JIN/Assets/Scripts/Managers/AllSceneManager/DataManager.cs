@@ -103,7 +103,8 @@ public class DataManager : Singleton<DataManager>
     public const int MaxSoldierUpgrade = 10;
     public const int SoldierUpgradePriceCnt = 4;
     public const int MaxBallistaUpgrade = 10;
-    public const int BallistaUpgradeResourceCnt = 4;
+    public const int WeaponUpgradePriceCnt = 4;
+    public const int WeaponUpgradeResourceCnt = 4;
     public const int MaxCastleUpgrade = 20;
     public const int CastleUpgradePriceCnt = 4;
 
@@ -137,6 +138,7 @@ public class DataManager : Singleton<DataManager>
         public int m_nWave;
         public int m_nCastleUpgrade;
         public string m_sUserName;
+        public string m_sQuitTime;
         public int[] m_nWeaponUpgrade;
         public int[] m_nSoldierUpgrade;
         public int[] m_nResource;
@@ -144,7 +146,6 @@ public class DataManager : Singleton<DataManager>
         public bool[] m_bSoldierLock;
         public bool[] m_bWeaponLock;
         public double[] m_fLeftTime;
-        public DateTime m_sQuitTime;
 
         public User()
         {
@@ -159,6 +160,9 @@ public class DataManager : Singleton<DataManager>
         {
             m_nWave = 1;
             m_nCastleUpgrade = 0;
+
+            m_sUserName = null;
+            m_sQuitTime = null;
 
             m_nWeaponUpgrade = new int[(int)_EWeaponUpgrade_.ewuMax];
             for(int i = 0; i < (int)_EWeaponUpgrade_.ewuMax; i++)
@@ -203,14 +207,14 @@ public class DataManager : Singleton<DataManager>
             {
                 m_fLeftTime[i] = MaxLeftTime[i];
             }
-
-            m_sUserName = null;
-            m_sQuitTime = default;
         }
         void Init(string _name)
         {
             m_nWave = 1;
             m_nCastleUpgrade = 0;
+
+            m_sUserName = _name;
+            m_sQuitTime = null;
 
             m_nWeaponUpgrade = new int[(int)_EWeaponUpgrade_.ewuMax];
             for (int i = 0; i < (int)_EWeaponUpgrade_.ewuMax; i++)
@@ -255,9 +259,6 @@ public class DataManager : Singleton<DataManager>
             {
                 m_fLeftTime[i] = MaxLeftTime[i];
             }
-
-            m_sUserName = _name;
-            m_sQuitTime = default;
         }
     }
     //-------------------------------------------- private
@@ -267,11 +268,11 @@ public class DataManager : Singleton<DataManager>
     #endregion
 
     #region //property//
-    public _EMineral_ currentMineralState { get { return _currentMineralState; } set { _currentMineralState = value; } }
+    public _EMineral_ currentMineralState { get { return _currentMineralState; } }
 
-    public _ESoldierUpgrade_ currentSoldierUpgradeState { get { return _currentSoldierUpgradeState; } set { _currentSoldierUpgradeState = value; } }
+    public _ESoldierUpgrade_ currentSoldierUpgradeState { get { return _currentSoldierUpgradeState; } }
 
-    public _EWeaponUpgrade_ currentWeaponUpgradeState { get { return _currentWeaponUpgradeState; } set { _currentWeaponUpgradeState = value; } }
+    public _EWeaponUpgrade_ currentWeaponUpgradeState { get { return _currentWeaponUpgradeState; } }
 
     public User myUserInfo { get { return _myUserInfo; } set { _myUserInfo = value; } }
     #endregion
@@ -302,6 +303,21 @@ public class DataManager : Singleton<DataManager>
         _currentWeaponUpgradeState = _EWeaponUpgrade_.ewuBallista;
 
         _myUserInfo = null;
+    }
+
+    public void SetMineralState(_EMineral_ newMineralState) // 현재 선택 광물 변경
+    {
+        _currentMineralState = newMineralState;
+    }
+
+    public void SetSoldierUpgradeState(_ESoldierUpgrade_ newSoldierState) // 현재 선택 광물 변경
+    {
+        _currentSoldierUpgradeState = newSoldierState;
+    }
+
+    public void SetWeaponUpgradeState(_EWeaponUpgrade_ newWeaponState) // 현재 선택 광물 변경
+    {
+        _currentWeaponUpgradeState = newWeaponState;
     }
 
     public User UserDataInit() // 서버에서 받아올 데이터의 껍데기를 생성

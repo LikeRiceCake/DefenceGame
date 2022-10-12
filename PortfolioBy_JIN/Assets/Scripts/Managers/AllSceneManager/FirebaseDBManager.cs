@@ -9,10 +9,23 @@ using UnityEngine.UI;
 
 public class FirebaseDBManager : Singleton<FirebaseDBManager>
 {
+    #region //enumeration//
+    public enum _EDBAction_
+    {
+        edbaAllRead,
+        edbaNameRead,
+        edbaMax
+    }
+
+    Coroutine waitCoroutine;
+    #endregion
+
     #region //variable//
     //-------------------------------------------- public
 
     //-------------------------------------------- private
+    bool isCheckOver;
+    bool isOverlap;
     #endregion
 
     #region //constant//
@@ -52,6 +65,11 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
         gameManager = GameManager.instance;
     }
 
+    private void Start()
+    {
+        DataInit();
+    }
+
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.L))
@@ -67,11 +85,16 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
 
     #region //function//
     //-------------------------------------------- public
+    public void DataInit()
+    {
+        isCheckOver = false;
+    }
+       
     public void WriteCreateData(DataManager.User userData) // 처음 데이터 생성 시 서버에 저장
     {
         string jsonData = JsonUtility.ToJson(userData);
 
-        DBRef.Child("users").Child(dataManager.myUserInfo.m_sUserName).SetRawJsonValueAsync(jsonData);
+        DBRef.Child("users").Child(userData.m_sUserName).SetRawJsonValueAsync(jsonData);
     }
 
     public void WriteUpdateData() // 데이터 덮어쓰기(업데이트) 서버에 저장(만들어야함)
@@ -90,6 +113,8 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
 
         dataManager.UserDataInit();
 
+        waitCoroutine = StartCoroutine(WaitingAsync(_EDBAction_.edbaAllRead));
+
         readData.GetValueAsync().ContinueWith(
             task =>
             {
@@ -102,7 +127,7 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
                     dataManager.myUserInfo.m_nWave = Convert.ToInt32(info["m_nWave"]);
                     dataManager.myUserInfo.m_nCastleUpgrade = Convert.ToInt32(info["m_nCastleUpgrade"]);
                     dataManager.myUserInfo.m_sUserName = Convert.ToString(info["m_sUserName"]);
-                    dataManager.myUserInfo.m_sQuitTime = Convert.ToDateTime(info["m_sQuitTime"]);
+                    dataManager.myUserInfo.m_sQuitTime = Convert.ToString(info["m_sQuitTime"]);
 
                     int index = 0;
 
@@ -152,15 +177,17 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
                     {
                         dataManager.myUserInfo.m_fLeftTime[index++] = Convert.ToDouble(value.Value);
                     }
-
-                    gameManager.isCompletedRead = true;
                 }
+
+                isCheckOver = true;
             });
     }
 
     public void CheckUserName(string _name) // 최초 플레이 시 닉네임 중복 체크
     {
         DatabaseReference readData = FirebaseDatabase.DefaultInstance.GetReference("users");
+
+        waitCoroutine = StartCoroutine(WaitingAsync(_EDBAction_.edbaNameRead));
 
         readData.GetValueAsync().ContinueWith(
             task =>
@@ -172,19 +199,30 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
                     IDictionary info = (IDictionary)testSnapShot.Value;
 
                     if (info != null && info.Contains(_name))
-                        gameManager.isCompletedCheck = false;
+                        isOverlap = true;
                     else
-                        gameManager.isCompletedCheck = true;
+                        isOverlap = false;
                 }
+
+                isCheckOver = true;
             });
     }
 
-    private void OnApplicationQuit()
+    public IEnumerator WaitingAsync(_EDBAction_ select)
     {
-        if (PrepareManager.instance.isPreviousRound)
-            dataManager.myUserInfo.m_nWave = PrepareManager.instance.previousRound;
-
-        WriteUpdateData();
+        yield return new WaitUntil(() => isCheckOver == true);
+        isCheckOver = false;
+        switch (select)
+        {
+            case _EDBAction_.edbaAllRead:
+                ButtonManager.instance.CompletedRead();
+                break;
+            case _EDBAction_.edbaNameRead:
+                ButtonManager.instance.CreateUserData(isOverlap);
+                break;
+            default:
+                break;
+        }
     }
     //-------------------------------------------- private
 

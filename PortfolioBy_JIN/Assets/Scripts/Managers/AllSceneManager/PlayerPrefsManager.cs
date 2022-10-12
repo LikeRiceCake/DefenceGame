@@ -10,7 +10,6 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
     //-------------------------------------------- private
     string isAlreadyPlayedKey;
     string myNameKey;
-    string _myName;
     #endregion
 
     #region //constant//
@@ -28,7 +27,6 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
     #endregion
 
     #region //property//
-    public string myName { get { return _myName; } }
     #endregion
 
     #region //unityLifeCycle//
@@ -45,7 +43,6 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
     private void Start()
     {
         DataInit();
-        CheckFirstPlay();
     }
     #endregion
 
@@ -55,12 +52,11 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
     {
         isAlreadyPlayedKey = "Played";
         myNameKey = "Name";
-        _myName = null;
     }
 
-    public void GetPlayerPrefsName() // PlayerPrefs로 저장된 로컬네임 불러오기
+    public string GetPlayerPrefsName() // PlayerPrefs로 저장된 로컬네임 불러오기
     {
-        _myName = PlayerPrefs.GetString(myNameKey);
+        return PlayerPrefs.GetString(myNameKey);
     }
 
     public void SetPlayerPrefsPlayed(int value) // 최초 실행인지 아닌지 저장
@@ -73,15 +69,12 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
         PlayerPrefs.SetString(myNameKey, _name);
     }
 
-    public void CheckFirstPlay() // 최초 플레이인지 확인
+    public bool CheckFirstPlay() // 최초 플레이인지 확인
     {
         if (PlayerPrefs.GetInt(isAlreadyPlayedKey) == 0)
-            gameManager.isAlreadyPlayed = false;
+            return true;
         else
-        {
-            gameManager.isAlreadyPlayed = true;
-            GetPlayerPrefsName();
-        }
+            return false;
     }
     //-------------------------------------------- private
 

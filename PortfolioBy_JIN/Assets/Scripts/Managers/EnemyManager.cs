@@ -5,6 +5,12 @@ using UnityEngine;
 public class EnemyManager : Singleton<EnemyManager>
 {
     #region //enumeration//
+    public enum _EEnemyClass_
+    {
+        eecEnemy,
+        eecMax
+    }
+
     Coroutine _coroutineManager;
     #endregion
 
@@ -39,12 +45,13 @@ public class EnemyManager : Singleton<EnemyManager>
 
     Transform enemyPos;
 
-    CharacterFactory<EnemyFactory._EEnemyClass_> enemyFactory;
+    CharacterFactory<_EEnemyClass_> enemyFactory;
     #endregion
 
     #region //property//
-    public Coroutine coroutineManager { get { return _coroutineManager; } set { _coroutineManager = value; } }
     public int currentEnemyCnt { get { return _currentEnemyCnt; } set { _currentEnemyCnt = value; } }
+
+    public Coroutine coroutineManager { get { return _coroutineManager; } set { _coroutineManager = value; } }
     #endregion
 
     #region //unityLifeCycle//
@@ -77,11 +84,13 @@ public class EnemyManager : Singleton<EnemyManager>
     public void CreateEnemy() // Àû »ý¼º
     {
         enemyList.RemoveRange(0, enemyList.Count);
+
         GameObject hierarchyEnemyList = new GameObject();
         hierarchyEnemyList.name = "EnemyList";
+
         for (int i = 0; i < _maxEnemyCnt; i++)
         {
-            GameObject enemy = enemyFactory.Create(EnemyFactory._EEnemyClass_.eecEnemy);
+            GameObject enemy = enemyFactory.Create(_EEnemyClass_.eecEnemy);
             enemy.transform.SetParent(hierarchyEnemyList.transform);
             enemy.name = "Enemy_" + i.ToString("00");
             enemy.GetComponent<Enemy>().enemyManager = this;
@@ -110,6 +119,8 @@ public class EnemyManager : Singleton<EnemyManager>
         {
             dataManager.myUserInfo.m_nWave++;
             uiManager.SetFrameEndDefence(BattleManager._EDefenceResult_.edrVictory);
+            uiManager.SetSFXEndDefence(BattleManager._EDefenceResult_.edrVictory);
+            uiManager.EndDefenceFrameOn();
         }
     }
 
@@ -119,7 +130,7 @@ public class EnemyManager : Singleton<EnemyManager>
             StopCoroutine(_coroutineManager);
     }
 
-    public void CoroutineStart()
+    public void EnemyActivateCoroutineStart()
     {
         _coroutineManager = StartCoroutine(ActivateEnemy());
     }
