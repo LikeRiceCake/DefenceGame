@@ -132,6 +132,7 @@ public class Soldier : Character
     {
         if(myCurrentCharacterState == _ECharacterState_.ecsMove && collision.transform.CompareTag("Enemy") && opponent.transform.name == collision.transform.name)
         {
+            print("µ©");
             SetCharacterState(_ECharacterState_.ecsFight);
             SetAnimation("isAttack", true);
             target = collision.GetComponent<Enemy>();

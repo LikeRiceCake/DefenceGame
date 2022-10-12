@@ -51,7 +51,7 @@ public class SkillManager : Singleton<SkillManager>
 
     void Start()
     {
-        DataInit();
+
     }
 
     void Update()
@@ -113,6 +113,11 @@ public class SkillManager : Singleton<SkillManager>
             skillList[select][i].gameObject.SetActive(true);
             yield return new WaitForSeconds(skillCreateInfo[select].RateOfFire);
         }
+    }
+
+    public void SceneLoadedSkills()
+    {
+        DataInit();
     }
     //-------------------------------------------- private
 

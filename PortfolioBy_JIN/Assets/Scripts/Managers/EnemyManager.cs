@@ -120,6 +120,8 @@ public class EnemyManager : Singleton<EnemyManager>
             dataManager.myUserInfo.m_nWave++;
             uiManager.SetFrameEndDefence(BattleManager._EDefenceResult_.edrVictory);
             uiManager.SetSFXEndDefence(BattleManager._EDefenceResult_.edrVictory);
+            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] += (int)(dataManager.myUserInfo.m_nWave * 500 * 2f);
+            uiManager.SetTextResourceUI(DataManager._EResource_.erMoney);
             uiManager.EndDefenceFrameOn();
         }
     }
@@ -130,7 +132,7 @@ public class EnemyManager : Singleton<EnemyManager>
             StopCoroutine(_coroutineManager);
     }
 
-    public void EnemyActivateCoroutineStart()
+    public void EnemyActivateCoroutineStart() // EnemyActivate 코루틴 실행
     {
         _coroutineManager = StartCoroutine(ActivateEnemy());
     }

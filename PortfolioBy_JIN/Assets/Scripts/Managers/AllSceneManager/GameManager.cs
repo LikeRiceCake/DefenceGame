@@ -166,6 +166,7 @@ public class GameManager : Singleton<GameManager>
                 GameObject.Find("Managers").transform.Find("BattleManager").gameObject.SetActive(true);
                 GameObject.Find("Managers").transform.Find("EnemyManager").gameObject.SetActive(true);
                 GameObject.Find("Managers").transform.Find("SkillManager").gameObject.SetActive(true);
+                SkillManager.instance.SceneLoadedSkills();
                 EnemyManager.instance.SceneLoadedEnemys();
                 prepareManager.ResetCnt();
                 break;

@@ -114,6 +114,7 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     {
         _damage = _damage <= stat.Defence ? 0 : _damage - stat.Defence;
         stat.CurrentHp -= _damage;
+        print(stat.CurrentHp);
         if(stat.CurrentHp <= 0 && myCurrentCharacterState != _ECharacterState_.ecsDie)
         {
             SetCharacterState(_ECharacterState_.ecsDie);

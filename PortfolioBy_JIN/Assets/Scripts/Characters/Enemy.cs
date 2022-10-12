@@ -62,6 +62,8 @@ public class Enemy : Character
     public override void Die()
     {
         _enemyManager.CurrentEnemyDecrease();
+        dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] += (int)(dataManager.myUserInfo.m_nWave * 150 * 1.5f);
+        UIManager.instance.SetTextResourceUI(DataManager._EResource_.erMoney);
         base.Die();
     }
     //-------------------------------------------- private

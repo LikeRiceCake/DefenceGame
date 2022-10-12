@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Castle
   m_EditorClassIdentifier: 
   MaxHp: 20
-  Defence: 2
+  Defence: 1
