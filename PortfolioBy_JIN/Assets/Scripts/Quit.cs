@@ -6,7 +6,6 @@ using System;
 public class Quit : MonoBehaviour
 {
     #region //function//
-    //------------------------------------------    -- public
     private void OnApplicationQuit()
     {
         if (PrepareManager.instance.isPreviousRound)
@@ -17,7 +16,5 @@ public class Quit : MonoBehaviour
 
         FirebaseDBManager.instance.WriteUpdateData();
     }
-    //-------------------------------------------- private
-
     #endregion
 }

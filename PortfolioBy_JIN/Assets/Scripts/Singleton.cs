@@ -6,24 +6,7 @@ using System;
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour // 제네릭 타입을 이용하여 상속받을 때 타입만 지정하면 자동으로 싱글톤 제작
 {
     #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     static T _instance = null;
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
     #endregion
 
     #region //property//
@@ -57,7 +40,6 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour // 제네릭 타입
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     private static void DataInit()
     {
         if (_instance == null)
@@ -70,7 +52,5 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour // 제네릭 타입
             }
         }
     }
-    //-------------------------------------------- private
-
     #endregion
 }

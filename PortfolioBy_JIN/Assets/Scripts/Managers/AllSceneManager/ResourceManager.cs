@@ -4,34 +4,13 @@ using UnityEngine;
 
 public class ResourceManager : Singleton<ResourceManager>
 {
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     Dictionary<string, AudioClip> audioResource = new Dictionary<string, AudioClip>();
     Dictionary<string, GameObject> characterResource = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> weaponResource = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> projectileResource = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> skillResource = new Dictionary<string, GameObject>();
     Dictionary<string, Sprite> spriteResource = new Dictionary<string, Sprite>();
-    #endregion
-
-    #region //property//
-
     #endregion
 
     #region //unityLifeCycle//
@@ -42,7 +21,6 @@ public class ResourceManager : Singleton<ResourceManager>
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public AudioClip LoadAudioResource(string _key)
     {
         if (audioResource.ContainsKey(_key))
@@ -108,7 +86,5 @@ public class ResourceManager : Singleton<ResourceManager>
             return spriteResource[_key];
         }
     }
-    //-------------------------------------------- private
-
     #endregion
 }

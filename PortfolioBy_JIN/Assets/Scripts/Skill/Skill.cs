@@ -17,11 +17,7 @@ public class Skill : MonoBehaviour
     #endregion
 
     #region //class//
-    //-------------------------------------------- public
-    
-    //-------------------------------------------- protected
     protected SkillInfo skillStat;
-    //-------------------------------------------- private
     #endregion
 
     #region //unityLifeCycle//
@@ -43,7 +39,6 @@ public class Skill : MonoBehaviour
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public void DataInit()
     {
         skillStat = GetComponent<SkillInfoPocket>().skillStat;
@@ -65,8 +60,6 @@ public class Skill : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
-    //-------------------------------------------- private
-
     #endregion
 
     #region //collision//

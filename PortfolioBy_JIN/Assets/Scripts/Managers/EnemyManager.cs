@@ -15,35 +15,20 @@ public class EnemyManager : Singleton<EnemyManager>
     #endregion
 
     #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     int _maxEnemyCnt;
     int _currentEnemyCnt;
     #endregion
 
     #region //constant//
-    //-------------------------------------------- public
     public const int DefaultMaxEnemyCnt = 5;
-    //-------------------------------------------- private
-
     #endregion
 
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     List<GameObject> enemyList = new List<GameObject>();
-
-    ResourceManager resourceManager;
 
     DataManager dataManager;
 
     UIManager uiManager;
-
-    GameObject enemyObject;
-
-    Transform enemyPos;
 
     CharacterFactory<_EEnemyClass_> enemyFactory;
     #endregion
@@ -59,26 +44,15 @@ public class EnemyManager : Singleton<EnemyManager>
     {
         DataInit();
     }
-
-    private void Start()
-    {
-       
-    }
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public void DataInit()
     {
-        resourceManager = ResourceManager.instance;
         dataManager = DataManager.instance;
         uiManager = UIManager.instance;
 
-        enemyObject = resourceManager.LoadCharacterResource("Prefabs/Enemy");
-
         enemyFactory = gameObject.AddComponent<EnemyFactory>();
-
-        MaximumEnemy();
     }
 
     public void CreateEnemy() // 적 생성
@@ -95,7 +69,7 @@ public class EnemyManager : Singleton<EnemyManager>
             enemy.name = "Enemy_" + i.ToString("00");
             enemy.GetComponent<Enemy>().enemyManager = this;
             enemy.SetActive(false);
-            enemy.transform.position = enemyPos.position;
+            enemy.transform.position = ObjectManager.instance.enemySummonPos.transform.position;
             enemyList.Add(enemy);
         }
     }
@@ -117,18 +91,13 @@ public class EnemyManager : Singleton<EnemyManager>
         uiManager.SetTextEnemyCount();
         if (currentEnemyCnt <= 0)
         {
-            dataManager.myUserInfo.m_nWave++;
-            uiManager.SetFrameEndDefence(BattleManager._EDefenceResult_.edrVictory);
-            uiManager.SetSFXEndDefence(BattleManager._EDefenceResult_.edrVictory);
-            dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] += (int)(dataManager.myUserInfo.m_nWave * 500 * 2f);
-            uiManager.SetTextResourceUI(DataManager._EResource_.erMoney);
-            uiManager.EndDefenceFrameOn();
+            BattleManager.instance.Victory();
         }
     }
 
-    public void ResetEnemyManager() // RedoButton같이 디펜스를 재시작하거나 할 때 리셋
+    public void EnemyActivateCoroutineStop() // EnemyActivate 코루틴 중지
     {
-        if(_coroutineManager != null)
+        if (_coroutineManager != null)
             StopCoroutine(_coroutineManager);
     }
 
@@ -148,12 +117,11 @@ public class EnemyManager : Singleton<EnemyManager>
 
     public void SceneLoadedEnemys()
     {
-        ResetEnemyManager();
-        enemyPos = GameObject.Find("Canvas").transform.Find("BattleFrame").transform.Find("EnemySummonPos").transform;
-        MaximumEnemy();
-        CreateEnemy();
+        if (GameManager.instance.currentSceneState == GameManager._ESceneState_.esDefence)
+        {
+            MaximumEnemy();
+            CreateEnemy();
+        }
     }
-    //-------------------------------------------- private
-
     #endregion
 }

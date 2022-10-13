@@ -13,47 +13,40 @@ public class BattleManager : Singleton<BattleManager>
     }
     #endregion
 
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //class//
-    //-------------------------------------------- public
+    UIManager uiManager;
 
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //property//
-
+    DataManager dataManager;
     #endregion
 
     #region //unityLifeCycle//
-    void Start()
+    private void OnEnable()
     {
-        
-    }
-
-    void Update()
-    {
-        
+        uiManager = UIManager.instance;
+        dataManager = DataManager.instance;
     }
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
+    public void Defeat()
+    {
+        uiManager.SetFrameEndDefence(_EDefenceResult_.edrDefeat);
+        SoundManager.instance.SetSFXEndDefence(_EDefenceResult_.edrDefeat);
+        SoundManager.instance.PlayAudioSFX();
+        uiManager.EndDefenceFrameOn();
+    }
 
-    //-------------------------------------------- private
-
+    public void Victory()
+    {
+        if (PrepareManager.instance.isPreviousRound)
+            PrepareManager.instance.isPreviousRound = false;
+        dataManager.myUserInfo.m_nWave++;
+        uiManager.SetFrameEndDefence(_EDefenceResult_.edrVictory);
+        SoundManager.instance.SetSFXEndDefence(_EDefenceResult_.edrVictory);
+        SoundManager.instance.PlayAudioSFX();
+        dataManager.myUserInfo.m_nResource[(int)DataManager._EResource_.erMoney] += (int)(dataManager.myUserInfo.m_nWave * 500 * 2f);
+        uiManager.SetTextResourceUI(DataManager._EResource_.erMoney);
+        uiManager.EndDefenceFrameOn();
+    }
     #endregion
 }

@@ -6,31 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : Singleton<UIManager>
 {
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-    #region ///AllScene///
-
-    #endregion
-
-    #region ///InCastle, OutCastleScene///
-
-    #endregion
-
     GameManager gameManager;
 
     ObjectManager objectManager;
@@ -41,25 +17,9 @@ public class UIManager : Singleton<UIManager>
 
     EnemyManager enemyManager;
 
-    ButtonManager buttonManager;
-
     ResourceManager resourceManager;
 
     TimeManager timeManager;
-    #endregion
-
-    #region //property//
-    #region ///AllScene///
-
-    #endregion
-
-    #region ///InCastle///
-
-    #endregion
-
-    #region ///OutCastle///
-
-    #endregion
     #endregion
 
     #region //unityLifeCycle//
@@ -75,7 +35,6 @@ public class UIManager : Singleton<UIManager>
         dataManager = DataManager.instance;
         prepareManager = PrepareManager.instance;
         enemyManager = EnemyManager.instance;
-        buttonManager = ButtonManager.instance;
         resourceManager = ResourceManager.instance;
         timeManager = TimeManager.instance;
     }
@@ -87,7 +46,6 @@ public class UIManager : Singleton<UIManager>
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     #region //AllScene//
     public bool QuitFrameOnOff() // 종료 화면 온 오프
     {
@@ -370,6 +328,14 @@ public class UIManager : Singleton<UIManager>
         objectManager.weaponUpgradeConfirmFrameOnButtonImage.sprite = resourceManager.LoadSpriteResource(path);
     }
 
+    public void WeaponUpgradeFrameOnOffButton() // 무기 강화 프레임 On, Off
+    {
+        if (objectManager.weaponUpgradeFrame.activeSelf)
+            objectManager.weaponUpgradeFrame.SetActive(false);
+        else
+            objectManager.weaponUpgradeFrame.SetActive(true);
+    }
+
     public void WeaponUpgradeConfirmFrameOff() // 무기 업그레이드 확인 프레임 Off
     {
         objectManager.weaponUpgradeConfirmFrame.SetActive(false);
@@ -437,8 +403,6 @@ public class UIManager : Singleton<UIManager>
         objectManager.waveText.text = dataManager.myUserInfo.m_nWave.ToString();
     }
 
-    
-
     public void SetTextEnemyCount() // 적 수 세팅
     {
         objectManager.enemyCntText.text = enemyManager.currentEnemyCnt.ToString();
@@ -461,26 +425,18 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
-    public void SetSFXEndDefence(BattleManager._EDefenceResult_ select) // 디펜스가 끝났을 때 SFX 설정
+    public void ManagerOnOff(bool _active)
     {
-        switch (select)
-        {
-            case BattleManager._EDefenceResult_.edrVictory:
-                SoundManager.instance.SetAudioSFX("Audios/SFX/Victory");
-                break;
-            case BattleManager._EDefenceResult_.edrDefeat:
-                SoundManager.instance.SetAudioSFX("Audios/SFX/Defeat");
-                break;
-            default:
-                break;
-        }
+        GameObject.Find("Managers").transform.Find("PrepareManager").gameObject.SetActive(_active);
+        GameObject.Find("Managers").transform.Find("BattleManager").gameObject.SetActive(_active);
+        GameObject.Find("Managers").transform.Find("EnemyManager").gameObject.SetActive(_active);
+        GameObject.Find("Managers").transform.Find("SkillManager").gameObject.SetActive(_active);
     }
 
     public void EndDefenceFrameOn() // EndDefenceFrame On
     {
         objectManager.endDefenceFrame.SetActive(true);
         timeManager.SetGameSpeed(TimeManager._EGameSpeed_.egsStop);
-        timeManager.TimeControl(timeManager.currentGameSpeed);
     }
     #endregion
 
@@ -512,6 +468,7 @@ public class UIManager : Singleton<UIManager>
 
     public void InCastleUIsRef()
     {
+        ManagerOnOff(false);
         SetTextResourceUI();
     }
 
@@ -524,12 +481,10 @@ public class UIManager : Singleton<UIManager>
 
     public void DefenceUIsRef()
     {
+        ManagerOnOff(true);
         SetTextResourceUI(DataManager._EResource_.erMoney);
         SetTextWave();
-        SetTextEnemyCount();
         SetTextSoldierAndWeaponCnt();
     }
-    //-------------------------------------------- private
-
     #endregion
 }

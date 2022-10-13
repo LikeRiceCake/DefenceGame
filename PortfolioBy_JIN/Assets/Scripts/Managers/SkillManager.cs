@@ -14,24 +14,7 @@ public class SkillManager : Singleton<SkillManager>
     Coroutine _coroutineManager;
     #endregion
 
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //constant//    
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     SkillFactory[] skillFactory;
 
     List<GameObject>[] skillList = new List<GameObject>[(int)_ESkillClass_.escMax];
@@ -46,22 +29,11 @@ public class SkillManager : Singleton<SkillManager>
     #region //unityLifeCycle//
     void OnEnable()
     {
-
-    }
-
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-
+        DataInit();
     }
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public void DataInit()
     {
         skillFactory = new SkillFactory[(int)_ESkillClass_.escMax];
@@ -74,11 +46,9 @@ public class SkillManager : Singleton<SkillManager>
 
         for (int i = 0; i < (int)_ESkillClass_.escMax; i++)
             skillList[i] = new List<GameObject>();
-
-        CreateSkill();
     }
 
-    public void CreateSkill()
+    public void CreateSkill() // 스킬 오브젝트 제작
     {
         for (int i = 0; i < (int)_ESkillClass_.escMax; i++)
         {
@@ -101,12 +71,18 @@ public class SkillManager : Singleton<SkillManager>
         }
     }
 
-    public void SkillActivateCoroutineStart(_ESkillClass_ select)
+    public void SkillActivateCoroutineStart(_ESkillClass_ select) // 스킬 사용 coroutine 실행
     {
         _coroutineManager = StartCoroutine(SkillActivate((int)select));
     }
 
-    public IEnumerator SkillActivate(int select)
+    public void SkillActivateCoroutineStop() // 스킬 사용 coroutine 중지
+    {
+        if (_coroutineManager != null)
+            StopCoroutine(_coroutineManager);
+    }
+
+    public IEnumerator SkillActivate(int select) // 스킬 사용
     {
         for(int i = 0; i < skillList[select].Count; i++)
         {
@@ -117,9 +93,8 @@ public class SkillManager : Singleton<SkillManager>
 
     public void SceneLoadedSkills()
     {
-        DataInit();
+       if(GameManager.instance.currentSceneState == GameManager._ESceneState_.esDefence)
+            CreateSkill();
     }
-    //-------------------------------------------- private
-
     #endregion
 }

@@ -35,10 +35,6 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     } protected _ECharacterState_ myCurrentCharacterState;
     #endregion
 
-    #region //constant//
-    
-    #endregion
-
     #region //struct//
     protected struct _stat
     {
@@ -52,9 +48,6 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     #endregion
 
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- protected
     protected CharacterInfo characterStat;
 
     protected DataManager dataManager;
@@ -62,7 +55,6 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     protected Animator animator;
 
     protected IAttacked target;
-    //-------------------------------------------- private
     #endregion
 
     #region //unityLifeCycle//
@@ -78,7 +70,6 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public virtual void DataInit()
     {
         characterStat = GetComponent<CharacterInfoPocket>().characterStat;
@@ -106,6 +97,7 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
         if(target != null)
         {
             SoundManager.instance.SetAudioSFX("Audios/SFX/Sword");
+            SoundManager.instance.PlayAudioSFX();
             target.Attacked(stat.Attack);
         }
     }
@@ -114,7 +106,6 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     {
         _damage = _damage <= stat.Defence ? 0 : _damage - stat.Defence;
         stat.CurrentHp -= _damage;
-        print(stat.CurrentHp);
         if(stat.CurrentHp <= 0 && myCurrentCharacterState != _ECharacterState_.ecsDie)
         {
             SetCharacterState(_ECharacterState_.ecsDie);
@@ -173,8 +164,6 @@ public abstract class Character : MonoBehaviour, IAttack, IAttacked
     }
 
     public abstract int UpgradeStat(_ECharacterStat_ select); // 병사, 적이 강화된 게 있으면 적용
-    //-------------------------------------------- private
-
     #endregion
 
     #region //collision//

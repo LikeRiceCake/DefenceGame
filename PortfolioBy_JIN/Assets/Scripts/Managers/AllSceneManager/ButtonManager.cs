@@ -18,19 +18,9 @@ public class ButtonManager : Singleton<ButtonManager>
     #endregion
 
     #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     bool _isSoldierUpgraded;
     bool _isBallistaUpgraded;
     bool _isCastleUpgraded;
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
     #endregion
 
     #region //struct//
@@ -57,26 +47,6 @@ public class ButtonManager : Singleton<ButtonManager>
     #endregion
 
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #region ///AllScene///
-
-    #endregion
-
-    #region ///MainScene///
-
-    #endregion
-
-    #region ///InCastleScene///
-
-    #endregion
-
-    #region ///OutCastleScene///
-
-    #endregion
-
     ObjectManager objectManager;
 
     GameManager gameManager;
@@ -100,8 +70,6 @@ public class ButtonManager : Singleton<ButtonManager>
     CharacterFactory<SoldierFactory._ESoldierClass_> soldierFactory;
 
     WeaponFactory weaponFactory;
-
-    SkillFactory skillFactroy;
     #endregion
 
     #region //property//
@@ -145,12 +113,10 @@ public class ButtonManager : Singleton<ButtonManager>
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public void DataInit()
     {
         soldierFactory = gameObject.AddComponent<SoldierFactory>();
         weaponFactory = gameObject.AddComponent<BallistaFactory>();
-        skillFactroy = gameObject.AddComponent<MeteorFactory>();
 
         _isSoldierUpgraded = false;
         _isBallistaUpgraded = false;
@@ -289,13 +255,8 @@ public class ButtonManager : Singleton<ButtonManager>
     #region ///DefenceScene///
     public void DefenceToInCastle() // Defence씬에서 InCastle씬으로
     {
-        gameManager.SetBattleState(GameManager._EBattleState_.egNotBattle);
-        timeManager.SetGameSpeed(TimeManager._EGameSpeed_.egsNoraml);
-        if (SkillManager.instance.coroutineManager != null)
-            StopCoroutine(SkillManager.instance.coroutineManager);
-        if (EnemyManager.instance.coroutineManager != null)
-            StopCoroutine(EnemyManager.instance.coroutineManager);
-        EnemyManager.instance.ResetEnemyManager();
+        prepareManager.PreviousRoundReset();
+        DefenceSceneReset();
         SceneChange("InCastle");
     }
 
@@ -306,14 +267,16 @@ public class ButtonManager : Singleton<ButtonManager>
 
     public void RePrepare() // Prepare로 돌아감
     {
+        DefenceSceneReset();
+        SceneChange("Defence");
+    }
+
+    public void DefenceSceneReset()
+    {
         gameManager.SetBattleState(GameManager._EBattleState_.egNotBattle);
         timeManager.SetGameSpeed(TimeManager._EGameSpeed_.egsNoraml);
-        if (SkillManager.instance.coroutineManager != null)
-            StopCoroutine(SkillManager.instance.coroutineManager);
-        if (EnemyManager.instance.coroutineManager != null)
-            StopCoroutine(EnemyManager.instance.coroutineManager);
-        EnemyManager.instance.ResetEnemyManager();
-        SceneChange("Defence");
+        SkillManager.instance.SkillActivateCoroutineStop();
+        EnemyManager.instance.EnemyActivateCoroutineStop();
     }
 
     public void SoldierUpgradeFrameOnOffButton() // 병사 강화 프레임 On, Off
@@ -387,12 +350,9 @@ public class ButtonManager : Singleton<ButtonManager>
         }
     }
 
-    public void WeaponUpgradeFrameOnOff() // 무기 강화 프레임 On, Off
+    public void WeaponUpgradeFrameOnOffButton() // 무기 강화 프레임 On, Off
     {
-        if (objectManager.weaponUpgradeFrame.activeSelf)
-            objectManager.weaponUpgradeFrame.SetActive(false);
-        else
-            objectManager.weaponUpgradeFrame.SetActive(true);
+        uiManager.WeaponUpgradeFrameOnOffButton();
     }
 
     public void SwitchToNextWeaponUpgrade() // 다음 무기
@@ -445,8 +405,10 @@ public class ButtonManager : Singleton<ButtonManager>
     public void DefenceStart() // 디펜스 웨이브 시작
     {
         soundManager.SetAudioSFX("Audios/SFX/DefenceStart");
+        soundManager.PlayAudioSFX();
         gameManager.SetBattleState(GameManager._EBattleState_.egBattle);
         uiManager.DefenceStartFrameSet();
+        uiManager.SetTextEnemyCount();
         EnemyManager.instance.EnemyActivateCoroutineStart();
     }
 
@@ -486,6 +448,7 @@ public class ButtonManager : Singleton<ButtonManager>
             soldier.soldierObj.transform.position = soldier.soldierPos;
             prepareManager.currentSummonedSoldier++;
             uiManager.SetTextSoldierAndWeaponCnt();
+            uiManager.SoldierSummonSelectFrameOnOff();
         }
     }
 
@@ -506,6 +469,7 @@ public class ButtonManager : Singleton<ButtonManager>
             weapon.weaponObj.transform.position = weapon.weaponPos;
             prepareManager.currentDeployedWeapon++;
             uiManager.SetTextSoldierAndWeaponCnt();
+            uiManager.WeaponDeploySelectFrameOnOff();
         }
     }
 
@@ -514,6 +478,7 @@ public class ButtonManager : Singleton<ButtonManager>
         if (objectManager.useMeteorButtonImage.fillAmount == 0)
         {
             soundManager.SetAudioSFX("Audios/SFX/Meteor");
+            soundManager.PlayAudioSFX();
             objectManager.useMeteorButtonImage.fillAmount = 1f;
             SkillManager.instance.SkillActivateCoroutineStart(SkillManager._ESkillClass_.escMeteor);
         }
@@ -524,7 +489,7 @@ public class ButtonManager : Singleton<ButtonManager>
         if (dataManager.myUserInfo.m_nWave > 1 && !prepareManager.isPreviousRound)
         {
             prepareManager.PreviousRoundSet();
-            SceneManager.LoadScene("Defence");
+            RePrepare();
         }
     }
 
@@ -650,9 +615,9 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager.nextSoldierButton.onClick.AddListener(ButtonSound);
         objectManager.soldierUnLockOffButton.onClick.AddListener(SoldierUnLockFrameOffButton);
         objectManager.soldierUnLockOffButton.onClick.AddListener(ButtonSound);
-        objectManager.weaponUpgradeFrameOnButton.onClick.AddListener(WeaponUpgradeFrameOnOff);
+        objectManager.weaponUpgradeFrameOnButton.onClick.AddListener(WeaponUpgradeFrameOnOffButton);
         objectManager.weaponUpgradeFrameOnButton.onClick.AddListener(ButtonSound);
-        objectManager.weaponUpgradeFrameOffButton.onClick.AddListener(WeaponUpgradeFrameOnOff);
+        objectManager.weaponUpgradeFrameOffButton.onClick.AddListener(WeaponUpgradeFrameOnOffButton);
         objectManager.weaponUpgradeFrameOffButton.onClick.AddListener(ButtonSound);
         objectManager.weaponUpgradeConfirmFrameOnButton.onClick.AddListener(WeaponUpgradeConfirmFrameOnOff);
         objectManager.weaponUpgradeConfirmFrameOnButton.onClick.AddListener(ButtonSound);
@@ -703,7 +668,5 @@ public class ButtonManager : Singleton<ButtonManager>
         objectManager.endDefenceRePrepareButton.onClick.AddListener(RePrepare);
         objectManager.endDefenceRePrepareButton.onClick.AddListener(ButtonSound);
     }
-    // -------------------------------------------- private
-
     #endregion
 }

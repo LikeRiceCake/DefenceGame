@@ -4,47 +4,25 @@ using UnityEngine;
 
 public abstract class CharacterFactory<T> : MonoBehaviour
 {
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     protected GameObject obj;
-    #endregion
 
-    #region //property//
-
+    protected ResourceManager resourceManager;
     #endregion
 
     #region //unityLifeCycle//
     void Start()
     {
-        
-    }
-
-    void Update()
-    {
-        
+        DataInit();
     }
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
-    public abstract GameObject Create(T select);
-    //-------------------------------------------- private
+    public void DataInit()
+    {
+        resourceManager = ResourceManager.instance;
+    }
 
+    public abstract GameObject Create(T select);
     #endregion
 }

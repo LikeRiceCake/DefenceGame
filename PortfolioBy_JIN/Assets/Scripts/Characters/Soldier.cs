@@ -5,20 +5,14 @@ using UnityEngine;
 public class Soldier : Character
 {
     #region //constant//
-    //-------------------------------------------- public
     public const float EyeSight = 35f;
 
     public static readonly float[] SoldierIncreaseHp = { 1f, 1.1f, 2f, 1.3f, 0.5f, 1.7f };
     public static readonly float[] SoldierIncreaseAttack = { 1f, 1.1f, 0.5f, 1.3f, 2f, 1.7f };
     public static readonly float[] SoldierIncreaseDefence = { 0.1f, 0.2f, 0.7f, 0.4f, 0.1f, 0.5f };
-    //-------------------------------------------- private
-
     #endregion
 
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     ButtonManager buttonManager;
 
     Collider2D opponent;
@@ -46,7 +40,6 @@ public class Soldier : Character
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public override void DataInit()
     {
         layerMask = LayerMask.NameToLayer("Enemy");
@@ -113,8 +106,6 @@ public class Soldier : Character
                 return 0;
         }
     }
-    //-------------------------------------------- private
-
     #endregion
 
     #region //collision//

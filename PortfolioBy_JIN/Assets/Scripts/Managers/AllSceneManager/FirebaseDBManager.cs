@@ -21,34 +21,14 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
     #endregion
 
     #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     bool isCheckOver;
     bool isOverlap;
     #endregion
 
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     DatabaseReference DBRef;
 
     DataManager dataManager;
-
-    ObjectManager objectManager;
-
-    GameManager gameManager;
-    #endregion
-
-    #region //property//
     #endregion
 
     #region //unityLifeCycle//
@@ -61,8 +41,6 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
     {
         DBRef = FirebaseDatabase.DefaultInstance.RootReference;
         dataManager = DataManager.instance;
-        objectManager = ObjectManager.instance;
-        gameManager = GameManager.instance;
     }
 
     private void Start()
@@ -84,7 +62,6 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public void DataInit()
     {
         isCheckOver = false;
@@ -224,7 +201,5 @@ public class FirebaseDBManager : Singleton<FirebaseDBManager>
                 break;
         }
     }
-    //-------------------------------------------- private
-
     #endregion
 }

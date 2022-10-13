@@ -5,39 +5,14 @@ using UnityEngine;
 public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
 {
     #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     string isAlreadyPlayedKey;
     string myNameKey;
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-    GameManager gameManager;
-    #endregion
-
-    #region //property//
     #endregion
 
     #region //unityLifeCycle//
     protected override void Awake()
     {
         base.Awake();
-    }
-
-    private void OnEnable()
-    {
-        gameManager = GameManager.instance;
     }
 
     private void Start()
@@ -47,7 +22,6 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public void DataInit()
     {
         isAlreadyPlayedKey = "Played";
@@ -82,7 +56,5 @@ public class PlayerPrefsManager : Singleton<PlayerPrefsManager>
             return false;
         
     }
-    //-------------------------------------------- private
-
     #endregion
 }

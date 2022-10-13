@@ -12,47 +12,17 @@ public abstract class WeaponFactory : MonoBehaviour
     }
     #endregion
 
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     protected GameObject obj;
+
+    protected ResourceManager resourceManager;
     #endregion
-
-    #region //property//
-
-    #endregion
-
-    #region //unityLifeCycle//
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
-    }
-    #endregion
-
     #region //function//
-    //-------------------------------------------- public
+    public void DataInit()
+    {
+        resourceManager = ResourceManager.instance;
+    }
+     
     public abstract GameObject Create(_EWeaponClass_ select);
-    //-------------------------------------------- private
-
     #endregion
 }

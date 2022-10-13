@@ -4,19 +4,6 @@ using UnityEngine;
 
 public class BallistaArrow : MonoBehaviour, IAttack
 {
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //struct//
     struct _stat
     {
@@ -27,9 +14,6 @@ public class BallistaArrow : MonoBehaviour, IAttack
     #endregion
 
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     IAttacked _target;
     #endregion
 
@@ -49,7 +33,6 @@ public class BallistaArrow : MonoBehaviour, IAttack
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public void Attack()
     {
         _target.Attacked(stat.Attack);
@@ -63,8 +46,6 @@ public class BallistaArrow : MonoBehaviour, IAttack
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         transform.Translate(Vector2.right * stat.Speed * Time.deltaTime);
     }
-    //-------------------------------------------- private
-
     #endregion
 
     #region //collision//

@@ -6,24 +6,7 @@ using UnityEngine.Profiling;
 
 public class ObjectManager : Singleton<ObjectManager>
 {
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     #region ///AllScene///
     GameObject _quitFrame;
 
@@ -88,6 +71,7 @@ public class ObjectManager : Singleton<ObjectManager>
     GameObject _soldierSummonSelectFrame;
     GameObject _weaponDeploySelectFrame;
     GameObject _endDefenceFrame;
+    GameObject _enemySummonPos;
 
     Button _defenceToInCastleButton;
     Button _optionFrameOnButton;
@@ -213,6 +197,7 @@ public class ObjectManager : Singleton<ObjectManager>
     public GameObject soldierSummonSelectFrame { get { return _soldierSummonSelectFrame; } }
     public GameObject weaponDeploySelectFrame { get { return _weaponDeploySelectFrame; } }
     public GameObject endDefenceFrame { get { return _endDefenceFrame; } }
+    public GameObject enemySummonPos { get { return _enemySummonPos; } }
 
     public Button defenceToInCastleButton { get { return _defenceToInCastleButton; } }
     public Button optionFrameOnButton { get { return _optionFrameOnButton; } }
@@ -290,7 +275,6 @@ public class ObjectManager : Singleton<ObjectManager>
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public void DataInit()
     {
         _optionsButton = new Button[(int)ButtonManager._EOptionButton_.eobMax];
@@ -409,6 +393,7 @@ public class ObjectManager : Singleton<ObjectManager>
         _soldierSummonSelectFrame = _prepareFrame.transform.Find("SoldierSummonSelectFrame").gameObject;
         _weaponDeploySelectFrame = _prepareFrame.transform.Find("WeaponDeploySelectFrame").gameObject;
         _endDefenceFrame = _battleFrame.transform.Find("EndDefenceFrame").gameObject;
+        _enemySummonPos = _battleFrame.transform.Find("EnemySummonPos").gameObject;
 
         _defenceToInCastleButton = GameObject.Find("DefenceToInCastle_Button").GetComponent<Button>();
         _optionFrameOnButton = GameObject.Find("OptionFrameOn_Button").GetComponent<Button>();
@@ -480,7 +465,5 @@ public class ObjectManager : Singleton<ObjectManager>
 
         _castle = _battleFrame.transform.Find("CastleCollider").GetComponent<Castle>();
     }
-    //-------------------------------------------- private
-
     #endregion
 }

@@ -35,7 +35,6 @@ public class Enemy : Character
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public override void Move()
     {
         if(myCurrentCharacterState == _ECharacterState_.ecsMove)
@@ -66,8 +65,6 @@ public class Enemy : Character
         UIManager.instance.SetTextResourceUI(DataManager._EResource_.erMoney);
         base.Die();
     }
-    //-------------------------------------------- private
-
     #endregion
 
     #region //collision//

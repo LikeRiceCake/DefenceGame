@@ -12,47 +12,25 @@ public abstract class ProjectileFactory : MonoBehaviour
     }
     #endregion
 
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     protected GameObject obj;
-    #endregion
 
-    #region //property//
-
+    protected ResourceManager resourceManager;
     #endregion
 
     #region //unityLifeCycle//
     void Start()
     {
-        
-    }
-
-    void Update()
-    {
-        
+        DataInit();
     }
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
-    public abstract GameObject Create(_EProjectileClass_ select);
-    //-------------------------------------------- private
+    public void DataInit()
+    {
+        resourceManager = ResourceManager.instance;
+    }
 
+    public abstract GameObject Create(_EProjectileClass_ select);
     #endregion
 }

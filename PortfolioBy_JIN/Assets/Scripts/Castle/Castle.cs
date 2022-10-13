@@ -14,19 +14,9 @@ public class Castle : MonoBehaviour, IAttacked
     }
     #endregion
 
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //constant//
-    //-------------------------------------------- public
     public const float CastleIncreaseHp = 10f;
     public const float CastleIncreaseDefence = 1.5f;
-    //-------------------------------------------- private
-
     #endregion
 
     #region //struct//
@@ -40,18 +30,11 @@ public class Castle : MonoBehaviour, IAttacked
     #endregion
 
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     CastleInfo castleStat;
 
     ButtonManager buttonManager;
 
     UIManager uiManager;
-    #endregion
-
-    #region //property//
-
     #endregion
 
     #region //unityLifeCycle//
@@ -77,7 +60,6 @@ public class Castle : MonoBehaviour, IAttacked
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public void DataInit()
     {
         castleStat = GetComponent<CastleInfoPocket>().castleStat;
@@ -132,12 +114,8 @@ public class Castle : MonoBehaviour, IAttacked
         uiManager.SetImageCastleHp(stat.CurrentHp, stat.MaxHp);
         if (stat.CurrentHp <= 0)
         {
-            uiManager.SetFrameEndDefence(BattleManager._EDefenceResult_.edrDefeat);
-            uiManager.SetSFXEndDefence(BattleManager._EDefenceResult_.edrDefeat);
-            uiManager.EndDefenceFrameOn();
+            BattleManager.instance.Defeat();
         }
     }
-    //-------------------------------------------- private
-
     #endregion
 }

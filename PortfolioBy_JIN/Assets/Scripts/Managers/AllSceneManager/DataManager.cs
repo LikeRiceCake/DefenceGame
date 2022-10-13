@@ -98,7 +98,6 @@ public class DataManager : Singleton<DataManager>
     #endregion
 
     #region //constant//
-    //-------------------------------------------- public
     public const int MaxHire = 5;
     public const int MaxSoldierUpgrade = 10;
     public const int SoldierUpgradePriceCnt = 4;
@@ -127,8 +126,6 @@ public class DataManager : Singleton<DataManager>
     public static readonly int[] CastleUpgradePrice = { 15000, 30000, 60000, 120000, 150000, 200000 };
 
     public static readonly float[] MaxLeftTime = { 3600f, 3600f, 10800f, 86400f, 604800f };
-    //-------------------------------------------- private
-
     #endregion
 
     #region //class//
@@ -295,7 +292,6 @@ public class DataManager : Singleton<DataManager>
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public void DataInit()
     {
         _currentMineralState = _EMineral_.emStone;
@@ -329,7 +325,5 @@ public class DataManager : Singleton<DataManager>
     {
         return _myUserInfo = new User(_name);
     }
-    //-------------------------------------------- private
-
     #endregion
 }

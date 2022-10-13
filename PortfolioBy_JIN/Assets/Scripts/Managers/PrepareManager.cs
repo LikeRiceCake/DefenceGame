@@ -5,8 +5,6 @@ using UnityEngine;
 public class PrepareManager : Singleton<PrepareManager>
 {
     #region //variable//
-    //-------------------------------------------- public
-    //-------------------------------------------- private
     int _currentSummonedSoldier;
     int _summonedSoldierMax;
     int _currentDeployedWeapon;
@@ -17,19 +15,13 @@ public class PrepareManager : Singleton<PrepareManager>
     #endregion
 
     #region //constant//
-    //-------------------------------------------- public
     public const int SummonedSoldierMaxDefault = 4;
     public const int SummonedSoldierMaxIncreased = 5;
     public const int DeployedWeaponMaxDefault = 1;
     public const int DeployedWeaponMaxIncreased = 15;
-    //-------------------------------------------- private
-
     #endregion
 
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     DataManager dataManager;
 
     EnemyManager enemyManager;
@@ -52,17 +44,13 @@ public class PrepareManager : Singleton<PrepareManager>
 
         enemyManager = EnemyManager.instance;
 
-        DataInit();
+        PlacedSoldierMaxSet();
+        DeployedWeaponMaxSet();
     }
 
     private void Start()
     {
-        
-    }
-
-    void Update()
-    {
-        
+        DataInit();
     }
     #endregion
 
@@ -70,13 +58,12 @@ public class PrepareManager : Singleton<PrepareManager>
     //-------------------------------------------- public
     public void DataInit()
     {
+        _currentDeployedWeapon = 0;
         _currentSummonedSoldier = 0;
+
         _previousRound = dataManager.myUserInfo.m_nWave;
 
         _isPreviousRound = false;
-
-        PlacedSoldierMaxSet();
-        DeployedWeaponMaxSet();
     }
 
     public void PlacedSoldierMaxSet()
@@ -92,27 +79,24 @@ public class PrepareManager : Singleton<PrepareManager>
     public void PreviousRoundSet()
     {
         _previousRound = dataManager.myUserInfo.m_nWave--;
-        PlacedSoldierMaxSet();
-        DeployedWeaponMaxSet();
-        enemyManager.MaximumEnemy();
         isPreviousRound = true;
     }
 
-    public void PreviousRoundReturnSet()
+    public void PreviousRoundReset()
     {
         dataManager.myUserInfo.m_nWave = _previousRound;
-        PlacedSoldierMaxSet();
-        DeployedWeaponMaxSet();
-        enemyManager.MaximumEnemy();
         isPreviousRound = false;
     }
 
-    public void ResetCnt()
+    public void SceneLoadedCounts()
     {
-        _currentDeployedWeapon = 0;
-        _currentSummonedSoldier = 0;
+        if (GameManager.instance.currentSceneState == GameManager._ESceneState_.esDefence)
+        {
+            PlacedSoldierMaxSet();
+            DeployedWeaponMaxSet();
+            _currentDeployedWeapon = 0;
+            _currentSummonedSoldier = 0;
+        }
     }
-    //-------------------------------------------- private
-
     #endregion
 }

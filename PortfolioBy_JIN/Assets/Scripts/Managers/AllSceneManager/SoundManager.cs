@@ -11,25 +11,7 @@ public class SoundManager : Singleton<SoundManager>
         esMax
     }
 
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
     GameManager gameManager;
 
     ResourceManager resourceManager;
@@ -37,10 +19,6 @@ public class SoundManager : Singleton<SoundManager>
     AudioClip[] audioClips;
 
     AudioSource[] audioSources;
-    #endregion
-
-    #region //property//
-
     #endregion
 
     #region //unityLifeCycle//
@@ -59,15 +37,30 @@ public class SoundManager : Singleton<SoundManager>
 
         audioSources = GetComponents<AudioSource>();
     }
-
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public void SceneLoadedSounds()
     {
         SetAudioBGM();
         PlayAudioBGM();
+    }
+
+    public void SetSFXEndDefence(BattleManager._EDefenceResult_ select) // µðÆæ½º°¡ ³¡³µÀ» ¶§ SFX ¼³Á¤
+    {
+        switch (select)
+        {
+            case BattleManager._EDefenceResult_.edrVictory:
+                SetAudioSFX("Audios/SFX/Victory");
+                PlayAudioSFX();
+                break;
+            case BattleManager._EDefenceResult_.edrDefeat:
+                SetAudioSFX("Audios/SFX/Defeat");
+                PlayAudioSFX();
+                break;
+            default:
+                break;
+        }
     }
 
     public void SetAudioSFX(string _key)
@@ -107,7 +100,5 @@ public class SoundManager : Singleton<SoundManager>
     {
         audioSources[(int)_ESound_.esBGM].Play();
     }
-    //-------------------------------------------- private
-
     #endregion
 }

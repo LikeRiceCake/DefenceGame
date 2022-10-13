@@ -17,24 +17,11 @@ public class TimeManager : Singleton<TimeManager>
     _EGameSpeed_ _currentGameSpeed;
     #endregion
 
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
     #region //constant//
-    //-------------------------------------------- public
     public static readonly float[] TimeFast = { 0f, 1f, 2f, 3.5f };
-    //-------------------------------------------- private
-
     #endregion
 
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     TimeSpan idleTime;
 
     DataManager dataManager;
@@ -73,10 +60,10 @@ public class TimeManager : Singleton<TimeManager>
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public void IdleTimeCalculation() // 최종 종료 시간과 현재 시간을 뺀 결과
     {
-        idleTime = DateTime.Now - DateTime.Parse(dataManager.myUserInfo.m_sQuitTime);
+        if (dataManager.myUserInfo.m_sQuitTime != "")
+            idleTime = DateTime.Now - Convert.ToDateTime(dataManager.myUserInfo.m_sQuitTime);
     }
 
     public void IdleTimeForLeftTime() // 유휴시간에 지나간 시간만큼 작업 시간 감소
@@ -93,25 +80,22 @@ public class TimeManager : Singleton<TimeManager>
 
     public void WorkingResource() // 자원 채취 작업
     {
-        if (gameManager.currentSceneState != GameManager._ESceneState_.esMain && dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood] > 0)
+        if (gameManager.currentSceneState != GameManager._ESceneState_.esMain)
         {
-            CutDownTree();
-        }
-        if (gameManager.currentSceneState != GameManager._ESceneState_.esMain && dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehStone] > 0)
-        {
-            MiningStone();
-        }
-        if (gameManager.currentSceneState != GameManager._ESceneState_.esMain && dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehIron] > 0)
-        {
-            MiningIron();
-        }
-        if (gameManager.currentSceneState != GameManager._ESceneState_.esMain && dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehGold] > 0)
-        {
-            MiningGold();
-        }
-        if (gameManager.currentSceneState != GameManager._ESceneState_.esMain && dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehDiamond] > 0)
-        {
-            MiningDiamond();
+            if (dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehWood] > 0)
+                CutDownTree();
+            
+            if (dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehStone] > 0)
+                MiningStone();
+            
+            if (dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehIron] > 0)
+                MiningIron();
+            
+            if (dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehGold] > 0)
+                MiningGold();
+            
+            if (dataManager.myUserInfo.m_nHired[(int)DataManager._EHired_.ehDiamond] > 0)
+                MiningDiamond();
         }
     }
 
@@ -204,6 +188,5 @@ public class TimeManager : Singleton<TimeManager>
     {
         Time.timeScale = TimeFast[(int)select];
     }
-    //-------------------------------------------- private
     #endregion
 }

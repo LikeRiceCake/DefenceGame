@@ -21,19 +21,13 @@ public abstract class Weapon : MonoBehaviour
     #endregion
 
     #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     protected bool isDieEenmy;
     #endregion
 
     #region //constant//
-    //-------------------------------------------- public
     public static readonly float[] WeaponIncreaseAttack = { 1.5f };
 
     public const float EyeSight = 55f;
-    //-------------------------------------------- private
-
     #endregion
 
     #region //struct//
@@ -47,9 +41,6 @@ public abstract class Weapon : MonoBehaviour
     #endregion
 
     #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
     protected WeaponInfo weaponStat;
 
     protected Collider2D opponent;
@@ -58,8 +49,6 @@ public abstract class Weapon : MonoBehaviour
 
     protected ButtonManager buttonManager;
 
-    protected ResourceManager resourceManager;
-
     protected DataManager dataManager;
 
     protected ProjectileFactory projectileFactory;
@@ -67,15 +56,10 @@ public abstract class Weapon : MonoBehaviour
     protected GameObject projectileObj;
     #endregion
 
-    #region //property//
-
-    #endregion
-
     #region //unityLifeCycle//
     private void OnEnable()
     {
         buttonManager = ButtonManager.instance;
-        resourceManager = ResourceManager.instance;
         dataManager = DataManager.instance;
     }
 
@@ -88,7 +72,6 @@ public abstract class Weapon : MonoBehaviour
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public virtual void DataInit()
     {
         weaponStat = GetComponent<WeaponInfoPocket>().weaponStat;
@@ -127,7 +110,5 @@ public abstract class Weapon : MonoBehaviour
     public abstract int UpgradeStat(_EWeaponStat_ select);
 
     public abstract IEnumerator ShootTheWeapon();
-    //-------------------------------------------- private
-
     #endregion
 }

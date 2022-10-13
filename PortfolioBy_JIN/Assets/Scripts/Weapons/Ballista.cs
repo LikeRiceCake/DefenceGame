@@ -4,31 +4,6 @@ using UnityEngine;
 
 public class Ballista : Weapon
 {
-    #region //variable//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //constant//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //class//
-    //-------------------------------------------- public
-
-    //-------------------------------------------- private
-
-    #endregion
-
-    #region //property//
-
-    #endregion
-
     #region //unityLifeCycle//
     void Start()
     {
@@ -51,12 +26,10 @@ public class Ballista : Weapon
             buttonManager.isBallistaUpgraded = false;
             StatInit();
         }
-
     }
     #endregion
 
     #region //function//
-    //-------------------------------------------- public
     public override void DataInit()
     {
         projectileFactory = gameObject.AddComponent<BallistaArrowFactory>();
@@ -79,6 +52,7 @@ public class Ballista : Weapon
         while (true)
         {
             SoundManager.instance.SetAudioSFX("Audios/SFX/Arrow");
+            SoundManager.instance.PlayAudioSFX();
             projectileObj = projectileFactory.Create(ProjectileFactory._EProjectileClass_.epcBallistaArrow);
             projectileObj.transform.position = transform.GetChild(0).transform.position;
             projectileObj.GetComponent<BallistaArrow>().target = opponent.GetComponent<Enemy>();
@@ -87,7 +61,5 @@ public class Ballista : Weapon
             yield return new WaitForSeconds(stat.RateOfFire);
         }
     }
-    //-------------------------------------------- private
-
     #endregion
 }
